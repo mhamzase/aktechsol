@@ -15,7 +15,7 @@
 
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
-<body class="font-sans antialiased min-h-screen flex flex-col justify-center items-center bg-[#0a1628]">
+<body class="font-sans antialiased min-h-screen flex flex-col justify-center items-center bg-blue-800">
 
     <div class="w-full sm:max-w-md px-6 py-8 mx-4 bg-white rounded-xl shadow-2xl">
         <div class="mb-6 text-center">

@@ -1,21 +1,21 @@
 @extends('layouts.app')
 
-@section('title', 'Our Services')
-@section('meta_description', 'Explore our professional services.')
+@section('title', 'Our Projects')
+@section('meta_description', 'Explore our portfolio of successful projects.')
 
 @section('content')
 <section class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 class="text-4xl font-extrabold text-center text-gray-900">Our Services</h1>
-        <p class="text-center text-gray-500 mt-2">Explore what we can do for you.</p>
+        <h1 class="text-4xl font-extrabold text-center text-gray-900">Our Projects</h1>
+        <p class="text-center text-gray-500 mt-2">Take a look at our recent work.</p>
 
-        <div id="services-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-            @include('services._cards', ['services' => $services])
+        <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+            @include('projects._cards', ['projects' => $projects])
         </div>
 
         <div id="load-more-wrapper" class="text-center mt-10">
-            <button id="load-more-services" class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
-                    data-next-url="{{ $services->nextPageUrl() }}">
+            <button id="load-more-projects" class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
+                    data-next-url="{{ $projects->nextPageUrl() }}">
                 Load More
             </button>
         </div>
@@ -26,8 +26,8 @@
 @push('scripts')
 <script>
     (function() {
-        const button = document.getElementById('load-more-services');
-        const grid = document.getElementById('services-grid');
+        const button = document.getElementById('load-more-projects');
+        const grid = document.getElementById('projects-grid');
 
         button.addEventListener('click', async function() {
             const nextUrl = button.getAttribute('data-next-url');
@@ -54,7 +54,7 @@
             } catch (error) {
                 button.textContent = 'Load More';
                 button.disabled = false;
-                console.error('Failed to load more services:', error);
+                console.error('Failed to load more projects:', error);
             }
         });
     })();

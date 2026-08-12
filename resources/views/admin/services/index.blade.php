@@ -41,6 +41,7 @@
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Image</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Title</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Category</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Sort Order</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
                         <th class="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Actions</th>
                     </tr>
@@ -62,6 +63,7 @@
                             </td>
                             <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ $service->title }}</td>
                             <td class="px-4 py-3 text-sm text-gray-500">{{ $service->category?->name ?? '—' }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-500">{{ $service->sort_order }}</td>
                             <td class="px-4 py-3">
                                 <span
                                     class="px-2 py-1 text-xs font-semibold rounded-full {{ $service->status ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">

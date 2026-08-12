@@ -3,12 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Service;
+use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $services = Service::active()->orderBy('sort_order')->paginate(12);
+        $services = Service::active()
+            ->orderBy('sort_order')
+            ->paginate(6);
+
+        if ($request->expectsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return response()->json([
+                'items' => view('services._cards', compact('services'))->render(),
+                'next_page_url' => $services->nextPageUrl(),
+            ]);
+        }
+
         return view('services.index', compact('services'));
     }
 

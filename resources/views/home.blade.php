@@ -1,12 +1,13 @@
 @extends('layouts.app')
 
 @section('title', 'Home - ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
-@section('meta_description', 'AK Tech SOL is a professional software and freelancing agency delivering top-notch digital
+@section('meta_description',
+    'AK Tech SOL is a professional software and freelancing agency delivering top-notch digital
     solutions.')
 
 @section('content')
     {{-- Hero --}}
-    <section class="bg-gradient-to-br from-[#0a1628] to-blue-900 text-white">
+    <section class="bg-gradient-to-br from-blue-950 via-blue-900 to-blue-800 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
             <div class="max-w-3xl">
                 <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight">
@@ -43,15 +44,21 @@
                             <img src="{{ $service->getThumbnailUrl() }}" alt="{{ $service->title }}"
                                 class="h-32 w-full object-cover rounded-lg mb-4">
                         @endif
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                            <i class="{{ $service->icon ?? 'fas fa-code' }}"></i>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $service->title }}</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                            <a href="{{ route('services.show', $service->slug) }}"
+                                class="hover:text-blue-600">{{ $service->title }}</a>
+                        </h3>
                         <p class="text-sm text-gray-500">{{ $service->short_description }}</p>
                     </div>
                 @empty
                     <div class="col-span-full text-center text-gray-500">No services available yet.</div>
                 @endforelse
+            </div>
+            <div class="text-center mt-10">
+                <a href="{{ route('services.index') }}"
+                    class="inline-flex items-center px-6 py-3 border border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition">
+                    View All Services
+                </a>
             </div>
         </div>
     </section>
@@ -64,20 +71,29 @@
                 <p class="mt-4 text-gray-500 max-w-2xl mx-auto">Take a look at some of our recent projects.</p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                @for ($i = 1; $i <= 3; $i++)
+                @forelse($projects as $project)
                     <div class="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                        <div class="h-48 bg-gray-200 flex items-center justify-center text-gray-400">
-                            <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                        </div>
+                        @if ($project->getFeaturedImageUrl())
+                            <img src="{{ $project->getFeaturedImageUrl() }}" alt="{{ $project->title }}"
+                                class="h-48 w-full object-cover">
+                        @endif
                         <div class="p-4">
-                            <h3 class="font-semibold text-gray-900">Project {{ $i }}</h3>
-                            <p class="text-sm text-gray-500 mt-1">Project description will go here.</p>
+                            <h3 class="font-semibold text-gray-900">
+                                <a href="{{ route('projects.show', $project->slug) }}"
+                                    class="hover:text-blue-600">{{ $project->title }}</a>
+                            </h3>
+                            <p class="text-sm text-gray-500 mt-2">{{ $project->short_description }}</p>
                         </div>
                     </div>
-                @endfor
+                @empty
+                    <div class="col-span-full text-center text-gray-500">No projects available yet.</div>
+                @endforelse
+            </div>
+            <div class="text-center mt-10">
+                <a href="{{ route('projects.index') }}"
+                    class="inline-flex items-center px-6 py-3 border border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition">
+                    View All Projects
+                </a>
             </div>
         </div>
     </section>
@@ -127,13 +143,11 @@
     </section>
 
     {{-- CTA --}}
-    <section class="bg-blue-600 text-white py-16">
-        <div class="max-w-4xl mx-auto text-center px-4">
-            <h2 class="text-3xl font-bold">Ready to Start Your Project?</h2>
-            <p class="mt-4 text-blue-100">Let's discuss your ideas and turn them into reality.</p>
-            <a href="{{ url('/contact') }}"
-                class="mt-6 inline-block px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition">Contact
-                Us</a>
-        </div>
-    </section>
+ <section class="bg-white text-gray-900 py-16">
+    <div class="max-w-4xl mx-auto text-center px-4">
+        <h2 class="text-3xl font-bold ">Ready to Start Your Project?</h2>
+        <p class="mt-4">Let's discuss your ideas and turn them into reality.</p>
+        <a href="{{ url('/contact') }}" class="mt-6 inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">Contact Us</a>
+    </div>
+</section>
 @endsection
