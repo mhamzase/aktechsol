@@ -7,9 +7,10 @@ use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ServiceController as PublicServiceController;
 use App\Http\Controllers\ProjectController as PublicProjectController;
+use App\Http\Controllers\ServiceController as PublicServiceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -51,7 +52,7 @@ Route::get('/portfolio/{slug}', [PublicProjectController::class, 'show'])->name(
 */
 
 Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/{any?}', [DashboardController::class, 'index'])->where('any', 'dashboard')->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -65,4 +66,5 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::resource('services', ServiceController::class)->except(['show']);
     Route::resource('service-categories', ServiceCategoryController::class)->except(['show']);
     Route::resource('projects', ProjectController::class)->except(['show']);
+    Route::resource('testimonials', TestimonialController::class)->except(['show']);
 });
