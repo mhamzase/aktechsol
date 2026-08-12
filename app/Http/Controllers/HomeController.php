@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BlogPost;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\Testimonial;
@@ -25,6 +26,8 @@ class HomeController extends Controller
             ->take(20)
             ->get();
 
-        return view('home', compact('services', 'projects', 'testimonials'));
+        $posts = BlogPost::published()->with('category')->latest('published_at')->take(6)->get();
+
+        return view('home', compact('services', 'projects', 'testimonials', 'posts'));
     }
 }

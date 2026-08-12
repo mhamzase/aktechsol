@@ -180,17 +180,31 @@
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-gray-900">Latest from the Blog</h2>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                @for ($i = 1; $i <= 3; $i++)
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                        <div class="h-40 bg-gray-200"></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                @forelse($posts as $post)
+                    <a href="{{ route('blog.show', $post->slug) }}"
+                        class="block bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition">
+                        @if ($post->getFeaturedImageUrl())
+                            <img src="{{ $post->getFeaturedImageUrl() }}" alt="{{ $post->title }}"
+                                class="h-40 w-full object-cover">
+                        @else
+                            <div class="h-40 bg-gray-200"></div>
+                        @endif
                         <div class="p-4">
-                            <p class="text-xs text-blue-600 font-semibold">Category</p>
-                            <h3 class="font-semibold text-gray-900 mt-1">Blog Post Title {{ $i }}</h3>
-                            <p class="text-sm text-gray-500 mt-2">Brief excerpt of the blog post...</p>
+                            <p class="text-xs text-blue-600 font-semibold">{{ $post->category?->name ?? 'General' }}</p>
+                            <h3 class="font-semibold text-gray-900 mt-1">{{ $post->title }}</h3>
+                            <p class="text-sm text-gray-500 mt-2 line-clamp-2">{{ $post->excerpt }}</p>
                         </div>
-                    </div>
-                @endfor
+                    </a>
+                @empty
+                    <div class="col-span-full text-center text-gray-500">No blog posts available yet.</div>
+                @endforelse
+            </div>
+            <div class="text-center mt-10">
+                <a href="{{ route('blog.index') }}"
+                    class="inline-flex items-center px-6 py-3 border border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition">
+                    View All Posts
+                </a>
             </div>
         </div>
     </section>
