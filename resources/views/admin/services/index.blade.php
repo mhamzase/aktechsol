@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('admin.layouts.app')
 
 @section('title', 'Services')
 
@@ -37,6 +37,7 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">#</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Image</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Title</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Category</th>
@@ -47,6 +48,9 @@
                 <tbody class="divide-y divide-gray-100">
                     @forelse ($services as $service)
                         <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="px-4 py-3 text-sm text-gray-500">
+                                {{ ($services->currentPage() - 1) * $services->perPage() + $loop->iteration }}
+                            </td>
                             <td class="px-4 py-3">
                                 @if ($service->getThumbnailUrl())
                                     <img src="{{ $service->getThumbnailUrl() }}" class="h-10 w-16 object-cover rounded">
@@ -104,7 +108,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-4 py-8 text-center text-gray-500">No services found.</td>
+                            <td colspan="6" class="px-4 py-8 text-center text-gray-500">No services found.</td>
                         </tr>
                     @endforelse
                 </tbody>

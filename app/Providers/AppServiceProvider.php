@@ -10,7 +10,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        View::composer(['layouts.guest', 'layouts.admin', 'layouts.app'], function ($view) {
+        View::composer(['layouts.guest', 'admin.layouts.app', 'layouts.app'], function ($view) {
             $siteAsset = SiteAsset::first();
             $view->with('logoUrl', $siteAsset ? $siteAsset->getLogoUrl() : null);
             $view->with('faviconUrl', $siteAsset ? $siteAsset->getFaviconUrl() : null);

@@ -10,16 +10,16 @@ class ServiceCategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['name' => 'Web Development', 'order' => 1, 'slug' => 'web-development'],
-            ['name' => 'Mobile App Development', 'order' => 2, 'slug' => 'mobile-app-development'],
-            ['name' => 'UI/UX Design', 'order' => 3, 'slug' => 'ui-ux-design'],
-            ['name' => 'Cloud Solutions', 'order' => 4, 'slug' => 'cloud-solutions'],
+            ['name' => 'Web Development', 'sort_order' => 1, 'slug' => 'web-development'],
+            ['name' => 'Mobile App Development', 'sort_order' => 2, 'slug' => 'mobile-app-development'],
+            ['name' => 'UI/UX Design', 'sort_order' => 3, 'slug' => 'ui-ux-design'],
+            ['name' => 'Cloud Solutions', 'sort_order' => 4, 'slug' => 'cloud-solutions'],
         ];
 
         foreach ($categories as $data) {
             ServiceCategory::firstOrCreate(
                 ['name' => $data['name']],
-                ['order' => $data['order'], 'slug' => $data['slug'], 'status' => true]
+                ['sort_order' => $data['sort_order'], 'slug' => $data['slug'], 'status' => true]
             );
         }
     }

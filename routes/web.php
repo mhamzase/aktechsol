@@ -3,11 +3,12 @@
 use App\Http\Controllers\Admin\ChangePasswordController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\HomeController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ServiceController as PublicServiceController;
+use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -26,4 +27,7 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
 
     Route::resource('services', ServiceController::class)->except(['show']);
+
+    Route::resource('service-categories', ServiceCategoryController::class)->except(['show']);
+
 });

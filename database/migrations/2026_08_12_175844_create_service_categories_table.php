@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->integer('order')->default(0);
+            $table->integer('sort_order')->default(0);
             $table->boolean('status')->default(true);
             $table->softDeletes();
             $table->timestamps();
