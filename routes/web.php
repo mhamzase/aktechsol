@@ -57,6 +57,16 @@ Route::get('/terms-conditions', function () {
     return view('terms-conditions');
 })->name('terms-conditions');
 
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
+Route::get('/robots.txt', function () {
+    $content = "User-agent: *\n";
+    $content .= "Allow: /\n";
+    $content .= "Sitemap: " . url('/sitemap.xml') . "\n";
+    return response($content, 200)->header('Content-Type', 'text/plain');
+})->name('robots');
+
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes (provided by Laravel Fortify)

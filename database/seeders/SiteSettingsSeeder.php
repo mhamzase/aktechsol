@@ -29,7 +29,7 @@ class SiteSettingsSeeder extends Seeder
             'about_intro_title'     => 'Who We Are',
             'about_intro_text'      => 'AK Tech SOL is a full-service software and freelancing agency focused on delivering high-quality web and mobile solutions.',
             'about_mission_title'   => 'Our Mission & Values',
-            'about_mission_subtitle'=> 'We believe in transparency, quality, and delivering value at every step.',
+            'about_mission_subtitle' => 'We believe in transparency, quality, and delivering value at every step.',
             'about_why_title'       => 'Why Choose Us',
 
             'about_mission_card1_title' => 'Innovation',
@@ -51,6 +51,13 @@ class SiteSettingsSeeder extends Seeder
             // Legal pages default content
             'privacy_policy_content' => '<h2>Privacy Policy</h2><p>Your privacy is important to us. This policy explains how we collect, use, and protect your information.</p>',
             'terms_conditions_content' => '<h2>Terms &amp; Conditions</h2><p>By using our services, you agree to the following terms and conditions.</p>',
+
+            'seo_title'          => 'AK Tech SOL - Software & Freelancing Agency',
+            'seo_description'    => 'AK Tech SOL is a professional software and freelancing agency delivering top-notch digital solutions.',
+            'seo_keywords'       => 'software, freelancing, web development, mobile apps, UI/UX design',
+            'seo_canonical_url'  => null,
+            'seo_og_image'       => null,
+            'seo_robots'         => 'index, follow',
         ];
 
         foreach ($settings as $property => $value) {

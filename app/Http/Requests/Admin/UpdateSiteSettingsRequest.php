@@ -56,6 +56,13 @@ class UpdateSiteSettingsRequest extends FormRequest
             // Legal Pages
             'privacy_policy_content'   => ['nullable', 'string'],
             'terms_conditions_content' => ['nullable', 'string'],
+
+            'seo_title'          => ['nullable', 'string', 'max:255'],
+            'seo_description'    => ['nullable', 'string', 'max:500'],
+            'seo_keywords'       => ['nullable', 'string', 'max:255'],
+            'seo_canonical_url'  => ['nullable', 'url', 'max:255'],
+            'seo_og_image'       => ['nullable', 'url', 'max:255'],
+            'seo_robots'         => ['nullable', 'string', 'max:255'],
         ];
     }
 }

@@ -46,6 +46,14 @@ class SiteSettings extends Settings
     public ?string $privacy_policy_content = null;
     public ?string $terms_conditions_content = null;
 
+    // SEO
+    public ?string $seo_title          = null;
+    public ?string $seo_description    = null;
+    public ?string $seo_keywords       = null;
+    public ?string $seo_canonical_url  = null;
+    public ?string $seo_og_image       = null;
+    public ?string $seo_robots         = null;
+
     public static function group(): string
     {
         return 'site';
