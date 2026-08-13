@@ -6,6 +6,7 @@ use App\Models\User;
 use Database\Seeders\AdminUserSeeder;
 use Database\Seeders\BlogCategorySeeder;
 use Database\Seeders\BlogPostSeeder;
+use Database\Seeders\ContactMessageSeeder;
 use Database\Seeders\FaqSeeder;
 use Database\Seeders\ProjectSeeder;
 use Database\Seeders\RoleSeeder;
@@ -36,6 +37,7 @@ class DatabaseSeeder extends Seeder
             BlogCategorySeeder::class,
             BlogPostSeeder::class,
             FaqSeeder::class,
+            ContactMessageSeeder::class,
         ]);
     }
 }

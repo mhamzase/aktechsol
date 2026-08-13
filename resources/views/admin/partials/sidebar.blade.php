@@ -52,6 +52,14 @@
             'active_patterns' => ['admin.faqs.*'],
         ],
         [
+            'type' => 'link',
+            'label' => 'Contact Messages',
+            'route' => 'admin.contact-messages.index',
+            'icon' =>
+                '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H6l-4 4V5z"/></svg>',
+            'active_patterns' => ['admin.contact-messages.*'],
+        ],
+        [
             'type' => 'group',
             'label' => 'Blog',
             'icon' =>
