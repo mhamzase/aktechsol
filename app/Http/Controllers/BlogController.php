@@ -12,7 +12,19 @@ class BlogController extends Controller
     {
         $query = BlogPost::published()->with('category')->latest('published_at');
 
-        // Optional category filter
+        // Search
+        if ($search = $request->query('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('excerpt', 'like', "%{$search}%")
+                  ->orWhere('content', 'like', "%{$search}%")
+                  ->orWhereHas('category', function ($catQuery) use ($search) {
+                      $catQuery->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Category filter
         if ($categorySlug = $request->query('category')) {
             $query->whereHas('category', function ($q) use ($categorySlug) {
                 $q->where('slug', $categorySlug);
@@ -20,7 +32,6 @@ class BlogController extends Controller
         }
 
         $posts = $query->paginate(6);
-
         $categories = BlogCategory::where('status', true)->orderBy('sort_order')->get();
 
         if ($request->expectsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
@@ -40,7 +51,6 @@ class BlogController extends Controller
             ->where('id', '!=', $post->id)
             ->where('category_id', $post->category_id)
             ->latest('published_at')
-            ->take(10)
             ->get();
 
         return view('blog.show', compact('post', 'related'));

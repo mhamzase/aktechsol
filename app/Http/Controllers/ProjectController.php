@@ -9,9 +9,18 @@ class ProjectController extends Controller
 {
     public function index(Request $request)
     {
-        $projects = Project::active()
-            ->orderBy('sort_order')
-            ->paginate(6);
+        $query = Project::active();
+
+        if ($search = $request->query('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('client_name', 'like', "%{$search}%")
+                  ->orWhere('short_description', 'like', "%{$search}%")
+                  ->orWhere('full_description', 'like', "%{$search}%");
+            });
+        }
+
+        $projects = $query->orderBy('sort_order')->paginate(6);
 
         if ($request->expectsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json([
