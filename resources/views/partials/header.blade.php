@@ -1,7 +1,7 @@
 <header class="bg-gradient-to-br from-blue-600 to-blue-800 shadow-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
-            {{-- Logo & site name --}}
+            {{-- Logo --}}
             <a href="{{ url('/') }}" class="flex items-center gap-2 text-white hover:opacity-80 transition-opacity">
                 @if($logoUrl)
                     <img src="{{ $logoUrl }}" alt="{{ $siteSettings->site_name ?? 'AK Tech SOL' }}" class="h-8 w-auto object-contain">
@@ -27,14 +27,31 @@
                    class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('portfolio*') ? 'bg-white/20 text-white shadow' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
                     Portfolio
                 </a>
-                <a href="{{ url('/blog') }}"
-                   class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('blog*') ? 'bg-white/20 text-white shadow' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
-                    Blog
-                </a>
                 <a href="{{ url('/contact') }}"
                    class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('contact') ? 'bg-white/20 text-white shadow' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
                     Contact
                 </a>
+
+                {{-- More  Dropdown at END --}}
+                <div class="relative group">
+                    <button type="button"
+                            class="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('blog*') || request()->is('faqs*') ? 'bg-white/20 text-white shadow' : 'text-blue-100 group-hover:bg-white/10 group-hover:text-white' }}">
+                        More
+                        <svg class="h-4 w-4 transition-transform duration-200 group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <a href="{{ url('/blog') }}"
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">
+                            Blog
+                        </a>
+                        <a href="{{ url('/faqs') }}"
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">
+                            FAQs
+                        </a>
+                    </div>
+                </div>
             </nav>
 
             {{-- Mobile menu button --}}
@@ -49,33 +66,42 @@
     {{-- Mobile menu --}}
     <div id="mobile-menu" class="md:hidden hidden px-4 pb-4 pt-2 space-y-1 bg-blue-800/95">
         <a href="{{ url('/') }}"
-           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('/') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('/') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
             Home
         </a>
         <a href="{{ url('/about') }}"
-           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('about') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('about') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
             About
         </a>
         <a href="{{ url('/services') }}"
-           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('services*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('services*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
             Services
         </a>
         <a href="{{ url('/portfolio') }}"
-           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('portfolio*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('portfolio*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
             Portfolio
         </a>
-        <a href="{{ url('/blog') }}"
-           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('blog*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
-            Blog
-        </a>
         <a href="{{ url('/contact') }}"
-           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('contact') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('contact') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
             Contact
         </a>
+
+        <div class="space-y-1 pl-2">
+            <p class="px-3 py-1 text-xs font-semibold uppercase tracking-widest text-blue-300">Resources</p>
+            <a href="{{ url('/blog') }}"
+               class="block px-4 py-2 rounded-lg text-base font-medium {{ request()->is('blog*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
+                Blog
+            </a>
+            <a href="{{ url('/faqs') }}"
+               class="block px-4 py-2 rounded-lg text-base font-medium {{ request()->is('faqs*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
+                FAQs
+            </a>
+        </div>
     </div>
 </header>
 
 <script>
+    // Mobile menu toggle
     document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
         document.getElementById('mobile-menu').classList.toggle('hidden');
     });

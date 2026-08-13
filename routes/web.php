@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BlogCategoryController;
 use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\ChangePasswordController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProjectController as PublicProjectController;
 use App\Http\Controllers\ServiceController as PublicServiceController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FaqController as PublicFaqController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +38,8 @@ Route::get('/portfolio/{slug}', [PublicProjectController::class, 'show'])->name(
 
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+
+Route::get('/faqs', [PublicFaqController::class, 'index'])->name('faqs.index');
 
 /*
 |--------------------------------------------------------------------------
@@ -75,4 +79,6 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::resource('testimonials', TestimonialController::class)->except(['show']);
     Route::resource('blog-categories', BlogCategoryController::class)->except(['show']);
     Route::resource('blog-posts', BlogPostController::class)->except(['show']);
+    Route::resource('faqs', FaqController::class)->except(['show']);
+
 });

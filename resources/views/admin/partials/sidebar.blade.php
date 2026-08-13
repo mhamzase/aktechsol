@@ -44,6 +44,14 @@
             'active_patterns' => ['admin.testimonials.*'],
         ],
         [
+            'type' => 'link',
+            'label' => 'FAQs',
+            'route' => 'admin.faqs.index',
+            'icon' =>
+                '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10A8 8 0 1110 2a8 8 0 018 8zm-4-3a1 1 0 00-1.414-1.414L10 8.586 7.414 6.586A1 1 0 006.586 8L9 12.414V14a1 1 0 102 0v-1.586l2.414-4.414z" clip-rule="evenodd"/></svg>',
+            'active_patterns' => ['admin.faqs.*'],
+        ],
+        [
             'type' => 'group',
             'label' => 'Blog',
             'icon' =>
