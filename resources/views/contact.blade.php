@@ -4,10 +4,12 @@
 @section('meta_description', 'Get in touch with AK Tech SOL.')
 
 @section('content')
+<x-frontend.page-banner
+    title="Contact Us"
+    subtitle="Have a project in mind? We'd love to hear from you."
+/>
 <section class="py-20 bg-white">
     <div class="max-w-3xl mx-auto px-4">
-        <h1 class="text-4xl font-extrabold text-center text-gray-900">Contact Us</h1>
-        <p class="text-center text-gray-500 mt-2">Have a project in mind? We'd love to hear from you.</p>
 
         @if(session('success'))
             <div class="mt-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">

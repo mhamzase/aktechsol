@@ -8,6 +8,7 @@ use Database\Seeders\BlogCategorySeeder;
 use Database\Seeders\BlogPostSeeder;
 use Database\Seeders\ContactMessageSeeder;
 use Database\Seeders\FaqSeeder;
+use Database\Seeders\NewsletterSubscriberSeeder;
 use Database\Seeders\ProjectSeeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\ServiceCategorySeeder;
@@ -38,6 +39,7 @@ class DatabaseSeeder extends Seeder
             BlogPostSeeder::class,
             FaqSeeder::class,
             ContactMessageSeeder::class,
+            NewsletterSubscriberSeeder::class,
         ]);
     }
 }

@@ -4,6 +4,10 @@
 @section('meta_description', $service->meta_description)
 
 @section('content')
+<x-frontend.page-banner
+    title="{{ $service->seo_title ?? $service->title }}"
+    subtitle="{{ $service->short_description }}"
+/>
     <section class="py-20 bg-white">
         <div class="max-w-4xl mx-auto px-4">
             @if($service->getThumbnailUrl())

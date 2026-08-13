@@ -4,10 +4,13 @@
 @section('meta_description', 'Explore our professional services.')
 
 @section('content')
+<x-frontend.page-banner
+    title="Our Services"
+    subtitle="Explore what we can do for you."
+/>
+
 <section class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 class="text-4xl font-extrabold text-center text-gray-900">Our Services</h1>
-        <p class="text-center text-gray-500 mt-2">Explore what we can do for you.</p>
 
         <div id="services-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
             @include('services._cards', ['services' => $services])

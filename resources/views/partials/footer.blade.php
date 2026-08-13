@@ -5,6 +5,23 @@
             <div>
                 <h3 class="text-white font-semibold text-lg mb-4">{{ $siteSettings->site_name ?? 'AK Tech SOL' }}</h3>
                 <p class="text-sm">{{ $siteSettings->footer_text ?? 'Professional Software & Freelancing Agency.' }}</p>
+
+                {{-- Newsletter Subscribe (AJAX) --}}
+                <div class="mt-6">
+                    <h4 class="text-white font-medium text-sm mb-2">Subscribe to our Newsletter</h4>
+                    <form id="newsletter-form" action="{{ route('newsletter.subscribe') }}" method="POST">
+                        @csrf
+                        <div class="flex gap-2">
+                            <input type="email" name="email" id="newsletter-email" placeholder="Your email" required
+                                class="block w-full rounded-lg border border-blue-700 bg-blue-900/50 px-3 py-2 text-sm text-white placeholder-blue-300 focus:border-blue-400 focus:ring-blue-400">
+                            <button type="submit"
+                                class="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition whitespace-nowrap">
+                                Subscribe
+                            </button>
+                        </div>
+                        <p id="newsletter-message" class="mt-2 text-sm hidden"></p>
+                    </form>
+                </div>
             </div>
 
             {{-- Quick Links --}}
@@ -18,6 +35,10 @@
                     <li><a href="{{ url('/blog') }}" class="hover:text-white transition">Blog</a></li>
                     <li><a href="{{ url('/faqs') }}" class="hover:text-white transition">FAQs</a></li>
                     <li><a href="{{ url('/contact') }}" class="hover:text-white transition">Contact</a></li>
+                    <li><a href="{{ url('/privacy-policy') }}" class="hover:text-white transition">Privacy Policy</a>
+                    </li>
+                    <li><a href="{{ url('/terms-conditions') }}" class="hover:text-white transition">Terms &
+                            Conditions</a></li>
                 </ul>
             </div>
 
@@ -26,7 +47,8 @@
                 <h3 class="text-white font-semibold text-lg mb-4">Connect</h3>
                 <div class="flex space-x-4 mb-4">
                     @if ($siteSettings->facebook_url)
-                        <a href="{{ $siteSettings->facebook_url }}" target="_blank" class="hover:text-white transition">
+                        <a href="{{ $siteSettings->facebook_url }}" target="_blank"
+                            class="hover:text-white transition">
                             <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                                 <path
                                     d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -76,3 +98,67 @@
         </div>
     </div>
 </footer>
+
+<script>
+    (function() {
+        const form = document.getElementById('newsletter-form');
+        const messageEl = document.getElementById('newsletter-message');
+        if (!form || !messageEl) return;
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const emailInput = document.getElementById('newsletter-email');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+
+            // Simple client-side validation
+            if (!emailInput.value.trim()) {
+                messageEl.textContent = 'Please enter your email.';
+                messageEl.classList.remove('hidden', 'text-green-300');
+                messageEl.classList.add('text-red-300');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Subscribing...';
+            messageEl.classList.add('hidden');
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                            ?.getAttribute('content') || form.querySelector(
+                                'input[name="_token"]').value
+                    },
+                    body: JSON.stringify({
+                        email: emailInput.value
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    messageEl.textContent = data.message || 'Successfully subscribed!';
+                    messageEl.classList.remove('hidden', 'text-red-300');
+                    messageEl.classList.add('text-green-300');
+                    emailInput.value = '';
+                } else {
+                    messageEl.textContent = data.message || 'Something went wrong.';
+                    messageEl.classList.remove('hidden', 'text-green-300');
+                    messageEl.classList.add('text-red-300');
+                }
+            } catch (error) {
+                messageEl.textContent = 'Network error. Please try again.';
+                messageEl.classList.remove('hidden', 'text-green-300');
+                messageEl.classList.add('text-red-300');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        });
+    })();
+</script>

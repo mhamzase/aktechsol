@@ -4,10 +4,12 @@
 @section('meta_description', 'Frequently asked questions about AK Tech SOL.')
 
 @section('content')
+<x-frontend.page-banner
+    title="Frequently Asked Questions"
+    subtitle="Find answers to common questions."
+/>
 <section class="py-20 bg-white">
     <div class="max-w-4xl mx-auto px-4">
-        <h1 class="text-4xl font-extrabold text-center text-gray-900">Frequently Asked Questions</h1>
-        <p class="text-center text-gray-500 mt-2">Find answers to common questions.</p>
 
         <div class="mt-12 space-y-4">
             @forelse($faqs as $index => $faq)

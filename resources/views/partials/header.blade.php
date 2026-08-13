@@ -15,10 +15,6 @@
                    class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('/') ? 'bg-white/20 text-white shadow' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
                     Home
                 </a>
-                <a href="{{ url('/about') }}"
-                   class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('about') ? 'bg-white/20 text-white shadow' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
-                    About
-                </a>
                 <a href="{{ url('/services') }}"
                    class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('services*') ? 'bg-white/20 text-white shadow' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
                     Services
@@ -27,28 +23,41 @@
                    class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('portfolio*') ? 'bg-white/20 text-white shadow' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
                     Portfolio
                 </a>
-                <a href="{{ url('/contact') }}"
-                   class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('contact') ? 'bg-white/20 text-white shadow' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
-                    Contact
+                <a href="{{ url('/blog') }}"
+                   class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('blog*') ? 'bg-white/20 text-white shadow' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                    Blog
                 </a>
 
-                {{-- More  Dropdown at END --}}
+                {{-- More Dropdown --}}
                 <div class="relative group">
                     <button type="button"
-                            class="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('blog*') || request()->is('faqs*') ? 'bg-white/20 text-white shadow' : 'text-blue-100 group-hover:bg-white/10 group-hover:text-white' }}">
+                            class="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('about') || request()->is('contact') || request()->is('faqs*') || request()->is('privacy-policy') || request()->is('terms-conditions') ? 'bg-white/20 text-white shadow' : 'text-blue-100 group-hover:bg-white/10 group-hover:text-white' }}">
                         More
                         <svg class="h-4 w-4 transition-transform duration-200 group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
                     <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                        <a href="{{ url('/blog') }}"
+                        <a href="{{ url('/about') }}"
                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">
-                            Blog
+                            About
+                        </a>
+                        <a href="{{ url('/contact') }}"
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">
+                            Contact
                         </a>
                         <a href="{{ url('/faqs') }}"
                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">
                             FAQs
+                        </a>
+                        <div class="border-t border-gray-100 my-1"></div>
+                        <a href="{{ url('/privacy-policy') }}"
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">
+                            Privacy Policy
+                        </a>
+                        <a href="{{ url('/terms-conditions') }}"
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">
+                            Terms & Conditions
                         </a>
                     </div>
                 </div>
@@ -69,10 +78,6 @@
            class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('/') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
             Home
         </a>
-        <a href="{{ url('/about') }}"
-           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('about') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
-            About
-        </a>
         <a href="{{ url('/services') }}"
            class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('services*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
             Services
@@ -81,27 +86,39 @@
            class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('portfolio*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
             Portfolio
         </a>
-        <a href="{{ url('/contact') }}"
-           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('contact') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
-            Contact
+        <a href="{{ url('/blog') }}"
+           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('blog*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
+            Blog
         </a>
 
+        {{-- More section --}}
         <div class="space-y-1 pl-2">
-            <p class="px-3 py-1 text-xs font-semibold uppercase tracking-widest text-blue-300">Resources</p>
-            <a href="{{ url('/blog') }}"
-               class="block px-4 py-2 rounded-lg text-base font-medium {{ request()->is('blog*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
-                Blog
+            <p class="px-3 py-1 text-xs font-semibold uppercase tracking-widest text-blue-300">More</p>
+            <a href="{{ url('/about') }}"
+               class="block px-4 py-2 rounded-lg text-base font-medium {{ request()->is('about') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
+                About
+            </a>
+            <a href="{{ url('/contact') }}"
+               class="block px-4 py-2 rounded-lg text-base font-medium {{ request()->is('contact') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
+                Contact
             </a>
             <a href="{{ url('/faqs') }}"
                class="block px-4 py-2 rounded-lg text-base font-medium {{ request()->is('faqs*') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
                 FAQs
+            </a>
+            <a href="{{ url('/privacy-policy') }}"
+               class="block px-4 py-2 rounded-lg text-base font-medium {{ request()->is('privacy-policy') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
+                Privacy Policy
+            </a>
+            <a href="{{ url('/terms-conditions') }}"
+               class="block px-4 py-2 rounded-lg text-base font-medium {{ request()->is('terms-conditions') ? 'bg-white/20 text-white' : 'text-blue-100 hover:bg-white/10' }}">
+                Terms & Conditions
             </a>
         </div>
     </div>
 </header>
 
 <script>
-    // Mobile menu toggle
     document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
         document.getElementById('mobile-menu').classList.toggle('hidden');
     });

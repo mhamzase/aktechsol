@@ -4,6 +4,10 @@
 @section('meta_description', $post->meta_description)
 
 @section('content')
+<x-frontend.page-banner
+    title="{{ $post->seo_title ?? $post->title }}"
+    subtitle="{{ $post->excerpt }}"
+/>
     <section class="py-20 bg-white">
         <div class="max-w-4xl mx-auto px-4">
             @if ($post->getFeaturedImageUrl())

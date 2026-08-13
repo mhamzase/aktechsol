@@ -4,10 +4,12 @@
 @section('meta_description', 'Latest insights and updates from AK Tech SOL.')
 
 @section('content')
+<x-frontend.page-banner
+    title="Our Blog"
+    subtitle="Insights, tutorials, and updates."
+/>
 <section class="py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 class="text-4xl font-extrabold text-center text-gray-900">Our Blog</h1>
-        <p class="text-center text-gray-500 mt-2">Insights, tutorials, and updates.</p>
 
         <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
             @include('blog._cards', ['posts' => $posts])
