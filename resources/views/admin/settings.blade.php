@@ -358,7 +358,7 @@
 @endsection
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('vendor/quill/quill.snow.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/quill/quill.snow.css') }}">
     <style>
         .ql-editor {
             min-height: 250px;
@@ -367,7 +367,7 @@
 @endpush
 
 @push('scripts')
-    <script src="{{ asset('vendor/quill/quill.js') }}"></script>
+    <script src="{{ asset('assets/vendor/quill/quill.js') }}"></script>
     <script>
         (function() {
             // Tab switching

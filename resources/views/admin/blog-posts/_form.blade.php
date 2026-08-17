@@ -108,7 +108,7 @@
 </div>
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('vendor/quill/quill.snow.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/quill/quill.snow.css') }}">
     <style>
         #editor-container .ql-editor {
             min-height: 300px;
@@ -117,7 +117,7 @@
 @endpush
 
 @push('scripts')
-    <script src="{{ asset('vendor/quill/quill.js') }}"></script>
+    <script src="{{ asset('assets/vendor/quill/quill.js') }}"></script>
     <script>
         (function() {
             var hiddenInput = document.getElementById('content-hidden');

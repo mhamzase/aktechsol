@@ -13,7 +13,7 @@
         <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     @endif
 
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col justify-center items-center bg-blue-800">
 

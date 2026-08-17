@@ -12,7 +12,7 @@
         <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     @endif
 
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     @stack('styles')
 </head>
 

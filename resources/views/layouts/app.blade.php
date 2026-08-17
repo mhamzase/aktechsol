@@ -23,7 +23,7 @@
     @if ($faviconUrl)
         <link rel="icon" type="image/x-icon" href="{{ $faviconUrl }}">
     @endif
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     @stack('styles')
 </head>
 
