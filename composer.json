@@ -73,8 +73,8 @@
         "pre-package-uninstall": [
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
         ],
-        "css-dev": "./tailwindcss -i resources/css/app.css -o public/css/app.css --watch",
-        "css-build": "./tailwindcss -i resources/css/app.css -o public/css/app.css --minify"
+        "css-dev": "./tailwindcss -i resources/css/app.css -o public/assets/css/app.css --watch",
+        "css-build": "./tailwindcss -i resources/css/app.css -o public/assets/css/app.css --minify"
     },
     "extra": {
         "laravel": {
