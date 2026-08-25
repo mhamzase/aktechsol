@@ -9,6 +9,6 @@ class BlogPostSeeder extends Seeder
 {
     public function run(): void
     {
-        BlogPost::factory(18)->create(); // enough for pagination
+        BlogPost::factory(5)->create(); // enough for pagination
     }
 }

@@ -9,6 +9,6 @@ class TestimonialSeeder extends Seeder
 {
     public function run(): void
     {
-        Testimonial::factory(50)->create();
+        Testimonial::factory(5)->create();
     }
 }

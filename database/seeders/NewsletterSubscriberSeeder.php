@@ -9,6 +9,6 @@ class NewsletterSubscriberSeeder extends Seeder
 {
     public function run(): void
     {
-        NewsletterSubscriber::factory(12)->create();
+        NewsletterSubscriber::factory(4)->create();
     }
 }

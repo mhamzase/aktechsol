@@ -9,6 +9,6 @@ class BlogCategorySeeder extends Seeder
 {
     public function run(): void
     {
-        BlogCategory::factory(20)->create();
+        BlogCategory::factory(5)->create();
     }
 }

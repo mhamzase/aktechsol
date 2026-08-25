@@ -9,6 +9,6 @@ class FaqSeeder extends Seeder
 {
     public function run(): void
     {
-        Faq::factory(12)->create();
+        Faq::factory(5)->create();
     }
 }

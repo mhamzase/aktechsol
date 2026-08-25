@@ -10,6 +10,6 @@ class ServiceSeeder extends Seeder
     public function run(): void
     {
         // Create 6 services using factory
-        Service::factory(25)->create();
+        Service::factory(4)->create();
     }
 }
