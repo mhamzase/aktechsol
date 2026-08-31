@@ -43,7 +43,7 @@
             </a>
         </div>
 
-        <div class="mt-8 text-gray-700 leading-relaxed">
+        <div class="mt-8 prose prose-gray max-w-none leading-relaxed">
             {!! $post->content !!}
         </div>
 
