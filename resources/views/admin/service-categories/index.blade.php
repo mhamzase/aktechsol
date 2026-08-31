@@ -61,7 +61,35 @@
                                 </span>
                             </td>
                             <td class="px-4 py-3 text-right">
-                                <!-- existing action dropdown -->
+                                <div class="relative dropdown-container">
+                                    <button onclick="toggleDropdown(this)"
+                                            class="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-200 focus:outline-none">
+                                        <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z" />
+                                        </svg>
+                                    </button>
+                                    <div class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
+                                        <a href="{{ route('admin.service-categories.edit', $category) }}"
+                                           class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition">
+                                            <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                            Edit
+                                        </a>
+                                        <form id="delete-form-{{ $category->id }}"
+                                              action="{{ route('admin.service-categories.destroy', $category) }}" method="POST">
+                                            @csrf @method('DELETE')
+                                            <button type="button"
+                                                    onclick="confirmAction('Delete Category', 'Are you sure you want to delete \'{{ addslashes($category->name) }}\'?', () => document.getElementById('delete-form-{{ $category->id }}').submit())"
+                                                    class="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition">
+                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     @empty
