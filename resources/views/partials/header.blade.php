@@ -6,7 +6,7 @@
                 @if($logoUrl)
                     <img src="{{ $logoUrl }}" alt="{{ $siteSettings->site_name ?? 'AK Tech SOL' }}" class="h-8 w-auto object-contain">
                 @endif
-                <span class="text-xl font-bold text-blue-700">{{ $siteSettings->site_name ?? 'AK Tech SOL' }}</span>
+                {{-- <span class="text-xl font-bold text-blue-700">{{ $siteSettings->site_name ?? 'AK Tech SOL' }}</span> --}}
             </a>
 
             {{-- Desktop nav --}}
