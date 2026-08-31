@@ -4,7 +4,7 @@
             {{-- Logo --}}
             <a href="{{ url('/') }}" class="flex items-center gap-2 text-blue-700 hover:opacity-80 transition-opacity">
                 @if($logoUrl)
-                    <img src="{{ $logoUrl }}" alt="{{ $siteSettings->site_name ?? 'AK Tech SOL' }}" class="h-8 w-auto object-contain">
+                    <img src="{{ $logoUrl }}" alt="{{ $siteSettings->site_name ?? 'AK Tech SOL' }}" class="h-12 w-auto object-contain">
                 @endif
                 {{-- <span class="text-xl font-bold text-blue-700">{{ $siteSettings->site_name ?? 'AK Tech SOL' }}</span> --}}
             </a>
