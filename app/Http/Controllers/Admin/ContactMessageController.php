@@ -26,7 +26,15 @@ class ContactMessageController extends Controller
             $query->where('status', $status);
         }
 
-        $messages = $query->paginate(10)->withQueryString();
+        $messages = $query->paginate($request->get('per_page', 10));
+
+        if ($request->ajax()) {
+            return response()->json([
+                'rows'       => view('admin.contact-messages._rows', ['messages' => $messages])->render(),
+                'pagination' => view('admin.partials.ajax-pagination', ['items' => $messages])->render(),
+                'stats'      => "Showing {$messages->firstItem()}–{$messages->lastItem()} of {$messages->total()}",
+            ]);
+        }
 
         return view('admin.contact-messages.index', compact('messages'));
     }
@@ -47,6 +55,11 @@ class ContactMessageController extends Controller
     public function destroy(ContactMessage $contactMessage)
     {
         $contactMessage->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Contact message deleted.']);
+        }
+
 
         return redirect()->route('admin.contact-messages.index')
                          ->with('success', 'Contact message deleted.');

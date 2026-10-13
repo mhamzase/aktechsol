@@ -20,7 +20,15 @@ class MediaController extends Controller
             });
         }
 
-        $mediaItems = $query->paginate(12)->withQueryString();
+        $mediaItems = $query->paginate($request->get('per_page', 12));
+
+        if ($request->ajax()) {
+            return response()->json([
+                'rows'       => view('admin.media._rows', ['mediaItems' => $mediaItems])->render(),
+                'pagination' => view('admin.partials.ajax-pagination', ['items' => $mediaItems])->render(),
+                'stats'      => "Showing {$mediaItems->firstItem()}–{$mediaItems->lastItem()} of {$mediaItems->total()}",
+            ]);
+        }
 
         return view('admin.media.index', compact('mediaItems'));
     }
@@ -28,6 +36,11 @@ class MediaController extends Controller
     public function destroy(Media $media)
     {
         $media->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Media deleted successfully.']);
+        }
+
 
         return redirect()->route('admin.media.index')
                          ->with('success', 'Media deleted successfully.');

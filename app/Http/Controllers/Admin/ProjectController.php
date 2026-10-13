@@ -27,7 +27,15 @@ class ProjectController extends Controller
             $query->where('status', $status === 'active');
         }
 
-        $projects = $query->paginate(10)->withQueryString();
+        $projects = $query->paginate($request->get('per_page', 10));
+
+        if ($request->ajax()) {
+            return response()->json([
+                'rows'       => view('admin.projects._rows', ['projects' => $projects])->render(),
+                'pagination' => view('admin.partials.ajax-pagination', ['items' => $projects])->render(),
+                'stats'      => "Showing {$projects->firstItem()}–{$projects->lastItem()} of {$projects->total()}",
+            ]);
+        }
 
         return view('admin.projects.index', compact('projects'));
     }
@@ -90,6 +98,11 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         $project->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Project deleted successfully.']);
+        }
+
         return redirect()->route('admin.projects.index')
                          ->with('success', 'Project deleted successfully.');
     }

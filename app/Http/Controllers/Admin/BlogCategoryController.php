@@ -25,7 +25,15 @@ class BlogCategoryController extends Controller
             $query->where('status', $status === 'active');
         }
 
-        $categories = $query->paginate(10)->withQueryString();
+        $categories = $query->paginate($request->get('per_page', 10));
+
+        if ($request->ajax()) {
+            return response()->json([
+                'rows'       => view('admin.blog-categories._rows', ['categories' => $categories])->render(),
+                'pagination' => view('admin.partials.ajax-pagination', ['items' => $categories])->render(),
+                'stats'      => "Showing {$categories->firstItem()}–{$categories->lastItem()} of {$categories->total()}",
+            ]);
+        }
 
         return view('admin.blog-categories.index', compact('categories'));
     }
@@ -59,6 +67,11 @@ class BlogCategoryController extends Controller
     public function destroy(BlogCategory $blogCategory)
     {
         $blogCategory->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Blog category deleted successfully.']);
+        }
+
 
         return redirect()->route('admin.blog-categories.index')
                          ->with('success', 'Blog category deleted successfully.');

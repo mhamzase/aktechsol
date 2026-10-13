@@ -31,9 +31,17 @@ class ServiceController extends Controller
             $query->where('status', $status === 'active');
         }
 
-        $services = $query->paginate(10)->withQueryString();
+        $services = $query->paginate($request->get('per_page', 10));
 
-        return view('admin.services.index', compact('services'));
+        if ($request->ajax()) {
+            return response()->json([
+                'rows'       => view('admin.services._rows', compact('services'))->render(),
+                'pagination' => view('admin.partials.ajax-pagination', ['items' => $services])->render(),
+                'stats'      => "Showing {$services->firstItem()}–{$services->lastItem()} of {$services->total()}",
+            ]);
+        }
+
+        return view('admin.services.index');
     }
 
     public function create()
@@ -79,6 +87,11 @@ class ServiceController extends Controller
     public function destroy(Service $service)
     {
         $service->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Service deleted successfully.']);
+        }
+
         return redirect()->route('admin.services.index')
             ->with('success', 'Service deleted successfully.');
     }

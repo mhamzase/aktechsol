@@ -30,7 +30,15 @@ class BlogPostController extends Controller
             $query->where('status', $status === 'active');
         }
 
-        $posts = $query->paginate(10)->withQueryString();
+        $posts = $query->paginate($request->get('per_page', 10));
+
+        if ($request->ajax()) {
+            return response()->json([
+                'rows'       => view('admin.blog-posts._rows', ['posts' => $posts])->render(),
+                'pagination' => view('admin.partials.ajax-pagination', ['items' => $posts])->render(),
+                'stats'      => "Showing {$posts->firstItem()}–{$posts->lastItem()} of {$posts->total()}",
+            ]);
+        }
 
         return view('admin.blog-posts.index', compact('posts'));
     }
@@ -78,6 +86,11 @@ class BlogPostController extends Controller
     public function destroy(BlogPost $blogPost)
     {
         $blogPost->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Blog post deleted successfully.']);
+        }
+
         return redirect()->route('admin.blog-posts.index')
             ->with('success', 'Blog post deleted successfully.');
     }

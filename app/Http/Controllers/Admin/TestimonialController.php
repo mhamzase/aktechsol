@@ -27,7 +27,15 @@ class TestimonialController extends Controller
             $query->where('status', $status === 'active');
         }
 
-        $testimonials = $query->paginate(10)->withQueryString();
+        $testimonials = $query->paginate($request->get('per_page', 10));
+
+        if ($request->ajax()) {
+            return response()->json([
+                'rows'       => view('admin.testimonials._rows', ['testimonials' => $testimonials])->render(),
+                'pagination' => view('admin.partials.ajax-pagination', ['items' => $testimonials])->render(),
+                'stats'      => "Showing {$testimonials->firstItem()}–{$testimonials->lastItem()} of {$testimonials->total()}",
+            ]);
+        }
 
         return view('admin.testimonials.index', compact('testimonials'));
     }
@@ -73,6 +81,11 @@ class TestimonialController extends Controller
     public function destroy(Testimonial $testimonial)
     {
         $testimonial->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Testimonial deleted successfully.']);
+        }
+
         return redirect()->route('admin.testimonials.index')
                          ->with('success', 'Testimonial deleted successfully.');
     }

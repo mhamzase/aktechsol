@@ -25,7 +25,15 @@ class FaqController extends Controller
             $query->where('status', $status === 'active');
         }
 
-        $faqs = $query->paginate(10)->withQueryString();
+        $faqs = $query->paginate($request->get('per_page', 10));
+
+        if ($request->ajax()) {
+            return response()->json([
+                'rows'       => view('admin.faqs._rows', ['faqs' => $faqs])->render(),
+                'pagination' => view('admin.partials.ajax-pagination', ['items' => $faqs])->render(),
+                'stats'      => "Showing {$faqs->firstItem()}–{$faqs->lastItem()} of {$faqs->total()}",
+            ]);
+        }
 
         return view('admin.faqs.index', compact('faqs'));
     }
@@ -59,6 +67,11 @@ class FaqController extends Controller
     public function destroy(Faq $faq)
     {
         $faq->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'FAQ deleted successfully.']);
+        }
+
 
         return redirect()->route('admin.faqs.index')
                          ->with('success', 'FAQ deleted successfully.');

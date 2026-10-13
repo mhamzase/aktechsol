@@ -82,6 +82,15 @@
             this.perPageEl?.addEventListener('change', (e) => {
                 this.params.per_page = e.target.value; this.params.page = 1; this.load();
             });
+            // Extra filters: any [data-table-filter="param"] inside the table root.
+            this.filterEls = Array.from(root.querySelectorAll('[data-table-filter]'));
+            this.filterEls.forEach((el) => {
+                const name = el.dataset.tableFilter;
+                if (el.value) this.params[name] = el.value;
+                el.addEventListener('change', () => {
+                    this.params[name] = el.value; this.params.page = 1; this.load();
+                });
+            });
             this.pagEl?.addEventListener('click', (e) => {
                 const a = e.target.closest('a[data-page]');
                 if (!a) return;

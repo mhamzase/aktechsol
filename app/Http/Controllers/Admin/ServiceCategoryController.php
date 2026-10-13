@@ -25,7 +25,15 @@ class ServiceCategoryController extends Controller
             $query->where('status', $status === 'active');
         }
 
-        $categories = $query->paginate(10)->withQueryString();
+        $categories = $query->paginate($request->get('per_page', 10));
+
+        if ($request->ajax()) {
+            return response()->json([
+                'rows'       => view('admin.service-categories._rows', ['categories' => $categories])->render(),
+                'pagination' => view('admin.partials.ajax-pagination', ['items' => $categories])->render(),
+                'stats'      => "Showing {$categories->firstItem()}–{$categories->lastItem()} of {$categories->total()}",
+            ]);
+        }
 
         return view('admin.service-categories.index', compact('categories'));
     }
@@ -59,6 +67,11 @@ class ServiceCategoryController extends Controller
     public function destroy(ServiceCategory $serviceCategory)
     {
         $serviceCategory->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Service category deleted successfully.']);
+        }
+
 
         return redirect()->route('admin.service-categories.index')
             ->with('success', 'Service category deleted successfully.');
