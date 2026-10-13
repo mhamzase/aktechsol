@@ -6,10 +6,10 @@
     <x-admin.page-header title="Services" subtitle="Manage your services and their details"
                         icon="M13 10V3L4 14h7v7l9-11h-7z">
         <x-slot:actions>
-            <a href="{{ route('admin.services.create') }}" class="btn btn-primary">
+            <button type="button" onclick="openDrawer('{{ route('admin.services.create') }}', 'Add Service')" class="btn btn-primary">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 Add Service
-            </a>
+            </button>
         </x-slot:actions>
     </x-admin.page-header>
 

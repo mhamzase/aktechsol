@@ -1,6 +1,6 @@
 {{-- x-ui.date — custom calendar date picker (NOT a native date input).
      Readonly display field ("14 Oct 2026") + hidden Y-m-d value for the form.
-     Props: name, label, value (Y-m-d), placeholder, required, hint, error,
+     Props: name, label, value (Y-m-d or Carbon), placeholder, required, hint, error,
             min (Y-m-d), max (Y-m-d), id. --}}
 @props([
     'name',
@@ -19,9 +19,11 @@
     $id = $id ?? 'ui-' . str_replace(['[', ']'], ['-', ''], $name) . '-' . uniqid();
     $error = $error ?? $errors->first($errorKey ?? $name);
     $iso = old($name, $value);
+    if ($iso instanceof \DateTimeInterface) { $iso = $iso->format('Y-m-d'); }
+    $iso = is_string($iso) ? $iso : '';
     $display = '';
     if ($iso && preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $iso, $m)) {
-        $display = $m[3] . ' ' . ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][(int) $m[2] - 1] . ' ' . $m[1];
+        $display = (int) $m[3] . ' ' . ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][(int) $m[2] - 1] . ' ' . $m[1];
     }
 @endphp
 <div class="ui-field">

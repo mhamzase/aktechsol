@@ -42,7 +42,15 @@ class ProjectController extends Controller
 
     public function create()
     {
-        return view('admin.projects.create');
+        return view('admin.projects._form', [
+            'project' => new Project(),
+            'featuredUrl' => null,
+            'galleryImages' => [],
+            'action' => route('admin.projects.store'),
+            'method' => 'POST',
+            'tableId' => 'projects-table',
+            'formTitle' => 'Add Project',
+        ]);
     }
 
     public function store(StoreProjectRequest $request)
@@ -61,15 +69,25 @@ class ProjectController extends Controller
             }
         }
 
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Project created successfully.']);
+        }
+
         return redirect()->route('admin.projects.index')
                          ->with('success', 'Project created successfully.');
     }
 
     public function edit(Project $project)
     {
-        $featuredUrl = $project->getFeaturedImageUrl();
-        $galleryImages = $project->getGalleryImages();
-        return view('admin.projects.edit', compact('project', 'featuredUrl', 'galleryImages'));
+        return view('admin.projects._form', [
+            'project' => $project,
+            'featuredUrl' => $project->getFeaturedImageUrl(),
+            'galleryImages' => $project->getGalleryImages(),
+            'action' => route('admin.projects.update', $project),
+            'method' => 'PUT',
+            'tableId' => 'projects-table',
+            'formTitle' => 'Edit Project',
+        ]);
     }
 
     public function update(UpdateProjectRequest $request, Project $project)
@@ -89,6 +107,10 @@ class ProjectController extends Controller
                 $project->addMedia($image)
                         ->toMediaCollection('gallery');
             }
+        }
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Project updated successfully.']);
         }
 
         return redirect()->route('admin.projects.index')

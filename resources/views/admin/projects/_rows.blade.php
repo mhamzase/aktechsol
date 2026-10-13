@@ -13,7 +13,7 @@
         <td data-label="Sort Order" class="text-slate-500">{{ $project->sort_order }}</td>
         <td data-label="Status"><span class="badge {{ $project->status ? 'badge-green' : 'badge-red' }}">{{ $project->status ? 'Active' : 'Inactive' }}</span></td>
         <td data-label="Actions" class="no-label whitespace-nowrap">
-            <a href="{{ route('admin.projects.edit', $project) }}" class="btn btn-secondary !py-1.5 !px-3 !text-xs">Edit</a>
+            <button type="button" onclick="openDrawer('{{ route('admin.projects.edit', $project) }}', 'Edit Project')" class="btn btn-secondary !py-1.5 !px-3 !text-xs">Edit</button>
             <button class="btn btn-danger !py-1.5 !px-3 !text-xs" onclick="confirmDelete('{{ route('admin.projects.destroy', $project) }}', 'projects-table', 'Delete this project?')">Delete</button>
         </td>
     </tr>

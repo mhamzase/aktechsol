@@ -40,12 +40,22 @@ class BlogCategoryController extends Controller
 
     public function create()
     {
-        return view('admin.blog-categories.create');
+        return view('admin.blog-categories._form', [
+            'blogCategory' => new BlogCategory(),
+            'action' => route('admin.blog-categories.store'),
+            'method' => 'POST',
+            'tableId' => 'blog-categories-table',
+            'formTitle' => 'Add Category',
+        ]);
     }
 
     public function store(StoreBlogCategoryRequest $request)
     {
         BlogCategory::create($request->validated());
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Blog category created successfully.']);
+        }
 
         return redirect()->route('admin.blog-categories.index')
                          ->with('success', 'Blog category created successfully.');
@@ -53,12 +63,22 @@ class BlogCategoryController extends Controller
 
     public function edit(BlogCategory $blogCategory)
     {
-        return view('admin.blog-categories.edit', compact('blogCategory'));
+        return view('admin.blog-categories._form', [
+            'blogCategory' => $blogCategory,
+            'action' => route('admin.blog-categories.update', $blogCategory),
+            'method' => 'PUT',
+            'tableId' => 'blog-categories-table',
+            'formTitle' => 'Edit Category',
+        ]);
     }
 
     public function update(UpdateBlogCategoryRequest $request, BlogCategory $blogCategory)
     {
         $blogCategory->fill($request->validated())->save();
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Blog category updated successfully.']);
+        }
 
         return redirect()->route('admin.blog-categories.index')
                          ->with('success', 'Blog category updated successfully.');

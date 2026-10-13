@@ -40,12 +40,22 @@ class FaqController extends Controller
 
     public function create()
     {
-        return view('admin.faqs.create');
+        return view('admin.faqs._form', [
+            'faq' => new Faq(),
+            'action' => route('admin.faqs.store'),
+            'method' => 'POST',
+            'tableId' => 'faqs-table',
+            'formTitle' => 'Add FAQ',
+        ]);
     }
 
     public function store(StoreFaqRequest $request)
     {
         Faq::create($request->validated());
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'FAQ created successfully.']);
+        }
 
         return redirect()->route('admin.faqs.index')
                          ->with('success', 'FAQ created successfully.');
@@ -53,12 +63,22 @@ class FaqController extends Controller
 
     public function edit(Faq $faq)
     {
-        return view('admin.faqs.edit', compact('faq'));
+        return view('admin.faqs._form', [
+            'faq' => $faq,
+            'action' => route('admin.faqs.update', $faq),
+            'method' => 'PUT',
+            'tableId' => 'faqs-table',
+            'formTitle' => 'Edit FAQ',
+        ]);
     }
 
     public function update(UpdateFaqRequest $request, Faq $faq)
     {
         $faq->fill($request->validated())->save();
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'FAQ updated successfully.']);
+        }
 
         return redirect()->route('admin.faqs.index')
                          ->with('success', 'FAQ updated successfully.');

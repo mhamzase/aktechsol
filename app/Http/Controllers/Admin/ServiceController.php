@@ -46,8 +46,15 @@ class ServiceController extends Controller
 
     public function create()
     {
-        $categories = ServiceCategory::orderBy('name')->get();
-        return view('admin.services.create', compact('categories'));
+        return view('admin.services._form', [
+            'service' => new Service(),
+            'categories' => ServiceCategory::orderBy('name')->get(),
+            'thumbnailUrl' => null,
+            'action' => route('admin.services.store'),
+            'method' => 'POST',
+            'tableId' => 'services-table',
+            'formTitle' => 'Add Service',
+        ]);
     }
 
     public function store(StoreServiceRequest $request)
@@ -59,16 +66,26 @@ class ServiceController extends Controller
                 ->toMediaCollection('service_image');
         }
 
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Service created successfully.']);
+        }
+
         return redirect()->route('admin.services.index')
             ->with('success', 'Service created successfully.');
     }
 
-  public function edit(Service $service)
-{
-    $categories = ServiceCategory::orderBy('name')->get();
-    $thumbnailUrl = $service->getThumbnailUrl();
-    return view('admin.services.edit', compact('service', 'categories', 'thumbnailUrl'));
-}
+      public function edit(Service $service)
+    {
+        return view('admin.services._form', [
+            'service' => $service,
+            'categories' => ServiceCategory::orderBy('name')->get(),
+            'thumbnailUrl' => $service->getThumbnailUrl(),
+            'action' => route('admin.services.update', $service),
+            'method' => 'PUT',
+            'tableId' => 'services-table',
+            'formTitle' => 'Edit Service',
+        ]);
+    }
 
     public function update(UpdateServiceRequest $request, Service $service)
     {
@@ -78,6 +95,10 @@ class ServiceController extends Controller
             $service->clearMediaCollection('service_image');
             $service->addMediaFromRequest('image')
                 ->toMediaCollection('service_image');
+        }
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Service updated successfully.']);
         }
 
         return redirect()->route('admin.services.index')

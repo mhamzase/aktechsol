@@ -40,12 +40,22 @@ class ServiceCategoryController extends Controller
 
     public function create()
     {
-        return view('admin.service-categories.create');
+        return view('admin.service-categories._form', [
+            'serviceCategory' => new ServiceCategory(),
+            'action' => route('admin.service-categories.store'),
+            'method' => 'POST',
+            'tableId' => 'service-categories-table',
+            'formTitle' => 'Add Category',
+        ]);
     }
 
     public function store(StoreServiceCategoryRequest $request)
     {
         ServiceCategory::create($request->validated());
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Service category created successfully.']);
+        }
 
         return redirect()->route('admin.service-categories.index')
             ->with('success', 'Service category created successfully.');
@@ -53,12 +63,22 @@ class ServiceCategoryController extends Controller
 
     public function edit(ServiceCategory $serviceCategory)
     {
-        return view('admin.service-categories.edit', compact('serviceCategory'));
+        return view('admin.service-categories._form', [
+            'serviceCategory' => $serviceCategory,
+            'action' => route('admin.service-categories.update', $serviceCategory),
+            'method' => 'PUT',
+            'tableId' => 'service-categories-table',
+            'formTitle' => 'Edit Category',
+        ]);
     }
 
     public function update(UpdateServiceCategoryRequest $request, ServiceCategory $serviceCategory)
     {
         $serviceCategory->fill($request->validated())->save();
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Service category updated successfully.']);
+        }
 
         return redirect()->route('admin.service-categories.index')
             ->with('success', 'Service category updated successfully.');

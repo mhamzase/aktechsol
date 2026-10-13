@@ -13,7 +13,7 @@
         <td data-label="Rating" class="text-amber-400 text-sm whitespace-nowrap">{{ str_repeat('★', $testimonial->rating) }}{{ str_repeat('☆', 5 - $testimonial->rating) }}</td>
         <td data-label="Status"><span class="badge {{ $testimonial->status ? 'badge-green' : 'badge-red' }}">{{ $testimonial->status ? 'Active' : 'Inactive' }}</span></td>
         <td data-label="Actions" class="no-label whitespace-nowrap">
-            <a href="{{ route('admin.testimonials.edit', $testimonial) }}" class="btn btn-secondary !py-1.5 !px-3 !text-xs">Edit</a>
+            <button type="button" onclick="openDrawer('{{ route('admin.testimonials.edit', $testimonial) }}', 'Edit Testimonial')" class="btn btn-secondary !py-1.5 !px-3 !text-xs">Edit</button>
             <button class="btn btn-danger !py-1.5 !px-3 !text-xs" onclick="confirmDelete('{{ route('admin.testimonials.destroy', $testimonial) }}', 'testimonials-table', 'Delete this testimonial?')">Delete</button>
         </td>
     </tr>

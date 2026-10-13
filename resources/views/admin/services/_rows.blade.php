@@ -15,7 +15,7 @@
             <span class="badge {{ $service->status ? 'badge-green' : 'badge-red' }}">{{ $service->status ? 'Active' : 'Inactive' }}</span>
         </td>
         <td data-label="Actions" class="no-label whitespace-nowrap">
-            <a href="{{ route('admin.services.edit', $service) }}" class="btn btn-secondary !py-1.5 !px-3 !text-xs">Edit</a>
+            <button type="button" onclick="openDrawer('{{ route('admin.services.edit', $service) }}', 'Edit Service')" class="btn btn-secondary !py-1.5 !px-3 !text-xs">Edit</button>
             <button class="btn btn-danger !py-1.5 !px-3 !text-xs"
                     onclick="confirmDelete('{{ route('admin.services.destroy', $service) }}', 'services-table', 'Delete this service?')">Delete</button>
         </td>

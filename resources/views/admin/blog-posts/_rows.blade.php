@@ -13,7 +13,7 @@
         <td data-label="Published" class="text-slate-500 whitespace-nowrap">{{ $post->published_at?->format('M d, Y') ?? '—' }}</td>
         <td data-label="Status"><span class="badge {{ $post->status ? 'badge-green' : 'badge-red' }}">{{ $post->status ? 'Active' : 'Inactive' }}</span></td>
         <td data-label="Actions" class="no-label whitespace-nowrap">
-            <a href="{{ route('admin.blog-posts.edit', $post) }}" class="btn btn-secondary !py-1.5 !px-3 !text-xs">Edit</a>
+            <button type="button" onclick="openDrawer('{{ route('admin.blog-posts.edit', $post) }}', 'Edit Post')" class="btn btn-secondary !py-1.5 !px-3 !text-xs">Edit</button>
             <button class="btn btn-danger !py-1.5 !px-3 !text-xs" onclick="confirmDelete('{{ route('admin.blog-posts.destroy', $post) }}', 'blog-posts-table', 'Delete this post?')">Delete</button>
         </td>
     </tr>

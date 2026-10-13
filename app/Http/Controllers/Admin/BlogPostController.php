@@ -45,8 +45,15 @@ class BlogPostController extends Controller
 
     public function create()
     {
-        $categories = BlogCategory::orderBy('name')->get();
-        return view('admin.blog-posts.create', compact('categories'));
+        return view('admin.blog-posts._form', [
+            'blogPost' => new BlogPost(),
+            'categories' => BlogCategory::orderBy('name')->get(),
+            'featuredUrl' => null,
+            'action' => route('admin.blog-posts.store'),
+            'method' => 'POST',
+            'tableId' => 'blog-posts-table',
+            'formTitle' => 'Add Post',
+        ]);
     }
 
     public function store(StoreBlogPostRequest $request)
@@ -58,15 +65,25 @@ class BlogPostController extends Controller
                 ->toMediaCollection('featured_image');
         }
 
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Blog post created successfully.']);
+        }
+
         return redirect()->route('admin.blog-posts.index')
             ->with('success', 'Blog post created successfully.');
     }
 
     public function edit(BlogPost $blogPost)
     {
-        $categories = BlogCategory::orderBy('name')->get();
-        $featuredUrl = $blogPost->getFeaturedImageUrl();
-        return view('admin.blog-posts.edit', compact('blogPost', 'categories', 'featuredUrl'));
+        return view('admin.blog-posts._form', [
+            'blogPost' => $blogPost,
+            'categories' => BlogCategory::orderBy('name')->get(),
+            'featuredUrl' => $blogPost->getFeaturedImageUrl(),
+            'action' => route('admin.blog-posts.update', $blogPost),
+            'method' => 'PUT',
+            'tableId' => 'blog-posts-table',
+            'formTitle' => 'Edit Post',
+        ]);
     }
 
     public function update(UpdateBlogPostRequest $request, BlogPost $blogPost)
@@ -77,6 +94,10 @@ class BlogPostController extends Controller
             $blogPost->clearMediaCollection('featured_image');
             $blogPost->addMediaFromRequest('featured_image')
                 ->toMediaCollection('featured_image');
+        }
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Blog post updated successfully.']);
         }
 
         return redirect()->route('admin.blog-posts.index')
