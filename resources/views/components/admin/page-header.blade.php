@@ -14,7 +14,7 @@
 @endsection
 
 <div class="page-hero mb-6">
-    <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+    <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
         <div class="flex items-start gap-4 min-w-0">
             @if ($icon)
                 <div class="hero-icon shrink-0">
@@ -30,7 +30,7 @@
                 @endif
             </div>
         </div>
-        <div class="flex flex-wrap items-center gap-2.5 xl:justify-end">
+        <div class="flex flex-wrap items-center gap-2.5">
             @isset($meta)
                 {{ $meta }}
             @endisset

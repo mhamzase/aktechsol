@@ -7,7 +7,7 @@
         <x-slot name="actions">
             <form method="POST" action="{{ route('admin.notifications.read-all') }}">
                 @csrf
-                <button class="btn btn-secondary">Mark all as read</button>
+                <button class="btn btn-primary">Mark all as read</button>
             </form>
         </x-slot>
     </x-admin.page-header>
