@@ -15,12 +15,11 @@ class ChangePasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'current_password' => ['required', 'string', function ($attribute, $value, $fail) {
-            //     if (!Hash::check($value, auth()->user()->password)) {
-            //         $fail('The current password is incorrect.');
-            //     }
-            // }],
-            'current_password' => ['nullable', 'string'],
+            'current_password' => ['required', 'string', function ($attribute, $value, $fail) {
+                if (!Hash::check($value, auth()->user()->password)) {
+                    $fail('The current password is incorrect.');
+                }
+            }],
             'new_password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
     }
