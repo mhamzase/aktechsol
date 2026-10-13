@@ -62,7 +62,7 @@
 
     <script src="{{ asset('assets/vendor/notyf/notyf.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/quill/quill.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/chartjs/chart.umd.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('assets/js/admin.js') }}"></script>
     @stack('scripts')
 </body>

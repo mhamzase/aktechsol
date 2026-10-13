@@ -6,7 +6,6 @@
 @props(['title', 'subtitle' => null])
 
 @section('breadcrumbs')
-    <span class="crumb shrink-0">/</span>
     <span class="crumb-current truncate">{{ $title }}</span>
 @endsection
 
