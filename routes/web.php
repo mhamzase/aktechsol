@@ -105,6 +105,11 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
+    // UI component kit demo (dev/QA only — showcases every x-ui.* component)
+    Route::get('/ui-demo', function () {
+        return view('admin.ui-demo');
+    })->name('ui-demo');
+
     Route::get('/change-password', [ChangePasswordController::class, 'show'])->name('change-password');
     Route::put('/change-password', [ChangePasswordController::class, 'update'])->name('change-password.update');
 

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/notyf/notyf.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/quill/quill.snow.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/ui.css') }}">
     @stack('styles')
 </head>
 <body class="admin-body bg-[#f4f7fe] text-slate-800 antialiased">
@@ -64,6 +65,7 @@
     <script src="{{ asset('assets/vendor/quill/quill.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('assets/js/admin.js') }}"></script>
+    <script src="{{ asset('assets/js/ui-components.js') }}"></script>
     @stack('scripts')
 </body>
 </html>
