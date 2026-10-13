@@ -15,6 +15,7 @@ use App\Models\QuoteRequest;
 use App\Models\ServicePackage;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 /**
  * PlatformSeeder — demo data for the agency automation flow.
@@ -83,14 +84,16 @@ class PlatformSeeder extends Seeder
             'budget_range' => 'PKR 30k – 50k', 'status' => 'new',
         ]);
 
-        // Proposal from the quote
+        // Proposal from the quote.
+        // NOTE: tokens are set explicitly because DatabaseSeeder uses
+        // WithoutModelEvents (model `creating` hooks don't fire while seeding).
         $proposal = Proposal::firstOrCreate(['client_email' => 'client@test.com'], [
             'quote_request_id' => $quote->id, 'title' => 'Ecommerce Website — Demo Co',
             'client_name' => 'Demo Client', 'scope' => '20-product store, responsive design, payment integration, basic SEO.',
             'timeline' => '21 days', 'amount' => 45000,
             'milestones' => [['title' => 'Design', 'amount' => 15000], ['title' => 'Development', 'amount' => 30000]],
             'valid_until' => now()->addDays(14), 'status' => 'accepted', 'sent_at' => now()->subDays(6),
-            'responded_at' => now()->subDays(5),
+            'responded_at' => now()->subDays(5), 'token' => Str::random(48),
         ]);
 
         // Client project from the accepted proposal
@@ -100,6 +103,7 @@ class PlatformSeeder extends Seeder
             'client_email' => 'client@test.com', 'assigned_to' => $admin?->id,
             'status' => 'in_progress', 'progress' => 40,
             'started_at' => now()->subDays(4), 'deadline' => now()->addDays(17),
+            'token' => Str::random(48),
         ]);
 
         ProjectUpdate::firstOrCreate(
