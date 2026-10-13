@@ -12,10 +12,13 @@
         <button class="lg:hidden text-[#1d4ed8] hover:text-[#12307e]" onclick="toggleSidebar()" aria-label="Open menu">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
-        <nav class="hidden sm:flex items-center gap-1.5 min-w-0" aria-label="Breadcrumb">
-            <a href="{{ route('admin.dashboard') }}" class="crumb hover:text-[#1d4ed8] shrink-0">Dashboard</a>
+        <nav class="hidden sm:flex items-center gap-2 min-w-0 bg-white border border-slate-200 rounded-lg px-3 py-1.5 shadow-sm text-sm" aria-label="Breadcrumb">
+            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-1.5 text-slate-500 hover:text-[#1d4ed8] shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                Dashboard
+            </a>
             @hasSection('breadcrumbs')
-                <span class="text-slate-300 shrink-0">/</span>
+                <svg class="w-3.5 h-3.5 text-slate-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 @yield('breadcrumbs')
             @endif
         </nav>

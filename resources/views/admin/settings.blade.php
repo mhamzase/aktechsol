@@ -8,16 +8,32 @@
 @section('title', 'Settings')
 
 @section('content')
-    <x-admin.page-header title="Settings" subtitle="Site-wide configuration" />
+    <x-admin.page-header title="Settings"
+                        subtitle="Configure your site preferences, notifications, and integrations."
+                        icon="M13 10V3L4 14h7v7l9-11h-7z" />
 
-    {{-- Tab bar --}}
-    <div class="flex gap-2 overflow-x-auto pb-2 mb-5" id="settings-tabs" role="tablist">
-        @foreach ($tabs as $key => $label)
-            <button type="button" role="tab" data-tab="{{ $key }}"
-                    class="tab-btn shrink-0 px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 bg-white border border-slate-200 transition-colors">
-                {{ $label }}
-            </button>
-        @endforeach
+    {{-- Tab bar (tailor-app style) --}}
+    @php
+        $tabIcons = [
+            'general'  => 'M21 12a9 9 0 11-18 0 9 9 0 0118 0zM12 3v2m0 14v2m9-9h-2M5 12H3',
+            'contact'  => 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
+            'email'    => 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+            'payments' => 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
+            'popup'    => 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.999 3.999 0 01-1.564-.317z',
+            'homepage' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
+            'seo'      => 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
+            'chatbot'  => 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13a9 9 0 1118 0 9 9 0 01-18 0z',
+        ];
+    @endphp
+    <div class="admin-card px-3 mb-5">
+        <div class="flex gap-1 overflow-x-auto border-b border-slate-100" id="settings-tabs" role="tablist">
+            @foreach ($tabs as $key => $label)
+                <button type="button" role="tab" data-tab="{{ $key }}" class="tab-btn shrink-0">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $tabIcons[$key] ?? $tabIcons['general'] }}"/></svg>
+                    {{ $label }}
+                </button>
+            @endforeach
+        </div>
     </div>
 
     @php $s = $settings; @endphp
@@ -50,7 +66,7 @@
                     <input type="file" name="favicon" accept="image/*" class="form-control">
                 </div>
             </div>
-            <div class="mt-5"><button class="btn btn-primary">Save General</button></div>
+            <div class="mt-5 flex justify-end"><button class="btn btn-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-7m-5-5h5m0 0v5m0-5L8 16"/></svg> Save General</button></div>
         </form>
     </div>
 
@@ -74,7 +90,7 @@
                     <input name="notification_email" type="email" class="form-control" value="{{ $s->notification_email }}">
                 </div>
             </div>
-            <div class="mt-5"><button class="btn btn-primary">Save Contact</button></div>
+            <div class="mt-5 flex justify-end"><button class="btn btn-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-7m-5-5h5m0 0v5m0-5L8 16"/></svg> Save Contact</button></div>
         </form>
     </div>
 
@@ -100,7 +116,7 @@
                 <div class="md:col-span-2"><label class="form-label">From Address</label><input name="mail_from_address" type="email" class="form-control" value="{{ $s->mail_from_address }}"></div>
             </div>
             <div class="mt-5 flex flex-wrap items-center gap-3">
-                <button class="btn btn-primary">Save Email Settings</button>
+                <button class="btn btn-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-7m-5-5h5m0 0v5m0-5L8 16"/></svg> Save Email Settings</button>
                 <div class="flex items-center gap-2">
                     <input id="test-email-to" type="email" placeholder="Test recipient email" class="form-control !w-64">
                     <button type="button" class="btn btn-secondary" onclick="sendTestEmail()">Send Test Email</button>
@@ -130,7 +146,7 @@
                 @endforelse
             </div>
             <button type="button" class="btn btn-secondary mt-3" onclick="addPaymentRow()">+ Add Method</button>
-            <div class="mt-5"><button class="btn btn-primary">Save Payments</button></div>
+            <div class="mt-5 flex justify-end"><button class="btn btn-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-7m-5-5h5m0 0v5m0-5L8 16"/></svg> Save Payments</button></div>
         </form>
     </div>
 
@@ -150,7 +166,7 @@
                 <div class="md:col-span-2"><label class="form-label">Message</label><textarea name="popup_message" rows="3" class="form-control">{{ $s->popup_message }}</textarea></div>
                 <div class="md:col-span-2"><label class="form-label">Button URL</label><input name="popup_btn_url" class="form-control" value="{{ $s->popup_btn_url }}" placeholder="/contact"></div>
             </div>
-            <div class="mt-5"><button class="btn btn-primary">Save Popup</button></div>
+            <div class="mt-5 flex justify-end"><button class="btn btn-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-7m-5-5h5m0 0v5m0-5L8 16"/></svg> Save Popup</button></div>
         </form>
     </div>
 
@@ -167,7 +183,7 @@
                 <div class="md:col-span-2"><label class="form-label">About — Hero Subtitle</label><textarea name="about_hero_subtitle" rows="2" class="form-control">{{ $s->about_hero_subtitle }}</textarea></div>
                 <div class="md:col-span-2"><label class="form-label">About — Intro Text</label><textarea name="about_intro_text" rows="3" class="form-control">{{ $s->about_intro_text }}</textarea></div>
             </div>
-            <div class="mt-5"><button class="btn btn-primary">Save Homepage</button></div>
+            <div class="mt-5 flex justify-end"><button class="btn btn-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-7m-5-5h5m0 0v5m0-5L8 16"/></svg> Save Homepage</button></div>
         </form>
     </div>
 
@@ -182,7 +198,7 @@
                 <div><label class="form-label">Canonical URL</label><input name="seo_canonical_url" class="form-control" value="{{ $s->seo_canonical_url }}"></div>
                 <div><label class="form-label">Robots</label><input name="seo_robots" class="form-control" value="{{ $s->seo_robots }}" placeholder="index, follow"></div>
             </div>
-            <div class="mt-5"><button class="btn btn-primary">Save SEO</button></div>
+            <div class="mt-5 flex justify-end"><button class="btn btn-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-7m-5-5h5m0 0v5m0-5L8 16"/></svg> Save SEO</button></div>
         </form>
     </div>
 
@@ -200,7 +216,7 @@
                 <div><label class="form-label">Team Name <span class="text-slate-400 font-normal">(widget header)</span></label><input name="chatbot_team_name" class="form-control" value="{{ $s->chatbot_team_name }}" placeholder="AK Tech Sol Team"></div>
                 <div><label class="form-label">Greeting Message</label><input name="chatbot_greeting" class="form-control" value="{{ $s->chatbot_greeting }}" placeholder="Hi! How can we help you today?"></div>
             </div>
-            <div class="mt-5"><button class="btn btn-primary">Save Chatbot</button></div>
+            <div class="mt-5 flex justify-end"><button class="btn btn-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-7m-5-5h5m0 0v5m0-5L8 16"/></svg> Save Chatbot</button></div>
         </form>
     </div>
 @endsection

@@ -13,7 +13,7 @@
 
         @foreach ($items->getUrlRange(max(1, $items->currentPage() - 2), min($items->lastPage(), $items->currentPage() + 2)) as $page => $url)
             @if ($page == $items->currentPage())
-                <span class="px-3 py-1.5 rounded-lg bg-[#1d4ed8] text-white font-bold">{{ $page }}</span>
+                <span class="px-3 py-1.5 rounded-lg bg-[#0d1a38] text-white font-bold">{{ $page }}</span>
             @else
                 <a href="#" data-page="{{ $page }}" class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-blue-50 hover:text-[#1d4ed8] font-medium">{{ $page }}</a>
             @endif
