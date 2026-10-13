@@ -1,0 +1,6 @@
+---
+deployment:
+  tasks:
+    - cd /home/akdesig2/public_html/aktechsol.pk && artisan migrate --force
+    - cd /home/akdesig2/public_html/aktechsol.pk && artisan optimize:clear
+    - cd /home/akdesig2/public_html/aktechsol.pk && chmod -R 775 storage bootstrap/cache
