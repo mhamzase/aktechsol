@@ -61,11 +61,46 @@ body.admin-body { font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; }
 
 /* ---------- Cards ---------- */
 .admin-card {
-    background: #fff; border: 1px solid #e5edfb; border-radius: 0.9rem;
+    background: #fff; border: 1px solid #e5edfb; border-radius: 1rem;
     box-shadow: 0 1px 3px rgba(18, 48, 126, 0.06);
 }
 .stat-card { transition: transform 0.15s, box-shadow 0.15s; }
 .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(18, 48, 126, 0.1); }
+
+/* Soft pastel icon tiles (tailor-app style stat cards) */
+.stat-tile {
+    width: 3rem; height: 3rem; border-radius: 0.9rem;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+/* ---------- Page hero header (dark navy, tailor-app style) ---------- */
+.page-hero {
+    background: linear-gradient(120deg, #0b1c40 0%, #13295c 60%, #1a3670 100%);
+    border-radius: 1rem; padding: 1.25rem 1.5rem;
+    box-shadow: 0 10px 24px rgba(11, 28, 64, 0.22);
+}
+.hero-icon {
+    width: 2.75rem; height: 2.75rem; border-radius: 0.8rem;
+    background: rgba(250, 204, 21, 0.15); color: #facc15;
+    display: flex; align-items: center; justify-content: center;
+}
+/* Small stat chips inside the hero (right side) */
+.hero-chip {
+    background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.75rem; padding: 0.55rem 0.9rem; text-align: center; min-width: 5.5rem;
+}
+.hero-chip .hc-value { color: #fff; font-weight: 800; font-size: 1.05rem; line-height: 1.2; }
+.hero-chip .hc-label { color: rgba(219, 234, 254, 0.7); font-size: 0.68rem; margin-top: 0.1rem; }
+/* Light button for use on the dark hero */
+.btn-light { background: #fff; color: #0f2a5c; border: 1px solid #fff; }
+.btn-light:hover { background: #eff4ff; }
+/* Regular buttons placed inside the hero automatically turn light */
+.page-hero .btn:not(.btn-danger):not(.btn-light) {
+    background: #fff; color: #0f2a5c; border-color: #fff;
+}
+.page-hero .btn:not(.btn-danger):not(.btn-light):hover { background: #eff4ff; }
+/* Chart card corner icon */
+.card-corner-icon { color: #c3cede; }
 
 /* ---------- Data table (shared component) ---------- */
 .data-table-wrap { overflow-x: auto; border-radius: 0.9rem; }
