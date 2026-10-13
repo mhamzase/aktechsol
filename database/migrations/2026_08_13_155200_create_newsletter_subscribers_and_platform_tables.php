@@ -205,9 +205,11 @@ return new class extends Migration {
         });
 
         /* ------------------------------------------------------------------
-         | 11. Jobs — job / internship listings.
+         | 11. Job listings — job / internship listings.
+         |     (Named `job_listings` because Laravel's queue already
+         |      owns the `jobs` table name.)
          | ------------------------------------------------------------------ */
-        Schema::create('jobs', function (Blueprint $table) {
+        Schema::create('job_listings', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
@@ -228,7 +230,7 @@ return new class extends Migration {
          | ------------------------------------------------------------------ */
         Schema::create('job_applications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('job_id')->constrained('job_listings')->cascadeOnDelete();
             $table->string('name');
             $table->string('email');
             $table->string('phone')->nullable();
@@ -290,7 +292,7 @@ return new class extends Migration {
         Schema::dropIfExists('activity_logs');
         Schema::dropIfExists('demo_bookings');
         Schema::dropIfExists('job_applications');
-        Schema::dropIfExists('jobs');
+        Schema::dropIfExists('job_listings');
         Schema::dropIfExists('service_packages');
         Schema::dropIfExists('chatbot_queries');
         Schema::dropIfExists('reviews');

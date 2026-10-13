@@ -13,6 +13,9 @@ class Job extends Model
 {
     use SoftDeletes;
 
+    /** Table name avoids Laravel's queue `jobs` table. */
+    protected $table = 'job_listings';
+
     protected $fillable = [
         'title', 'slug', 'type', 'location_type',
         'description', 'requirements', 'is_open', 'sort_order',
