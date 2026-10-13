@@ -2,12 +2,9 @@
 
 @section('title', 'Add Service Category')
 
-@section('breadcrumbs')
-    <x-admin.breadcrumbs :items="[['label' => 'Dashboard', 'url' => route('admin.dashboard')], ['label' => 'Service Categories', 'url' => route('admin.service-categories.index')], ['label' => 'Add']]" />
-@endsection
-
 @section('content')
-    <x-admin.page-banner title="Add Service Category" subtitle="Create a new category" />
+    <x-admin.page-header title="Add Service Category" subtitle="Create a new category"
+                        icon="M7 7h.01M7 3h5.586a1 1 0 01.707.293l7.414 7.414a1 1 0 010 1.414l-5.414 5.414a1 1 0 01-1.414 0L5.879 10.12a1 1 0 01-.293-.707V7a2 2 0 012-2z" />
 
     <div class="max-w-4xl mx-auto">
         @if ($errors->any())

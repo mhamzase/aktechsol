@@ -2,16 +2,9 @@
 
 @section('title', 'Contact Messages')
 
-@section('breadcrumbs')
-    <x-admin.breadcrumbs :items="[['label' => 'Dashboard', 'url' => route('admin.dashboard')], ['label' => 'Contact Messages']]" />
-@endsection
-
 @section('content')
-    <x-admin.page-banner
-        title="Contact Messages"
-        subtitle="Manage messages from the contact form"
-        stats="{{ $messages->total() }} total messages"
-    />
+    <x-admin.page-header title="Contact Messages" subtitle="Manage messages from the contact form"
+                        icon="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="p-4 border-b border-gray-100 flex flex-col sm:flex-row gap-3">

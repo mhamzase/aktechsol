@@ -2,15 +2,9 @@
 
 @section('title', 'Add Service')
 
-@section('breadcrumbs')
-    <x-admin.breadcrumbs :items="[['label' => 'Dashboard', 'url' => route('admin.dashboard')], ['label' => 'Services', 'url' => route('admin.services.index')], ['label' => 'Add']]" />
-@endsection
-
 @section('content')
-<x-admin.page-banner
-    title="Add Service"
-    subtitle="Create a new service"
-/>
+<x-admin.page-header title="Add Service" subtitle="Create a new service"
+                        icon="M13 10V3L4 14h7v7l9-11h-7z" />
     <div class="w-full mx-auto">
         @if ($errors->any())
             <x-admin.alert type="error" :messages="$errors->all()" />

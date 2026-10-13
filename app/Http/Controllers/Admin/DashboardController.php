@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\BlogPost;
 use App\Models\ChatbotQuery;
 use App\Models\ClientProject;
 use App\Models\DemoBooking;
@@ -11,7 +10,6 @@ use App\Models\Invoice;
 use App\Models\InvoicePayment;
 use App\Models\JobApplication;
 use App\Models\QuoteRequest;
-use App\Models\Service;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -28,37 +26,41 @@ class DashboardController extends Controller
             $stats = [
                 'quotes_new'      => QuoteRequest::where('status', 'new')->count(),
                 'projects_active' => ClientProject::whereIn('status', ['received', 'in_progress', 'review', 'revision'])->count(),
-                'revenue_month'   => Invoice::where('status', 'paid')
-                    ->whereMonth('updated_at', now()->month)
-                    ->whereYear('updated_at', now()->year)
-                    ->sum('paid_amount'),
+                'revenue_month'   => InvoicePayment::where('status', 'verified')
+                    ->whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year)
+                    ->sum('amount'),
                 'chats_unanswered'=> ChatbotQuery::where('is_answered', false)->count(),
-                'services'        => Service::count(),
-                'blog_posts'      => BlogPost::count(),
             ];
 
-            // Quotes per month (last 6 months) — funnel chart.
-            $quotesByMonth = QuoteRequest::select(
+            // Last 6 months skeleton so empty months still render as 0.
+            $months = collect();
+            for ($i = 5; $i >= 0; $i--) {
+                $months->push(now()->subMonths($i)->format('M'));
+            }
+
+            // Quotes per month (last 6 months).
+            $quotesRaw = QuoteRequest::select(
                     DB::raw("DATE_FORMAT(created_at, '%b') as month"),
                     DB::raw('COUNT(*) as total')
                 )
                 ->where('created_at', '>=', now()->subMonths(6))
                 ->groupBy('month')
-                ->orderByRaw('MIN(created_at)')
                 ->pluck('total', 'month');
+            $quotesByMonth = $months->mapWithKeys(fn ($m) => [$m => (int) ($quotesRaw[$m] ?? 0)]);
 
             // Revenue per month (last 6 months) — from verified payments.
-            $revenueByMonth = InvoicePayment::select(
+            $revenueRaw = InvoicePayment::select(
                     DB::raw("DATE_FORMAT(created_at, '%b') as month"),
                     DB::raw('SUM(amount) as total')
                 )
                 ->where('status', 'verified')
                 ->where('created_at', '>=', now()->subMonths(6))
                 ->groupBy('month')
-                ->orderByRaw('MIN(created_at)')
                 ->pluck('total', 'month');
+            $revenueByMonth = $months->mapWithKeys(fn ($m) => [$m => (float) ($revenueRaw[$m] ?? 0)]);
 
-            // Project pipeline counts — doughnut chart.
+            // Project pipeline counts — pie chart.
             $projectPipeline = ClientProject::select('status', DB::raw('COUNT(*) as total'))
                 ->groupBy('status')
                 ->pluck('total', 'status');
@@ -73,7 +75,7 @@ class DashboardController extends Controller
             ];
         } catch (\Throwable $e) {
             $stats = array_fill_keys(
-                ['quotes_new', 'projects_active', 'revenue_month', 'chats_unanswered', 'services', 'blog_posts'], 0
+                ['quotes_new', 'projects_active', 'revenue_month', 'chats_unanswered'], 0
             );
             $quotesByMonth = collect();
             $revenueByMonth = collect();

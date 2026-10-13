@@ -2,13 +2,9 @@
 
 @section('title', 'Services')
 
-@section('breadcrumbs')
-    <x-admin.breadcrumbs :items="[['label' => 'Dashboard', 'url' => route('admin.dashboard')], ['label' => 'Services']]" />
-@endsection
-
 @section('content')
-    <x-admin.page-banner title="Services" subtitle="Manage your services and their details"
-        stats="{{ $services->total() }} total services" />
+    <x-admin.page-header title="Services" subtitle="Manage your services and their details"
+                        icon="M13 10V3L4 14h7v7l9-11h-7z" />
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h2 class="text-2xl font-bold text-gray-800"></h2>
         <a href="{{ route('admin.services.create') }}"

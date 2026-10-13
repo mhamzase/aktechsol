@@ -2,12 +2,9 @@
 
 @section('title', 'Testimonials')
 
-@section('breadcrumbs')
-    <x-admin.breadcrumbs :items="[['label' => 'Dashboard', 'url' => route('admin.dashboard')], ['label' => 'Testimonials']]" />
-@endsection
-
 @section('content')
-    <x-admin.page-banner title="Testimonials" subtitle="Manage client feedback" stats="{{ $testimonials->total() }} total testimonials" />
+    <x-admin.page-header title="Testimonials" subtitle="Manage client feedback"
+                        icon="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
 
     <div class="mb-6 flex justify-end">
         <a href="{{ route('admin.testimonials.create') }}"

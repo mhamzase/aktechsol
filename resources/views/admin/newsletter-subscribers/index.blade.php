@@ -2,16 +2,9 @@
 
 @section('title', 'Newsletter Subscribers')
 
-@section('breadcrumbs')
-    <x-admin.breadcrumbs :items="[['label' => 'Dashboard', 'url' => route('admin.dashboard')], ['label' => 'Newsletter Subscribers']]" />
-@endsection
-
 @section('content')
-    <x-admin.page-banner
-        title="Newsletter Subscribers"
-        subtitle="Manage newsletter subscriptions"
-        stats="{{ $subscribers->total() }} total subscribers"
-    />
+    <x-admin.page-header title="Newsletter Subscribers" subtitle="Manage newsletter subscriptions"
+                        icon="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="p-4 border-b border-gray-100 flex flex-col sm:flex-row gap-3">

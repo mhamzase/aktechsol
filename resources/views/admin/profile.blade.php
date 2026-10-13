@@ -2,15 +2,9 @@
 
 @section('title', 'My Profile')
 
-@section('breadcrumbs')
-    <x-admin.breadcrumbs :items="[['label' => 'Dashboard', 'url' => route('admin.dashboard')], ['label' => 'Profile']]" />
-@endsection
-
 @section('content')
-    <x-admin.page-banner
-        title="My Profile"
-        subtitle="Update your account information"
-    />
+    <x-admin.page-header title="My Profile" subtitle="Update your account information"
+                        icon="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
 
     <div class="max-w-2xl mx-auto">
         @if ($errors->any())

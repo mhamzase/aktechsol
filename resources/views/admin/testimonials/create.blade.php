@@ -2,12 +2,9 @@
 
 @section('title', 'Add Testimonial')
 
-@section('breadcrumbs')
-    <x-admin.breadcrumbs :items="[['label' => 'Dashboard', 'url' => route('admin.dashboard')], ['label' => 'Testimonials', 'url' => route('admin.testimonials.index')], ['label' => 'Add']]" />
-@endsection
-
 @section('content')
-    <x-admin.page-banner title="Add Testimonial" subtitle="Create a new client testimonial" />
+    <x-admin.page-header title="Add Testimonial" subtitle="Create a new client testimonial"
+                        icon="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
 
     <div class="max-w-4xl mx-auto">
         @if ($errors->any())

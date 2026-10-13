@@ -87,6 +87,7 @@
         </div>
         @endcanany
 
+        @canany(['manage chatbot', 'manage demo bookings', 'manage contact messages', 'manage job applications', 'manage newsletter'])
         <div>
             <p class="nav-group-label px-3 mb-2">Engagement</p>
             <div class="space-y-1">
@@ -122,7 +123,9 @@
                 @endcan
             </div>
         </div>
+        @endcanany
 
+        @canany(['manage services', 'manage packages', 'manage portfolio', 'manage testimonials', 'manage blog', 'manage faqs', 'manage jobs', 'manage pages'])
         <div>
             <p class="nav-group-label px-3 mb-2">Content</p>
             <div class="space-y-1">
@@ -180,7 +183,9 @@
                 @endcan
             </div>
         </div>
+        @endcanany
 
+        @canany(['manage media', 'manage users', 'manage settings', 'view activity log'])
         <div>
             <p class="nav-group-label px-3 mb-2">System</p>
             <div class="space-y-1">
@@ -210,6 +215,7 @@
                 @endcan
             </div>
         </div>
+        @endcanany
     </nav>
 
     {{-- Bottom: logged-in user mini card --}}

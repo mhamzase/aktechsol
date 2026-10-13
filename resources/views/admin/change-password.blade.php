@@ -2,15 +2,9 @@
 
 @section('title', 'Change Password')
 
-@section('breadcrumbs')
-    <x-admin.breadcrumbs :items="[['label' => 'Dashboard', 'url' => route('admin.dashboard')], ['label' => 'Change Password']]" />
-@endsection
-
 @section('content')
-    <x-admin.page-banner
-        title="Change Password"
-        subtitle="Keep your account secure"
-    />
+    <x-admin.page-header title="Change Password" subtitle="Keep your account secure"
+                        icon="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
 
     <div class="max-w-2xl mx-auto">
         @if ($errors->any())

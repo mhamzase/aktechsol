@@ -2,16 +2,9 @@
 
 @section('title', 'Blog Posts')
 
-@section('breadcrumbs')
-    <x-admin.breadcrumbs :items="[['label' => 'Dashboard', 'url' => route('admin.dashboard')], ['label' => 'Blog Posts']]" />
-@endsection
-
 @section('content')
-    <x-admin.page-banner
-        title="Blog Posts"
-        subtitle="Manage your blog content"
-        stats="{{ $posts->total() }} total posts"
-    />
+    <x-admin.page-header title="Blog Posts" subtitle="Manage your blog content"
+                        icon="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
 
     <div class="mb-6 flex justify-end">
         <a href="{{ route('admin.blog-posts.create') }}"
