@@ -69,5 +69,40 @@
                 </button>
             </div>
         </form>
+
+        {{-- Two-factor authentication (Fortify). Off by default — opt-in per user. --}}
+        <div class="admin-card p-6 mt-6">
+            <h3 class="text-lg font-bold text-[#0f2a5c]">Two-Factor Authentication</h3>
+            <p class="text-sm text-slate-500 mt-1 mb-4">
+                Add an extra security layer with an authenticator app (Google Authenticator, Authy…).
+                Disabled by default — enable it only if you want it.
+            </p>
+
+            @if ($user->hasEnabledTwoFactorAuthentication())
+                <p class="mb-3">{!! $user->twoFactorQrCodeSvg() !!}</p>
+                <p class="text-xs text-slate-400 mb-4">Scan this QR code with your authenticator app, then keep your recovery codes safe:</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+                    @foreach ($user->recoveryCodes() as $code)
+                        <code class="text-xs bg-slate-100 rounded px-2 py-1.5 font-mono">{{ $code }}</code>
+                    @endforeach
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <form method="POST" action="{{ url('user/two-factor-recovery-codes') }}">
+                        @csrf
+                        <button class="btn btn-secondary">Regenerate Recovery Codes</button>
+                    </form>
+                    <form method="POST" action="{{ url('user/two-factor-authentication') }}"
+                          onsubmit="return confirm('Disable two-factor authentication?')">
+                        @csrf @method('DELETE')
+                        <button class="btn btn-danger">Disable 2FA</button>
+                    </form>
+                </div>
+            @else
+                <form method="POST" action="{{ url('user/two-factor-authentication') }}">
+                    @csrf
+                    <button class="btn btn-primary">Enable Two-Factor Authentication</button>
+                </form>
+            @endif
+        </div>
     </div>
 @endsection

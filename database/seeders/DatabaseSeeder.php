@@ -40,6 +40,7 @@ class DatabaseSeeder extends Seeder
             FaqSeeder::class,
             ContactMessageSeeder::class,
             NewsletterSubscriberSeeder::class,
+            PlatformSeeder::class, // agency flow demo data (quotes, proposals, projects, invoices, chatbot...)
         ]);
     }
 }

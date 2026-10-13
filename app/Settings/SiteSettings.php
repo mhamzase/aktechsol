@@ -45,6 +45,7 @@ class SiteSettings extends Settings
     // Legal Pages
     public ?string $privacy_policy_content = null;
     public ?string $terms_conditions_content = null;
+    public ?string $policies_content = null;
 
     // SEO
     public ?string $seo_title          = null;
@@ -53,6 +54,44 @@ class SiteSettings extends Settings
     public ?string $seo_canonical_url  = null;
     public ?string $seo_og_image       = null;
     public ?string $seo_robots         = null;
+
+    // WhatsApp float button
+    public ?string $whatsapp_number = null;
+    public bool $whatsapp_enabled   = false;
+
+    // Payment methods (manual invoicing) — [{name, details}]
+    public array $payment_methods = [];
+
+    // Announcement popup
+    public bool $popup_enabled      = false;
+    public ?string $popup_title    = null;
+    public ?string $popup_message  = null;
+    public ?string $popup_btn_text = null;
+    public ?string $popup_btn_url  = null;
+
+    // Demo / intro video
+    public ?string $demo_video_url   = null;
+    public ?string $demo_video_title = null;
+
+    // Brand message shown on homepage / about
+    public ?string $brand_message = null;
+
+    // Chatbot widget
+    public bool $chatbot_enabled   = true;
+    public ?string $chatbot_greeting = null;
+    public ?string $chatbot_team_name = null;
+
+    // Email (SMTP) — configured from admin Settings > Email tab.
+    // Applied at runtime by App\Support\MailConfig.
+    public ?string $mail_host         = null;
+    public ?int $mail_port            = 587;
+    public ?string $mail_username     = null;
+    public ?string $mail_password     = null; // stored encrypted
+    public ?string $mail_encryption   = 'tls';
+    public ?string $mail_from_address = null;
+    public ?string $mail_from_name    = null;
+    // Address that receives website enquiries (quotes, contact, demos...)
+    public ?string $notification_email = null;
 
     public static function group(): string
     {

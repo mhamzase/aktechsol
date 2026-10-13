@@ -1,20 +1,25 @@
 <?php
 
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\BlogCategoryController;
 use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\ChangePasswordController;
+use App\Http\Controllers\Admin\ComingSoonController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\NewsletterSubscriberController;
+use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FaqController as PublicFaqController;
@@ -88,7 +93,14 @@ Route::get('/robots.txt', function () {
 */
 
 Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () {
-    Route::get('/{any?}', [DashboardController::class, 'index'])->where('any', 'dashboard')->name('dashboard');
+    // Dashboard
+    Route::get('/', fn () => redirect()->route('admin.dashboard'));
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Notifications center
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+    Route::post('notifications/{id}/read', [NotificationController::class, 'read'])->name('notifications.read');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -96,9 +108,31 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::get('/change-password', [ChangePasswordController::class, 'show'])->name('change-password');
     Route::put('/change-password', [ChangePasswordController::class, 'update'])->name('change-password.update');
 
-    Route::get('/settings', [SettingsController::class, 'edit'])->name('settings');
-    Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+    // Settings — tabbed one-page (tailor-app style, no refresh)
+    Route::get('/settings/{tab?}', [SettingsController::class, 'edit'])
+        ->middleware('can:manage settings')->name('settings');
+    Route::put('/settings/{tab?}', [SettingsController::class, 'update'])
+        ->middleware('can:manage settings')->name('settings.update');
+    Route::post('/settings/test-email', [SettingsController::class, 'testEmail'])
+        ->middleware('can:manage settings')->name('settings.test-email');
 
+    // Users & roles
+    Route::resource('users', UserController::class)
+        ->except(['show'])->middleware('can:manage users');
+
+    // Legal pages (Privacy / Terms / Policies) — rich text editable
+    Route::get('pages', [PageController::class, 'index'])
+        ->middleware('can:manage pages')->name('pages.index');
+    Route::get('pages/{page}/edit', [PageController::class, 'edit'])
+        ->middleware('can:manage pages')->name('pages.edit');
+    Route::put('pages/{page}', [PageController::class, 'update'])
+        ->middleware('can:manage pages')->name('pages.update');
+
+    // Activity log
+    Route::get('activity-log', [ActivityLogController::class, 'index'])
+        ->middleware('can:view activity log')->name('activity-log.index');
+
+    // Existing content modules
     Route::resource('services', ServiceController::class)->except(['show']);
     Route::resource('service-categories', ServiceCategoryController::class)->except(['show']);
     Route::resource('projects', ProjectController::class)->except(['show']);
@@ -116,4 +150,25 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::delete('newsletter-subscribers/{newsletterSubscriber}', [NewsletterSubscriberController::class, 'destroy'])->name('newsletter-subscribers.destroy');
     Route::get('media', [MediaController::class, 'index'])->name('media.index');
     Route::delete('media/{media}', [MediaController::class, 'destroy'])->name('media.destroy');
+
+    /*
+    |----------------------------------------------------------------------
+    | Phase placeholders — every sidebar link must resolve. Each phase
+    | replaces its placeholder with the real module controller.
+    |----------------------------------------------------------------------
+    */
+    $soon = function (string $uri, string $title, string $phase, string $name, string $can) {
+        Route::get($uri, fn () => app(ComingSoonController::class)->show($title, $phase))
+            ->middleware("can:{$can}")->name($name);
+    };
+    $soon('quotes', 'Quote Requests', 'Phase 2', 'quotes.index', 'manage quotes');
+    $soon('proposals', 'Proposals', 'Phase 2', 'proposals.index', 'manage proposals');
+    $soon('client-projects', 'Client Projects', 'Phase 3', 'client-projects.index', 'manage projects');
+    $soon('invoices', 'Invoices', 'Phase 4', 'invoices.index', 'manage invoices');
+    $soon('reviews', 'Reviews', 'Phase 3', 'reviews.index', 'manage reviews');
+    $soon('chatbot', 'Chatbot', 'Phase 5', 'chatbot.index', 'manage chatbot');
+    $soon('demo-bookings', 'Demo Bookings', 'Phase 6', 'demo-bookings.index', 'manage demo bookings');
+    $soon('job-applications', 'Job Applications', 'Phase 6', 'job-applications.index', 'manage job applications');
+    $soon('packages', 'Packages', 'Phase 6', 'packages.index', 'manage packages');
+    $soon('jobs', 'Jobs', 'Phase 6', 'jobs.index', 'manage jobs');
 });
