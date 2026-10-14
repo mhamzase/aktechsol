@@ -252,21 +252,50 @@
 
     {{-- POPUP --}}
     <div data-tabpanel="popup" class="admin-card p-5 hidden">
-        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'popup') }}">
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'popup') }}" novalidate>
             @csrf @method('PUT')
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="md:col-span-2">
-                    <label class="flex items-center gap-2 text-sm font-medium text-slate-600">
-                        <input type="checkbox" name="popup_enabled" value="1" @checked($s->popup_enabled) class="w-4 h-4 accent-[#1d4ed8]">
-                        Show announcement popup on website
-                    </label>
+            {{-- Visibility --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-violet">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+                    </span>
+                    Visibility
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2">
+                        <div class="toggle-box">
+                            <div class="flex items-center gap-3">
+                                <span class="tb-icon sec-violet">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.999 3.999 0 01-1.564-.317z"/></svg>
+                                </span>
+                                <div>
+                                    <p class="tb-title">Announcement Popup</p>
+                                    <p class="tb-desc">Show popup on website</p>
+                                </div>
+                            </div>
+                            <x-ui.toggle name="popup_enabled" :checked="$s->popup_enabled" />
+                        </div>
+                    </div>
                 </div>
-                <div><label class="form-label">Popup Title</label><input name="popup_title" class="form-control" value="{{ $s->popup_title }}"></div>
-                <div><label class="form-label">Button Text</label><input name="popup_btn_text" class="form-control" value="{{ $s->popup_btn_text }}"></div>
-                <div class="md:col-span-2"><label class="form-label">Message</label><textarea name="popup_message" rows="3" class="form-control">{{ $s->popup_message }}</textarea></div>
-                <div class="md:col-span-2"><label class="form-label">Button URL</label><input name="popup_btn_url" class="form-control" value="{{ $s->popup_btn_url }}" placeholder="/contact"></div>
             </div>
-            <div class="mt-5 flex justify-end"><button class="btn btn-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-7m-5-5h5m0 0v5m0-5L8 16"/></svg> Save Popup</button></div>
+
+            {{-- Content --}}
+            <div class="mb-2">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-blue">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    </span>
+                    Content
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="popup_title" label="Popup Title" :value="$s->popup_title" placeholder="Special Offer!" /></div>
+                    <div class="md:col-span-2"><x-ui.input name="popup_btn_text" label="Button Text" :value="$s->popup_btn_text" placeholder="Get Started" /></div>
+                    <div class="md:col-span-4"><x-ui.textarea name="popup_message" label="Message" rows="3" :value="$s->popup_message" placeholder="Write your announcement message…" /></div>
+                    <div class="md:col-span-2"><x-ui.input name="popup_btn_url" type="url" label="Button URL" :value="$s->popup_btn_url" placeholder="/contact" /></div>
+                </div>
+            </div>
+            <x-admin.drawer-footer save-label="Save Popup" />
         </form>
     </div>
 
