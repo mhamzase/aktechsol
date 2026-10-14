@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\UserPermissionController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FaqController as PublicFaqController;
@@ -135,6 +136,11 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     // Users & roles
     Route::resource('users', UserController::class)
         ->except(['show'])->middleware('can:manage users');
+    // User-wise direct permissions (Team Members). Stored on the user, never on the role.
+    Route::get('users/{user}/permissions', [UserPermissionController::class, 'edit'])
+        ->middleware('can:manage users')->name('users.permissions.edit');
+    Route::put('users/{user}/permissions', [UserPermissionController::class, 'update'])
+        ->middleware('can:manage users')->name('users.permissions.update');
 
     // Legal pages (Privacy / Terms / Policies) — rich text editable
     Route::get('pages', [PageController::class, 'index'])

@@ -274,10 +274,26 @@
         const toggle = e.target.closest('[data-row-actions-toggle]');
         // Close menus that don't contain the clicked toggle.
         document.querySelectorAll('.row-actions-menu:not(.hidden)').forEach((m) => {
-            if (!toggle || !m.closest('[data-row-actions]').contains(toggle)) m.classList.add('hidden');
+            if (!toggle || !m.closest('[data-row-actions]').contains(toggle)) {
+                m.classList.add('hidden');
+                m.style.position = ''; m.style.top = ''; m.style.right = ''; m.style.left = '';
+            }
         });
         if (toggle) {
-            toggle.closest('[data-row-actions]')?.querySelector('.row-actions-menu')?.classList.toggle('hidden');
+            const menu = toggle.closest('[data-row-actions]')?.querySelector('.row-actions-menu');
+            if (menu && menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                // Position fixed: escapes overflow clipping from table wrappers.
+                // Flips upward when there isn't enough space below.
+                const rect = toggle.getBoundingClientRect();
+                const mh = menu.offsetHeight;
+                let top = rect.bottom + 4;
+                if (top + mh > window.innerHeight - 8) top = rect.top - mh - 4;
+                menu.style.position = 'fixed';
+                menu.style.top = Math.max(8, top) + 'px';
+                menu.style.left = 'auto';
+                menu.style.right = Math.max(8, window.innerWidth - rect.right) + 'px';
+            }
             return;
         }
         const editBtn = e.target.closest('[data-row-edit]');
@@ -290,6 +306,14 @@
             confirmDelete(delBtn.dataset.rowDelete, delBtn.dataset.table || '');
         }
     });
+
+    // Close any open row-actions menu on scroll / resize (fixed positioning).
+    const closeRowMenus = () => document.querySelectorAll('.row-actions-menu:not(.hidden)').forEach((m) => {
+        m.classList.add('hidden');
+        m.style.position = ''; m.style.top = ''; m.style.right = ''; m.style.left = '';
+    });
+    window.addEventListener('scroll', closeRowMenus, true);
+    window.addEventListener('resize', closeRowMenus);
 
     // AJAX form submit (delegated — works for drawer-injected forms)
     document.addEventListener('submit', async (e) => {

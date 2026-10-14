@@ -24,6 +24,8 @@
                 <x-admin.row-actions
                     :edit-url="route('admin.users.edit', $user)"
                     edit-title="Edit User"
+                    :permissions-url="$user->hasRole('Team Member') ? route('admin.users.permissions.edit', $user) : null"
+                    permissions-title="User Permissions"
                     :delete-url="$user->is(auth()->user()) ? null : route('admin.users.destroy', $user)"
                     table-id="users-table" />
             @else

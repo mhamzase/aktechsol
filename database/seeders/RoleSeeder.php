@@ -57,11 +57,8 @@ class RoleSeeder extends Seeder
         $admin->syncPermissions(self::PERMISSIONS);
 
         $member = Role::firstOrCreate(['name' => 'Team Member', 'guard_name' => 'web']);
-        $member->syncPermissions([
-            'manage projects',
-            'manage chatbot',
-            'manage demo bookings',
-            'manage contact messages',
-        ]);
+        // Team Member is a status label only — permissions are assigned
+        // USER-WISE (direct permissions), never on this role.
+        $member->syncPermissions([]);
     }
 }
