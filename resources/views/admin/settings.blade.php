@@ -204,26 +204,47 @@
 
     {{-- PAYMENTS --}}
     <div data-tabpanel="payments" class="admin-card p-5 hidden">
-        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'payments') }}">
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'payments') }}" novalidate>
             @csrf @method('PUT')
-            <p class="text-xs text-slate-400 mb-4">Payment methods shown to clients on invoices (manual payments).</p>
-            <div id="payment-methods" class="space-y-3">
-                @forelse (($s->payment_methods ?? []) as $pm)
-                    <div class="grid grid-cols-1 md:grid-cols-[1fr_2fr_auto] gap-3 items-end">
-                        <div><label class="form-label">Name</label><input name="payment_methods[][name]" class="form-control" value="{{ $pm['name'] ?? '' }}" placeholder="JazzCash"></div>
-                        <div><label class="form-label">Details</label><input name="payment_methods[][details]" class="form-control" value="{{ $pm['details'] ?? '' }}" placeholder="Account title / number"></div>
-                        <button type="button" class="btn btn-ghost" onclick="this.parentElement.remove()">✕</button>
-                    </div>
-                @empty
-                    <div class="grid grid-cols-1 md:grid-cols-[1fr_2fr_auto] gap-3 items-end">
-                        <div><label class="form-label">Name</label><input name="payment_methods[][name]" class="form-control" placeholder="JazzCash"></div>
-                        <div><label class="form-label">Details</label><input name="payment_methods[][details]" class="form-control" placeholder="Account title / number"></div>
-                        <button type="button" class="btn btn-ghost" onclick="this.parentElement.remove()">✕</button>
-                    </div>
-                @endforelse
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-green">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                    </span>
+                    Payment Methods
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">Shown to clients on invoices (manual payments). Add each method with its account details.</p>
+                <div id="payment-methods" class="space-y-4">
+                    @forelse (($s->payment_methods ?? []) as $pm)
+                        <div class="pm-card rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40 p-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                                <x-ui.input name="payment_methods[][method]" label="Payment Method" :value="$pm['method'] ?? $pm['name'] ?? ''" placeholder="Easypaisa / JazzCash / Bank Transfer" />
+                                <x-ui.input name="payment_methods[][account_holder]" label="Account Holder Name" :value="$pm['account_holder'] ?? ''" placeholder="Muhammad Hamza" />
+                                <x-ui.input name="payment_methods[][bank_name]" label="Bank Name" :value="$pm['bank_name'] ?? ''" placeholder="Meezan Bank" />
+                                <x-ui.input name="payment_methods[][account_number]" label="Account Number" :value="$pm['account_number'] ?? ''" placeholder="0300 1234567" />
+                                <div class="md:col-span-3"><x-ui.input name="payment_methods[][iban]" label="IBAN" :value="$pm['iban'] ?? ''" placeholder="PK36SCBL0000001123456702" /></div>
+                                <div class="flex items-end justify-end"><button type="button" class="btn btn-ghost !text-red-500" onclick="this.closest('.pm-card').remove()" title="Remove">✕ Remove</button></div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="pm-card rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40 p-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                                <x-ui.input name="payment_methods[][method]" label="Payment Method" placeholder="Easypaisa / JazzCash / Bank Transfer" />
+                                <x-ui.input name="payment_methods[][account_holder]" label="Account Holder Name" placeholder="Muhammad Hamza" />
+                                <x-ui.input name="payment_methods[][bank_name]" label="Bank Name" placeholder="Meezan Bank" />
+                                <x-ui.input name="payment_methods[][account_number]" label="Account Number" placeholder="0300 1234567" />
+                                <div class="md:col-span-3"><x-ui.input name="payment_methods[][iban]" label="IBAN" placeholder="PK36SCBL0000001123456702" /></div>
+                                <div class="flex items-end justify-end"><button type="button" class="btn btn-ghost !text-red-500" onclick="this.closest('.pm-card').remove()" title="Remove">✕ Remove</button></div>
+                            </div>
+                        </div>
+                    @endforelse
+                </div>
+                <button type="button" class="btn btn-secondary mt-3" onclick="addPaymentRow()">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                    Add Method
+                </button>
             </div>
-            <button type="button" class="btn btn-secondary mt-3" onclick="addPaymentRow()">+ Add Method</button>
-            <div class="mt-5 flex justify-end"><button class="btn btn-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-7m-5-5h5m0 0v5m0-5L8 16"/></svg> Save Payments</button></div>
+            <x-admin.drawer-footer save-label="Save Payments" />
         </form>
     </div>
 
@@ -321,10 +342,15 @@
 function addPaymentRow() {
     const wrap = document.getElementById('payment-methods');
     const div = document.createElement('div');
-    div.className = 'grid grid-cols-1 md:grid-cols-[1fr_2fr_auto] gap-3 items-end';
-    div.innerHTML = `<div><label class="form-label">Name</label><input name="payment_methods[][name]" class="form-control" placeholder="JazzCash"></div>
-        <div><label class="form-label">Details</label><input name="payment_methods[][details]" class="form-control" placeholder="Account title / number"></div>
-        <button type="button" class="btn btn-ghost" onclick="this.parentElement.remove()">✕</button>`;
+    div.className = 'pm-card rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40 p-4';
+    div.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="ui-field"><label class="ui-label">Payment Method</label><div class="ui-input-wrap"><input name="payment_methods[][method]" class="ui-control" placeholder="Easypaisa / JazzCash / Bank Transfer"></div></div>
+        <div class="ui-field"><label class="ui-label">Account Holder Name</label><div class="ui-input-wrap"><input name="payment_methods[][account_holder]" class="ui-control" placeholder="Muhammad Hamza"></div></div>
+        <div class="ui-field"><label class="ui-label">Bank Name</label><div class="ui-input-wrap"><input name="payment_methods[][bank_name]" class="ui-control" placeholder="Meezan Bank"></div></div>
+        <div class="ui-field"><label class="ui-label">Account Number</label><div class="ui-input-wrap"><input name="payment_methods[][account_number]" class="ui-control" placeholder="0300 1234567"></div></div>
+        <div class="md:col-span-3 ui-field"><label class="ui-label">IBAN</label><div class="ui-input-wrap"><input name="payment_methods[][iban]" class="ui-control" placeholder="PK36SCBL0000001123456702"></div></div>
+        <div class="flex items-end justify-end"><button type="button" class="btn btn-ghost !text-red-500" onclick="this.closest('.pm-card').remove()">✕ Remove</button></div>
+    </div>`;
     wrap.appendChild(div);
 }
 

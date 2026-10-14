@@ -63,6 +63,12 @@ class SettingsController extends Controller
             ],
             'payments' => [
                 'payment_methods' => 'nullable|array',
+                'payment_methods.*.method' => 'nullable|string|max:100',
+                'payment_methods.*.account_holder' => 'nullable|string|max:255',
+                'payment_methods.*.bank_name' => 'nullable|string|max:255',
+                'payment_methods.*.account_number' => 'nullable|string|max:100',
+                'payment_methods.*.iban' => 'nullable|string|max:100',
+                // Back-compat with the old name/details shape.
                 'payment_methods.*.name' => 'nullable|string|max:100',
                 'payment_methods.*.details' => 'nullable|string|max:500',
             ],
@@ -140,7 +146,7 @@ class SettingsController extends Controller
         if ($tab === 'payments' && isset($data['payment_methods'])) {
             $data['payment_methods'] = array_values(array_filter(
                 $data['payment_methods'],
-                fn ($m) => ! empty($m['name'] ?? null)
+                fn ($m) => ! empty($m['method'] ?? $m['name'] ?? null)
             ));
         }
 
