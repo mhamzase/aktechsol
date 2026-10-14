@@ -62,7 +62,7 @@
 let notifConfirmAction = null;
 let notifConfirmNeedsTyping = false;
 
-function openNotifConfirm(title, message, action, needsTyping = false) {
+function openNotifConfirm(title, message, action, needsTyping = false, danger = false) {
     document.getElementById('notif-confirm-title').textContent = title;
     document.getElementById('notif-confirm-message').textContent = message;
     notifConfirmAction = action;
@@ -76,6 +76,9 @@ function openNotifConfirm(title, message, action, needsTyping = false) {
     } else {
         wrap.classList.add('hidden');
     }
+    const btn = document.getElementById('notif-confirm-btn');
+    btn.classList.toggle('!bg-red-600', danger);
+    btn.classList.toggle('hover:!bg-red-700', danger);
     document.getElementById('notif-confirm-modal').classList.remove('hidden');
 }
 function closeNotifConfirm() {
@@ -142,7 +145,7 @@ function confirmDeleteNotification(id) {
             if (data.was_unread) updateBellCount(-1);
             window.notify?.success(data.message || 'Deleted.');
         });
-    });
+    }, false, true);
 }
 
 function loadMoreNotifications(btn) {
@@ -189,7 +192,8 @@ function confirmDeleteAll() {
                 window.notify?.success('All notifications deleted.');
             });
         },
-        true // needsTyping
+        true, // needsTyping
+        true // danger
     );
 }
 
