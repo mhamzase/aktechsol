@@ -39,30 +39,71 @@
     if (!form) return;
     const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
+    function clearErrors() {
+        form.querySelectorAll('.ui-error').forEach((el) => el.remove());
+        form.querySelectorAll('.ui-control-error').forEach((el) => el.classList.remove('ui-control-error'));
+    }
+
+    function fieldError(input, message) {
+        if (!input) return;
+        input.classList.add('ui-control-error');
+        const wrap = input.closest('.ui-input-wrap');
+        const next = wrap ? wrap.nextElementSibling : null;
+        if (next && next.classList.contains('ui-error')) next.remove();
+        const err = document.createElement('p');
+        err.className = 'ui-error';
+        err.textContent = message;
+        wrap?.after(err);
+    }
+
     function showErrors(errors) {
         Object.entries(errors).forEach(([field, msgs]) => {
-            const input = form.querySelector(`[name="${field}"]`);
-            if (!input) return;
-            input.classList.add('ui-control-error');
-            const err = document.createElement('p');
-            err.className = 'ui-error';
-            err.textContent = msgs[0];
-            input.closest('.ui-input-wrap')?.after(err);
+            fieldError(form.querySelector(`[name="${field}"]`), msgs[0]);
         });
     }
+
+    // Client-side validation — instant feedback before any request is sent.
+    function validate() {
+        clearErrors();
+        const cur = form.querySelector('[name="current_password"]');
+        const np = form.querySelector('[name="new_password"]');
+        const cnp = form.querySelector('[name="new_password_confirmation"]');
+        let ok = true;
+        if (!cur.value) { fieldError(cur, 'Please enter your current password.'); ok = false; }
+        if (!np.value) {
+            fieldError(np, 'Please enter a new password.');
+            ok = false;
+        } else if (np.value.length < 8) {
+            fieldError(np, 'New password must be at least 8 characters.');
+            ok = false;
+        } else if (np.value === cur.value) {
+            fieldError(np, 'New password must be different from the current one.');
+            ok = false;
+        }
+        if (!cnp.value) {
+            fieldError(cnp, 'Please confirm your new password.');
+            ok = false;
+        } else if (np.value && cnp.value !== np.value) {
+            fieldError(cnp, 'Passwords do not match.');
+            ok = false;
+        }
+        return ok;
+    }
+
+    // Live: clear a field's error as soon as the user fixes it.
+    form.addEventListener('input', (e) => {
+        const input = e.target.closest('.ui-control');
+        if (!input || !input.classList.contains('ui-control-error')) return;
+        input.classList.remove('ui-control-error');
+        const next = input.closest('.ui-input-wrap')?.nextElementSibling;
+        if (next && next.classList.contains('ui-error')) next.remove();
+    });
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        form.querySelectorAll('.ui-error').forEach((el) => el.remove());
-        form.querySelectorAll('.ui-control-error').forEach((el) => el.classList.remove('ui-control-error'));
-
-        // Client-side: new password + confirmation must match before hitting the server.
-        const np = form.querySelector('[name="new_password"]').value;
-        const cnp = form.querySelector('[name="new_password_confirmation"]').value;
-        if (np !== cnp) {
-            showErrors({ new_password_confirmation: ['Passwords do not match.'] });
-            window.notify?.error('Passwords do not match.');
+        if (!validate()) {
+            window.notify?.error('Please fix the highlighted errors.');
             return;
         }
 
@@ -80,6 +121,7 @@
             const data = await res.json().catch(() => ({}));
             if (!res.ok) {
                 if (res.status === 422 && data.errors) {
+                    clearErrors();
                     showErrors(data.errors);
                     window.notify?.error('Please fix the highlighted errors.');
                 } else {
