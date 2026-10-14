@@ -113,35 +113,49 @@
 
         @php
             $groups = [
-                ['title' => 'New Quotes', 'items' => $attention['quotes'], 'route' => 'admin.quotes.index', 'dot' => 'bg-blue-500',
+                ['title' => 'New Quotes', 'items' => $attention['quotes'], 'route' => 'admin.quotes.index',
+                 'color' => '#1d4ed8', 'tint' => '#e8f0fe',
+                 'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
                  'line' => fn($q) => $q->name . ($q->subject ? ' — ' . $q->subject : '')],
-                ['title' => 'Unanswered Chats', 'items' => $attention['chats'], 'route' => 'admin.chatbot.index', 'dot' => 'bg-violet-500',
+                ['title' => 'Unanswered Chats', 'items' => $attention['chats'], 'route' => 'admin.chatbot.index',
+                 'color' => '#8b5cf6', 'tint' => '#f0eafe',
+                 'icon' => 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
                  'line' => fn($c) => \Illuminate\Support\Str::limit($c->query, 50)],
-                ['title' => 'Unpaid Invoices', 'items' => $attention['invoices'], 'route' => 'admin.invoices.index', 'dot' => 'bg-amber-500',
+                ['title' => 'Unpaid Invoices', 'items' => $attention['invoices'], 'route' => 'admin.invoices.index',
+                 'color' => '#f59e0b', 'tint' => '#fef5e3',
+                 'icon' => 'M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z',
                  'line' => fn($i) => $i->invoice_no . ' — PKR ' . number_format($i->balance(), 0)],
-                ['title' => 'New Demo Requests', 'items' => $attention['demos'], 'route' => 'admin.demo-bookings.index', 'dot' => 'bg-emerald-500',
+                ['title' => 'New Demo Requests', 'items' => $attention['demos'], 'route' => 'admin.demo-bookings.index',
+                 'color' => '#10b981', 'tint' => '#e6f9f1',
+                 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
                  'line' => fn($d) => $d->name . ($d->preferred_date ? ' — ' . $d->preferred_date->format('d M') : '')],
-                ['title' => 'New Applications', 'items' => $attention['jobs'], 'route' => 'admin.job-applications.index', 'dot' => 'bg-rose-500',
+                ['title' => 'New Applications', 'items' => $attention['jobs'], 'route' => 'admin.job-applications.index',
+                 'color' => '#f43f5e', 'tint' => '#ffeef1',
+                 'icon' => 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
                  'line' => fn($j) => $j->name],
             ];
         @endphp
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
             @foreach ($groups as $g)
-                <div class="rounded-xl border border-slate-100 p-4 hover:border-blue-200 hover:shadow-sm transition-all">
-                    <p class="flex items-center justify-between mb-2.5">
-                        <span class="flex items-center gap-2 text-sm font-bold text-slate-700">
-                            <span class="w-2 h-2 rounded-full {{ $g['dot'] }}"></span>{{ $g['title'] }}
+                <div class="att-card" style="--att: {{ $g['color'] }};">
+                    <div class="flex items-start justify-between">
+                        <span class="att-icon" style="color: {{ $g['color'] }}; background: {{ $g['tint'] }};">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $g['icon'] }}"/></svg>
                         </span>
-                        <span class="badge {{ $g['items']->count() ? 'badge-amber' : 'badge-gray' }}">{{ $g['items']->count() }}</span>
-                    </p>
-                    <div class="space-y-1 min-h-[3.5rem]">
-                        @forelse ($g['items'] as $item)
-                            <p class="text-xs text-slate-500 truncate">• {{ $g['line']($item) }}</p>
-                        @empty
-                            <p class="text-xs text-slate-300 italic">All clear</p>
-                        @endforelse
+                        <span class="att-count" style="color: {{ $g['color'] }};">{{ $g['items']->count() }}<small>pending</small></span>
                     </div>
-                    <a href="{{ route($g['route']) }}" class="text-xs font-semibold text-[#1d4ed8] hover:underline mt-2 inline-block">View all →</a>
+                    <p class="att-title">{{ $g['title'] }}</p>
+                    <div class="att-items">
+                        @forelse ($g['items']->take(3) as $item)
+                            <p class="att-item"><span class="att-bullet" style="background: {{ $g['color'] }};"></span><span class="truncate">{{ $g['line']($item) }}</span></p>
+                        @empty
+                            <p class="att-clear">✓ All clear</p>
+                        @endforelse
+                        @if ($g['items']->count() > 3)
+                            <p class="att-more">+{{ $g['items']->count() - 3 }} more</p>
+                        @endif
+                    </div>
+                    <a href="{{ route($g['route']) }}" class="att-link">View all <span>→</span></a>
                 </div>
             @endforeach
         </div>
