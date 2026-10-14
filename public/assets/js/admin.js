@@ -127,6 +127,21 @@
         });
     })();
 
+    /* ---------------- Dark / light mode (topbar toggle) ---------------- */
+    function syncThemeIcon() {
+        const dark = document.documentElement.classList.contains('dark');
+        document.getElementById('theme-icon-moon')?.classList.toggle('hidden', dark);
+        document.getElementById('theme-icon-sun')?.classList.toggle('hidden', !dark);
+    }
+    window.toggleTheme = function () {
+        const dark = document.documentElement.classList.toggle('dark');
+        try { localStorage.setItem('aktechsol-admin-theme', dark ? 'dark' : 'light'); } catch (e) {}
+        syncThemeIcon();
+        // Re-render dashboard charts with the matching theme.
+        if (typeof window.renderAdminCharts === 'function') window.renderAdminCharts();
+    };
+    document.addEventListener('DOMContentLoaded', syncThemeIcon);
+
     /* ---------------- AdminTable: shared AJAX listing ----------------
        Usage in Blade:
          <x-admin.data-table id="quotes-table" ajax-url="route('admin.quotes.index')"

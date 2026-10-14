@@ -37,8 +37,14 @@
              class="hidden absolute right-0 left-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-100 z-50 overflow-hidden py-1.5"></div>
     </div>
 
-    {{-- Right: bell + user --}}
+    {{-- Right: theme toggle + bell + user --}}
     <div class="flex items-center gap-1.5 shrink-0">
+        {{-- Dark / light mode toggle --}}
+        <button onclick="toggleTheme()" id="theme-toggle-btn" aria-label="Toggle dark mode" title="Dark / light mode"
+                class="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-500 hover:text-[#1d4ed8] transition-colors">
+            <svg id="theme-icon-moon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            <svg id="theme-icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        </button>
         {{-- Notifications bell --}}
         <div class="relative">
             <button onclick="toggleDropdown('topbar-notifications')" data-dropdown-toggle

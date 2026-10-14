@@ -6,6 +6,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard') | {{ config('app.name') }} Admin</title>
 
+    {{-- Apply saved admin theme before first paint (prevents light flash in dark mode) --}}
+    <script>
+    (function () { try { if (localStorage.getItem('aktechsol-admin-theme') === 'dark') document.documentElement.classList.add('dark'); } catch (e) {} })();
+    </script>
+
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
     {{-- Local assets only — no CDNs --}}

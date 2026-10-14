@@ -285,3 +285,100 @@ table.data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
 .tab-btn svg { width: 1rem; height: 1rem; }
 .tab-btn:hover { color: #1d4ed8; }
 .tab-btn.active { color: #1d4ed8; border-bottom-color: #1d4ed8; }
+
+/* ==========================================================================
+   DARK MODE — enabled by the `dark` class on <html> (topbar toggle).
+   Overrides Tailwind light utilities + admin components with a deep-navy
+   palette. Sidebar is already dark; hero keeps its blue gradient.
+   ========================================================================== */
+html.dark { color-scheme: dark; }
+html.dark body.admin-body { background: #0b1226; color: #e2e8f0; }
+html.dark .bg-\[\#f4f7fe\] { background-color: #0b1226 !important; }
+
+/* ---- Topbar ---- */
+html.dark .admin-topbar {
+    background: rgba(13, 20, 38, 0.88);
+    border-bottom-color: rgba(148, 163, 184, 0.12);
+    box-shadow: 0 1px 0 rgba(148, 163, 184, 0.08);
+}
+html.dark .crumb { color: #94a3b8; }
+html.dark .crumb:hover { color: #93c5fd; }
+html.dark #theme-toggle-btn:hover { background: #1b2745 !important; }
+
+/* ---- Surfaces ---- */
+html.dark .bg-white { background-color: #141f38 !important; }
+html.dark .bg-slate-50, html.dark .bg-gray-50 { background-color: #0f1930 !important; }
+html.dark .bg-slate-100 { background-color: #1b2745 !important; }
+html.dark .bg-slate-200 { background-color: #243156 !important; }
+html.dark .bg-blue-50 { background-color: #1b2745 !important; }
+html.dark .bg-slate-100\/80 { background-color: rgba(27, 39, 69, 0.8) !important; }
+
+/* ---- Text ---- */
+html.dark .text-slate-800, html.dark .text-slate-700 { color: #e2e8f0 !important; }
+html.dark .text-slate-600 { color: #cbd5e1 !important; }
+html.dark .text-slate-500, html.dark .text-slate-400 { color: #94a3b8 !important; }
+html.dark .text-gray-700 { color: #e2e8f0 !important; }
+html.dark .text-gray-500, html.dark .text-gray-400 { color: #94a3b8 !important; }
+
+/* ---- Borders & dividers ---- */
+html.dark .border-slate-100, html.dark .border-slate-200,
+html.dark .border-gray-200 { border-color: rgba(148, 163, 184, 0.14) !important; }
+html.dark .border-slate-300 { border-color: rgba(148, 163, 184, 0.28) !important; }
+html.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+html.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(148, 163, 184, 0.1) !important; }
+
+/* ---- Hover states ---- */
+html.dark .hover\:bg-slate-100:hover { background-color: #1b2745 !important; }
+html.dark .hover\:bg-slate-50:hover { background-color: #16213c !important; }
+html.dark .hover\:bg-blue-50:hover { background-color: #1b2745 !important; }
+html.dark .hover\:text-slate-700:hover { color: #e2e8f0 !important; }
+
+/* ---- Forms ---- */
+html.dark .form-control, html.dark .ui-control {
+    background: #1a2542; border-color: #2b3a5f; color: #e2e8f0;
+}
+html.dark .form-control::placeholder, html.dark .ui-control::placeholder { color: #5b6b8c; }
+html.dark .form-control:disabled, html.dark .ui-control:disabled { background: #141f38; color: #5b6b8c; }
+html.dark .form-label, html.dark .ui-label { color: #cbd5e1; }
+html.dark .form-hint, html.dark .ui-hint { color: #7c8db0; }
+html.dark .ui-check .ui-box { background: #1a2542; border-color: #3b4d78; }
+html.dark .ui-check .ui-check-label { color: #cbd5e1; }
+html.dark select.ui-control, html.dark select.form-control {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+}
+
+/* ---- Tables ---- */
+html.dark table.data-table tbody td { border-bottom-color: rgba(148, 163, 184, 0.1); color: #cbd5e1; }
+html.dark table.data-table tbody tr:hover { background: #16213c; }
+html.dark .data-table thead th { color: #8fa0c0; }
+html.dark .mobile-label { color: #7c8db0; }
+
+/* ---- Drawer ---- */
+html.dark .drawer { background: #141f38; }
+html.dark .drawer-body { background: #0f1930; }
+html.dark .drawer-overlay { background: rgba(4, 8, 20, 0.62); }
+
+/* ---- Topbar search ---- */
+html.dark #global-search-input { background: #1a2542; color: #e2e8f0; }
+html.dark #global-search-input::placeholder { color: #5b6b8c; }
+html.dark #global-search-input:focus { background: #1a2542; border-color: #3b82f6; }
+html.dark #global-search-results kbd,
+html.dark kbd { background: #0f1930; border-color: #2b3a5f; color: #8fa0c0; }
+html.dark .gs-item span { color: #cbd5e1 !important; }
+
+/* ---- Settings tabs ---- */
+html.dark .tab-btn { color: #8fa0c0; border-bottom-color: transparent; }
+html.dark .tab-btn:hover { color: #93c5fd; }
+html.dark .tab-btn.active { color: #93c5fd; border-bottom-color: #3b82f6; }
+
+/* ---- Quill rich text ---- */
+html.dark .ql-toolbar.ql-snow { background: #1a2542; border-color: #2b3a5f; }
+html.dark .ql-container.ql-snow { background: #141f38; border-color: #2b3a5f; color: #e2e8f0; }
+html.dark .ql-snow .ql-stroke { stroke: #94a3b8; }
+html.dark .ql-snow .ql-fill { fill: #94a3b8; }
+html.dark .ql-snow .ql-picker-label { color: #94a3b8; }
+html.dark .ql-editor.ql-blank::before { color: #5b6b8c; }
+
+/* ---- Scrollbars ---- */
+html.dark ::-webkit-scrollbar-thumb { background: #2b3a5f; }
+html.dark ::-webkit-scrollbar-thumb:hover { background: #3b4d78; }

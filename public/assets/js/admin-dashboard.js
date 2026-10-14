@@ -34,7 +34,13 @@
 
     const FONT = 'Sora, sans-serif';
 
-    document.addEventListener('DOMContentLoaded', () => {
+    // Dark-mode aware palette helpers (re-read on every render).
+    const isDark = () => document.documentElement.classList.contains('dark');
+    const axisColor = () => (isDark() ? '#94a3b8' : '#64748b');
+    const gridColor = () => (isDark() ? 'rgba(148,163,184,0.14)' : '#eef2fb');
+    const tooltipTheme = () => (isDark() ? 'dark' : 'light');
+
+    function renderCharts() {
         /* ---- Quotes (bars) + Revenue (area), last 6 months ---- */
         renderInto('chart-quotes-revenue', (el) => ({
             chart: { type: 'line', height: 300, toolbar: { show: false }, fontFamily: FONT },
@@ -67,34 +73,34 @@
             },
             dataLabels: { enabled: false },
             tooltip: {
-                shared: true, intersect: false, theme: 'light',
+                shared: true, intersect: false, theme: tooltipTheme(),
                 y: {
                     formatter: (v, { seriesIndex }) =>
                         seriesIndex === 1 ? 'PKR ' + Number(v).toLocaleString() : v,
                 },
             },
             markers: { size: [0, 4], colors: ['#f59e0b'], strokeColors: '#fff', strokeWidth: 2, hover: { size: 6 } },
-            legend: { position: 'top', horizontalAlign: 'right', fontFamily: FONT },
-            grid: { borderColor: '#eef2fb', strokeDasharray: 0 },
+            legend: { position: 'top', horizontalAlign: 'right', fontFamily: FONT, labels: { colors: axisColor() } },
+            grid: { borderColor: gridColor(), strokeDasharray: 0 },
             xaxis: {
-                labels: { style: { fontFamily: FONT, colors: '#64748b' } },
+                labels: { style: { fontFamily: FONT, colors: axisColor() } },
                 axisBorder: { show: false },
                 axisTicks: { show: false },
             },
             yaxis: [
                 {
-                    title: { text: 'Quotes', style: { fontFamily: FONT, color: '#64748b' } },
+                    title: { text: 'Quotes', style: { fontFamily: FONT, color: axisColor() } },
                     labels: {
-                        style: { fontFamily: FONT, colors: '#64748b' },
+                        style: { fontFamily: FONT, colors: axisColor() },
                         formatter: (v) => Math.round(v),
                     },
                     min: 0, forceNiceScale: true,
                 },
                 {
                     opposite: true,
-                    title: { text: 'PKR', style: { fontFamily: FONT, color: '#64748b' } },
+                    title: { text: 'PKR', style: { fontFamily: FONT, color: axisColor() } },
                     labels: {
-                        style: { fontFamily: FONT, colors: '#64748b' },
+                        style: { fontFamily: FONT, colors: axisColor() },
                         formatter: (v) => v >= 1000 ? Math.round(v / 1000) + 'k' : v,
                     },
                 },
@@ -116,11 +122,15 @@
                 style: { fontFamily: FONT },
                 dropShadow: { enabled: false },
             },
-            legend: { position: 'bottom', fontFamily: FONT },
-            tooltip: { theme: 'light', style: { fontFamily: FONT } },
+            legend: { position: 'bottom', fontFamily: FONT, labels: { colors: axisColor() } },
+            tooltip: { theme: tooltipTheme(), style: { fontFamily: FONT } },
             states: {
                 hover: { filter: { type: 'lighten', value: 0.08 } },
             },
         }));
-    });
+    }
+
+    // Exposed so the theme toggle can re-render charts in the new mode.
+    window.renderAdminCharts = renderCharts;
+    document.addEventListener('DOMContentLoaded', renderCharts);
 })();
