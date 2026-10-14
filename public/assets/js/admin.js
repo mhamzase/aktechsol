@@ -16,18 +16,18 @@
         position: { x: 'right', y: 'bottom' },
         dismissible: true,
     });
-    // Toast notifications — only ONE toast per type visible at a time.
-    // A new toast instantly dismisses the previous one of the same type,
-    // so spam-clicks can never stack duplicates.
+    // Toast notifications — only ONE toast per message visible at a time.
+    // DOM-based dedup (no reliance on Notyf internals): any existing toast
+    // with the same text is removed before showing the new one.
     window.notify = (() => {
-        const last = {};
         const show = (type, msg) => {
-            try { last[type]?.dismiss(); } catch (e) {}
-            let n;
-            if (type === 'success') n = notyf.success(msg);
-            else if (type === 'error') n = notyf.error(msg);
-            else n = notyf.open({ type: 'info', message: msg, background: '#1d4ed8', icon: false });
-            last[type] = n;
+            const text = (msg || '').trim();
+            document.querySelectorAll('.notyf__toast').forEach((t) => {
+                if (t.textContent.trim() === text) t.remove();
+            });
+            if (type === 'success') notyf.success(msg);
+            else if (type === 'error') notyf.error(msg);
+            else notyf.open({ type: 'info', message: msg, background: '#1d4ed8', icon: false });
         };
         return {
             success: (msg) => show('success', msg),
@@ -486,7 +486,9 @@
             valid = false;
         }
         if (!valid) {
-            if (btn) { btn.disabled = false; btn.innerHTML = original; }
+            // Cooldown: keep the button disabled briefly so rapid double-clicks
+            // can't spawn duplicate submissions/toasts.
+            setTimeout(() => { if (btn) { btn.disabled = false; btn.innerHTML = original; } }, 1200);
             window.notify?.error('Please fix the highlighted errors.');
             return;
         }
