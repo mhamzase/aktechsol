@@ -217,4 +217,8 @@
         </div>
         @endcanany
     </nav>
+    {{-- App version (update when Hamza asks) --}}
+    <div class="px-4 py-3 border-t border-white/10">
+        <p class="text-[0.65rem] font-semibold text-white/40 text-center tracking-wider">v1.0.0</p>
+    </div>
 </aside>
