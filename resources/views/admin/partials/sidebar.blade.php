@@ -217,17 +217,4 @@
         </div>
         @endcanany
     </nav>
-
-    {{-- Bottom: logged-in user mini card --}}
-    <div class="p-3 border-t border-white/10">
-        <div class="flex items-center gap-2.5 px-2 py-1.5">
-            <span id="sidebar-avatar" class="w-9 h-9 rounded-full bg-white/15 text-white font-bold flex items-center justify-center text-sm shrink-0">
-                {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
-            </span>
-            <span class="min-w-0">
-                <span id="sidebar-username" class="block text-white text-[0.8rem] font-semibold truncate">{{ auth()->user()->name }}</span>
-                <span class="block text-white/50 text-[0.68rem] truncate">{{ auth()->user()->getRoleNames()->first() ?? 'Team' }}</span>
-            </span>
-        </div>
-    </div>
 </aside>

@@ -251,10 +251,12 @@
                 return;
             }
             notifyOk(data.message);
-            // Sync name everywhere (topbar, sidebar, avatar initial).
+            // Sync name everywhere (topbar, avatar initial).
             document.getElementById('topbar-username').textContent = data.user.name;
-            document.getElementById('sidebar-username').textContent = data.user.name;
-            document.getElementById('sidebar-avatar').textContent = data.user.initial;
+            const sidebarName = document.getElementById('sidebar-username');
+            if (sidebarName) sidebarName.textContent = data.user.name;
+            const sidebarAv = document.getElementById('sidebar-avatar');
+            if (sidebarAv) sidebarAv.textContent = data.user.initial;
             if (previewInitial && !previewInitial.classList.contains('hidden')) {
                 previewInitial.textContent = data.user.initial;
             }
