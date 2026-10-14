@@ -58,10 +58,12 @@
             </a>
             <form data-ajax-form data-reload-table="contact-messages-table" method="POST"
                   action="{{ route('admin.contact-messages.update-status', $contactMessage) }}"
-                  class="flex items-center gap-2 ml-auto">
+                  class="flex items-end gap-2 ml-auto">
                 @csrf @method('PUT')
-                <x-ui.select name="status" :options="['new' => 'New', 'read' => 'Read', 'replied' => 'Replied']" :value="$contactMessage->status" class="!w-32" />
-                <button type="submit" class="btn btn-primary !py-2">Update</button>
+                <x-ui.select name="status" label="Status" :options="['new' => 'New', 'read' => 'Read', 'replied' => 'Replied']" :value="$contactMessage->status" class="!w-32" />
+                <div style="margin-bottom: 1rem;">
+                    <button type="submit" class="btn btn-primary shrink-0">Update</button>
+                </div>
             </form>
         </div>
     </div>
