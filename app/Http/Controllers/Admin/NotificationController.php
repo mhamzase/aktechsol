@@ -13,9 +13,16 @@ use Illuminate\Http\Request;
 class NotificationController extends Controller
 {
     /** Paginated notification feed. */
-    public function index()
+    public function index(Request $request)
     {
-        $notifications = auth()->user()->notifications()->latest()->paginate(15);
+        $notifications = auth()->user()->notifications()->latest()->paginate(20);
+
+        if ($request->ajax() || $request->expectsJson()) {
+            return response()->json([
+                'html' => view('admin.notifications._rows', compact('notifications'))->render(),
+                'next_page' => $notifications->hasMorePages() ? $notifications->currentPage() + 1 : null,
+            ]);
+        }
 
         return view('admin.notifications.index', compact('notifications'));
     }
