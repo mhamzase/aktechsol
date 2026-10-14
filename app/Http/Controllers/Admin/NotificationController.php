@@ -52,4 +52,18 @@ class NotificationController extends Controller
             'count' => auth()->user()->unreadNotifications()->count(),
         ]);
     }
+
+    /** Delete a single notification. */
+    public function destroy(Request $request, string $id)
+    {
+        $notification = auth()->user()->notifications()->findOrFail($id);
+        $wasUnread = is_null($notification->read_at);
+        $notification->delete();
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json(['message' => 'Notification deleted.', 'was_unread' => $wasUnread]);
+        }
+
+        return back()->with('success', 'Notification deleted.');
+    }
 }

@@ -615,3 +615,21 @@
     }
     setInterval(poll, 30000);
 })();
+
+// Global notification confirm helpers (used by topbar bell dropdown).
+window.confirmMarkAllRead = function () {
+    if (!confirm('Mark all notifications as read?')) return;
+    fetch('/admin/notifications/read-all', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+        },
+    }).then(() => {
+        document.querySelector('.bell-dot')?.remove();
+        document.getElementById('topbar-notifications-list')?.querySelectorAll('a').forEach((a) => {
+            a.querySelector('.bg-\\[\\#1d4ed8\\]')?.classList.replace('bg-[#1d4ed8]', 'bg-slate-300');
+        });
+        window.notify?.success('All notifications marked as read.');
+    });
+};
