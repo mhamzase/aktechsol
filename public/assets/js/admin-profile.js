@@ -248,6 +248,13 @@
             </div>
             <button id="tfa-enable" class="btn btn-primary mt-4">Enable Two-Factor Authentication</button>`;
         document.getElementById('tfa-enable').addEventListener('click', async (e) => {
+            const yes = await pfConfirm({
+                title: 'Enable two-factor authentication?',
+                text: 'You will need an authenticator app (Google Authenticator, Authy…) to get a 6-digit code at every login.',
+                okLabel: 'Enable',
+                danger: false,
+            });
+            if (!yes) return;
             const btn = e.currentTarget;
             btn.disabled = true;
             btn.innerHTML = '<span class="spin inline-block">◌</span> Generating…';
