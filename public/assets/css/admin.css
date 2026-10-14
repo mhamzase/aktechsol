@@ -303,7 +303,16 @@ html.dark .admin-topbar {
 }
 html.dark .crumb { color: #94a3b8; }
 html.dark .crumb:hover { color: #93c5fd; }
+html.dark .admin-topbar .crumb-current { color: #e2e8f0; }
 html.dark #theme-toggle-btn:hover { background: #1b2745 !important; }
+
+/* ---- Cards (admin-card is the shared card class — not the bg-white utility) ---- */
+html.dark .admin-card {
+    background: #141f38;
+    border-color: rgba(148, 163, 184, 0.14);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+html.dark .stat-card:hover { box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.55); }
 
 /* ---- Surfaces ---- */
 html.dark .bg-white { background-color: #141f38 !important; }
@@ -314,11 +323,11 @@ html.dark .bg-blue-50 { background-color: #1b2745 !important; }
 html.dark .bg-slate-100\/80 { background-color: rgba(27, 39, 69, 0.8) !important; }
 
 /* ---- Text ---- */
-html.dark .text-slate-800, html.dark .text-slate-700 { color: #e2e8f0 !important; }
+html.dark .text-slate-900, html.dark .text-slate-800, html.dark .text-slate-700 { color: #e2e8f0 !important; }
 html.dark .text-slate-600 { color: #cbd5e1 !important; }
 html.dark .text-slate-500, html.dark .text-slate-400 { color: #94a3b8 !important; }
-html.dark .text-gray-700 { color: #e2e8f0 !important; }
-html.dark .text-gray-500, html.dark .text-gray-400 { color: #94a3b8 !important; }
+html.dark .text-gray-900, html.dark .text-gray-800, html.dark .text-gray-700 { color: #e2e8f0 !important; }
+html.dark .text-gray-600, html.dark .text-gray-500, html.dark .text-gray-400 { color: #94a3b8 !important; }
 
 /* ---- Borders & dividers ---- */
 html.dark .border-slate-100, html.dark .border-slate-200,
@@ -354,6 +363,12 @@ html.dark .data-table thead th { color: #8fa0c0; }
 @media (max-width: 767px) {
     html.dark table.data-table tbody td::before { color: #7c8db0; }
     html.dark table.data-table tbody td { border-bottom-color: rgba(148, 163, 184, 0.1); }
+    html.dark table.data-table tbody tr {
+        background: #141f38;
+        border-color: rgba(148, 163, 184, 0.14);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    html.dark table.data-table tbody tr:hover { background: #16213c; }
 }
 
 /* ---- Drawer ---- */
