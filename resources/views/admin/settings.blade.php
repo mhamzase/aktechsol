@@ -25,7 +25,7 @@
             'chatbot'  => 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13a9 9 0 1118 0 9 9 0 01-18 0z',
         ];
     @endphp
-    <div class="admin-card px-3 mb-5">
+    <div class="admin-card pl-1 pr-3 mb-5">
         <div class="grid grid-cols-2 sm:flex gap-1.5 sm:overflow-x-auto py-1" id="settings-tabs" role="tablist">
             @foreach ($tabs as $key => $label)
                 <button type="button" role="tab" data-tab="{{ $key }}" class="tab-btn shrink-0">
