@@ -49,12 +49,10 @@
                 <x-ui.input name="site_address" label="Address" :value="$s->site_address" />
                 <div class="md:col-span-2"><x-ui.textarea name="footer_text" label="Footer Text" rows="2" :value="$s->footer_text" /></div>
                 <x-ui.input name="copyright_text" label="Copyright Text" :value="$s->copyright_text" />
-                <div class="grid grid-cols-2 gap-4">
-                    <x-ui.input name="facebook_url" type="url" label="Facebook URL" :value="$s->facebook_url" placeholder="https://" />
-                    <x-ui.input name="instagram_url" type="url" label="Instagram URL" :value="$s->instagram_url" placeholder="https://" />
-                    <x-ui.input name="linkedin_url" type="url" label="LinkedIn URL" :value="$s->linkedin_url" placeholder="https://" />
-                    <x-ui.input name="twitter_url" type="url" label="Twitter URL" :value="$s->twitter_url" placeholder="https://" />
-                </div>
+                <x-ui.input name="facebook_url" type="url" label="Facebook URL" :value="$s->facebook_url" placeholder="https://" />
+                <x-ui.input name="instagram_url" type="url" label="Instagram URL" :value="$s->instagram_url" placeholder="https://" />
+                <x-ui.input name="linkedin_url" type="url" label="LinkedIn URL" :value="$s->linkedin_url" placeholder="https://" />
+                <x-ui.input name="twitter_url" type="url" label="Twitter URL" :value="$s->twitter_url" placeholder="https://" />
                 <div>
                     @if ($logoUrl)<img src="{{ $logoUrl }}" class="h-12 mb-2 rounded-lg bg-slate-100 p-1 dark:bg-white/10" alt="Logo">@endif
                     <x-ui.file name="logo" label="Logo" accept="image/*" hint="PNG or SVG recommended." />
