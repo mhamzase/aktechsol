@@ -41,12 +41,22 @@ class ContactMessageController extends Controller
 
     public function show(ContactMessage $contactMessage)
     {
-        return view('admin.contact-messages.show', compact('contactMessage'));
+        // Drawer (AJAX) requests get the partial; normal visits redirect to
+        // the listing with the drawer auto-opened.
+        if (request()->ajax() || request()->expectsJson()) {
+            return view('admin.contact-messages.show', compact('contactMessage'));
+        }
+
+        return redirect()->route('admin.contact-messages.index', ['view' => $contactMessage->id]);
     }
 
     public function updateStatus(UpdateContactMessageStatusRequest $request, ContactMessage $contactMessage)
     {
         $contactMessage->update(['status' => $request->validated('status')]);
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json(['message' => 'Message status updated.', 'status' => $contactMessage->status]);
+        }
 
         return redirect()->route('admin.contact-messages.show', $contactMessage)
                          ->with('success', 'Message status updated.');

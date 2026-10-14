@@ -10,8 +10,10 @@
         <td data-label="Status"><span class="badge {{ $statusBadges[$message->status] ?? 'badge-gray' }}">{{ ucfirst($message->status) }}</span></td>
         <td data-label="Received" class="text-slate-500 whitespace-nowrap">{{ $message->created_at->format('M d, Y') }}</td>
         <td data-label="Actions" class="no-label whitespace-nowrap">
-            <a href="{{ route('admin.contact-messages.show', $message) }}" class="btn btn-secondary !py-1.5 !px-3 !text-xs">View</a>
-            <button class="btn btn-danger !py-1.5 !px-3 !text-xs" onclick="confirmDelete('{{ route('admin.contact-messages.destroy', $message) }}', 'contact-messages-table', 'Delete this message?')">Delete</button>
+            <x-admin.row-actions
+                :viewUrl="route('admin.contact-messages.show', $message)"
+                :deleteUrl="route('admin.contact-messages.destroy', $message)"
+                tableId="contact-messages-table" />
         </td>
     </tr>
 @empty

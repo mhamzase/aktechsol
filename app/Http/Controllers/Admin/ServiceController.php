@@ -74,6 +74,14 @@ class ServiceController extends Controller
             ->with('success', 'Service created successfully.');
     }
 
+    /** Drawer: view service details. */
+    public function show(Service $service)
+    {
+        $service->load('category');
+
+        return view('admin.services.show', compact('service'));
+    }
+
       public function edit(Service $service)
     {
         return view('admin.services._form', [
@@ -115,5 +123,16 @@ class ServiceController extends Controller
 
         return redirect()->route('admin.services.index')
             ->with('success', 'Service deleted successfully.');
+    }
+
+    /** Toggle active/inactive status via AJAX. */
+    public function toggleStatus(Service $service)
+    {
+        $service->update(['status' => ! $service->status]);
+
+        return response()->json([
+            'message' => $service->status ? 'Service activated.' : 'Service deactivated.',
+            'status' => (bool) $service->status,
+        ]);
     }
 }
