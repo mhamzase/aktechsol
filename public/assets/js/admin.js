@@ -354,6 +354,15 @@
         const form = e.target.closest('form[data-perm-form]');
         if (form) refreshPermCounts(form);
     });
+    // Live-clear field errors as the user fixes them (all AJAX forms).
+    document.addEventListener('input', (e) => {
+        const form = e.target.closest('form[data-ajax-form]');
+        if (!form || !e.target.classList?.contains('ui-control-error')) return;
+        e.target.classList.remove('ui-control-error');
+        const wrap = e.target.closest('.ui-input-wrap');
+        const err = wrap ? wrap.nextElementSibling : e.target.closest('div')?.querySelector('.ui-error');
+        if (err && err.classList.contains('ui-error')) err.remove();
+    });
     document.addEventListener('click', (e) => {
         const form = e.target.closest('form[data-perm-form]');
         if (!form) return;
@@ -385,6 +394,21 @@
     });
 
     // AJAX form submit (delegated — works for drawer-injected forms)
+    // Shows a field error under an x-ui (or raw) input.
+    const showFieldError = (form, input, message) => {
+        if (!input) return;
+        input.classList.add('ui-control-error');
+        const err = document.createElement('p');
+        err.className = 'ui-error';
+        err.textContent = message;
+        const wrap = input.closest('.ui-input-wrap');
+        if (wrap) wrap.after(err);
+        else (input.closest('div') || form).appendChild(err);
+    };
+    const clearFieldErrors = (form) => {
+        form.querySelectorAll('.form-error, .ui-error').forEach((el) => el.remove());
+        form.querySelectorAll('.ui-control-error').forEach((el) => el.classList.remove('ui-control-error'));
+    };
     document.addEventListener('submit', async (e) => {
         const form = e.target.closest('form[data-ajax-form]');
         if (!form) return;
@@ -392,8 +416,35 @@
         const btn = form.querySelector('[type="submit"]');
         const original = btn ? btn.innerHTML : '';
         if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin inline-block">◌</span> Saving…'; }
-        form.querySelectorAll('.form-error, .ui-error').forEach((el) => el.remove());
-        form.querySelectorAll('.ui-control-error').forEach((el) => el.classList.remove('ui-control-error'));
+        clearFieldErrors(form);
+
+        // ---- Frontend validation (runs before the server call) ----
+        let valid = true;
+        form.querySelectorAll('[required]').forEach((input) => {
+            if (input.disabled || input.type === 'hidden') return;
+            const val = (input.value || '').trim();
+            if (!val) {
+                showFieldError(form, input, 'This field is required.');
+                valid = false;
+            } else if (input.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+                showFieldError(form, input, 'Please enter a valid email address.');
+                valid = false;
+            } else if (input.name === 'password' && val.length > 0 && val.length < 8) {
+                showFieldError(form, input, 'Password must be at least 8 characters.');
+                valid = false;
+            }
+        });
+        const pw = form.querySelector('[name="password"]');
+        const pwc = form.querySelector('[name="password_confirmation"]');
+        if (pw && pwc && (pw.value || pwc.value) && pw.value !== pwc.value) {
+            showFieldError(form, pwc, 'Passwords do not match.');
+            valid = false;
+        }
+        if (!valid) {
+            if (btn) { btn.disabled = false; btn.innerHTML = original; }
+            window.notify?.error('Please fix the highlighted errors.');
+            return;
+        }
 
         try {
             const res = await fetch(form.action, {
@@ -405,24 +456,15 @@
             if (!res.ok) {
                 if (res.status === 422 && data.errors) {
                     Object.entries(data.errors).forEach(([field, msgs]) => {
-                        const input = form.querySelector(`[name="${field}"]`);
-                        if (!input) return;
-                        input.classList.add('ui-control-error');
-                        const err = document.createElement('p');
-                        err.className = 'ui-error';
-                        err.textContent = msgs[0];
-                        // x-ui components: place after the input wrapper; otherwise append to the field div.
-                        const wrap = input.closest('.ui-input-wrap');
-                        if (wrap) wrap.after(err);
-                        else (input.closest('div') || form).appendChild(err);
+                        showFieldError(form, form.querySelector(`[name="${field}"]`), msgs[0]);
                     });
-                    window.notify.error('Please fix the highlighted errors.');
+                    window.notify?.error('Please fix the highlighted errors.');
                 } else {
-                    window.notify.error(data.message || 'Something went wrong.');
+                    window.notify?.error(data.message || 'Something went wrong.');
                 }
                 return;
             }
-            window.notify.success(data.message || 'Saved successfully.');
+            window.notify?.success(data.message || 'Saved successfully.');
             window.closeDrawer();
             if (form.dataset.reloadTable) window.reloadAdminTable(form.dataset.reloadTable);
             if (data.redirect) window.location.href = data.redirect;
