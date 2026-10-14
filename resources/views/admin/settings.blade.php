@@ -40,33 +40,31 @@
 
     {{-- GENERAL --}}
     <div data-tabpanel="general" class="admin-card p-5 hidden">
-        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'general') }}" enctype="multipart/form-data">
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'general') }}" enctype="multipart/form-data" novalidate>
             @csrf @method('PUT')
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><label class="form-label">Site Name</label><input name="site_name" class="form-control" value="{{ $s->site_name }}"></div>
-                <div><label class="form-label">Site Email</label><input name="site_email" type="email" class="form-control" value="{{ $s->site_email }}"></div>
-                <div><label class="form-label">Phone</label><input name="site_phone" class="form-control" value="{{ $s->site_phone }}"></div>
-                <div><label class="form-label">Address</label><input name="site_address" class="form-control" value="{{ $s->site_address }}"></div>
-                <div class="md:col-span-2"><label class="form-label">Footer Text</label><textarea name="footer_text" rows="2" class="form-control">{{ $s->footer_text }}</textarea></div>
-                <div><label class="form-label">Copyright Text</label><input name="copyright_text" class="form-control" value="{{ $s->copyright_text }}"></div>
+                <x-ui.input name="site_name" label="Site Name" :value="$s->site_name" required />
+                <x-ui.input name="site_email" type="email" label="Site Email" :value="$s->site_email" />
+                <x-ui.input name="site_phone" label="Phone" :value="$s->site_phone" placeholder="+92 300 0000000" />
+                <x-ui.input name="site_address" label="Address" :value="$s->site_address" />
+                <div class="md:col-span-2"><x-ui.textarea name="footer_text" label="Footer Text" rows="2" :value="$s->footer_text" /></div>
+                <x-ui.input name="copyright_text" label="Copyright Text" :value="$s->copyright_text" />
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="form-label">Facebook URL</label><input name="facebook_url" class="form-control" value="{{ $s->facebook_url }}"></div>
-                    <div><label class="form-label">Instagram URL</label><input name="instagram_url" class="form-control" value="{{ $s->instagram_url }}"></div>
-                    <div><label class="form-label">LinkedIn URL</label><input name="linkedin_url" class="form-control" value="{{ $s->linkedin_url }}"></div>
-                    <div><label class="form-label">Twitter URL</label><input name="twitter_url" class="form-control" value="{{ $s->twitter_url }}"></div>
+                    <x-ui.input name="facebook_url" type="url" label="Facebook URL" :value="$s->facebook_url" placeholder="https://" />
+                    <x-ui.input name="instagram_url" type="url" label="Instagram URL" :value="$s->instagram_url" placeholder="https://" />
+                    <x-ui.input name="linkedin_url" type="url" label="LinkedIn URL" :value="$s->linkedin_url" placeholder="https://" />
+                    <x-ui.input name="twitter_url" type="url" label="Twitter URL" :value="$s->twitter_url" placeholder="https://" />
                 </div>
                 <div>
-                    <label class="form-label">Logo</label>
-                    @if ($logoUrl)<img src="{{ $logoUrl }}" class="h-12 mb-2 rounded bg-slate-100 p-1" alt="Logo">@endif
-                    <input type="file" name="logo" accept="image/*" class="form-control">
+                    @if ($logoUrl)<img src="{{ $logoUrl }}" class="h-12 mb-2 rounded-lg bg-slate-100 p-1 dark:bg-white/10" alt="Logo">@endif
+                    <x-ui.file name="logo" label="Logo" accept="image/*" hint="PNG or SVG recommended." />
                 </div>
                 <div>
-                    <label class="form-label">Favicon</label>
-                    @if ($faviconUrl)<img src="{{ $faviconUrl }}" class="h-8 mb-2 rounded bg-slate-100 p-1" alt="Favicon">@endif
-                    <input type="file" name="favicon" accept="image/*" class="form-control">
+                    @if ($faviconUrl)<img src="{{ $faviconUrl }}" class="h-8 mb-2 rounded-lg bg-slate-100 p-1 dark:bg-white/10" alt="Favicon">@endif
+                    <x-ui.file name="favicon" label="Favicon" accept="image/*" hint="Square image, 32×32 or larger." />
                 </div>
             </div>
-            <div class="mt-5 flex justify-end"><button class="btn btn-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-7m-5-5h5m0 0v5m0-5L8 16"/></svg> Save General</button></div>
+            <x-admin.drawer-footer save-label="Save General" />
         </form>
     </div>
 

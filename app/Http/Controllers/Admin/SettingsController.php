@@ -33,7 +33,7 @@ class SettingsController extends Controller
     {
         return match ($tab) {
             'general' => [
-                'site_name' => 'nullable|string|max:255',
+                'site_name' => 'required|string|max:255',
                 'site_email' => 'nullable|email|max:255',
                 'site_phone' => 'nullable|string|max:50',
                 'site_address' => 'nullable|string|max:500',

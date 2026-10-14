@@ -474,6 +474,9 @@
             } else if (input.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
                 showFieldError(form, input, 'Please enter a valid email address.');
                 valid = false;
+            } else if (input.type === 'url' && !/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/\S*)?$/.test(val)) {
+                showFieldError(form, input, 'Please enter a valid URL (e.g. https://…).');
+                valid = false;
             } else if (input.name === 'password' && val.length > 0 && val.length < 8) {
                 showFieldError(form, input, 'Password must be at least 8 characters.');
                 valid = false;
