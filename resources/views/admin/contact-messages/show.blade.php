@@ -1,57 +1,42 @@
-@extends('admin.layouts.app')
-
-@section('title', 'View Message')
-
-@section('content')
-    <x-admin.page-header title="Message Details" subtitle="View contact message"
-                        icon="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-
-    <div class="max-w-3xl mx-auto">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <p class="text-sm font-semibold text-gray-500">Name</p>
-                    <p class="text-gray-900">{{ $contactMessage->name }}</p>
-                </div>
-                <div>
-                    <p class="text-sm font-semibold text-gray-500">Email</p>
-                    <p class="text-gray-900">{{ $contactMessage->email }}</p>
-                </div>
-                @if($contactMessage->phone)
-                <div>
-                    <p class="text-sm font-semibold text-gray-500">Phone</p>
-                    <p class="text-gray-900">{{ $contactMessage->phone }}</p>
-                </div>
-                @endif
-                <div>
-                    <p class="text-sm font-semibold text-gray-500">Received</p>
-                    <p class="text-gray-900">{{ $contactMessage->created_at->format('M d, Y H:i') }}</p>
-                </div>
+{{-- Message details drawer content --}}
+<div class="drawer-content p-6">
+    <div class="mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Name</p>
+                <p class="text-slate-900 dark:text-slate-100 font-medium mt-1">{{ $contactMessage->name }}</p>
             </div>
-            <div class="mt-4">
-                <p class="text-sm font-semibold text-gray-500">Subject</p>
-                <p class="text-gray-900 font-medium">{{ $contactMessage->subject }}</p>
+            <div>
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Email</p>
+                <p class="text-slate-900 dark:text-slate-100 font-medium mt-1 break-all">{{ $contactMessage->email }}</p>
             </div>
-            <div class="mt-4">
-                <p class="text-sm font-semibold text-gray-500">Message</p>
-                <div class="text-gray-700 leading-relaxed">{{ $contactMessage->message }}</div>
+            @if($contactMessage->phone)
+            <div>
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Phone</p>
+                <p class="text-slate-900 dark:text-slate-100 font-medium mt-1">{{ $contactMessage->phone }}</p>
+            </div>
+            @endif
+            <div>
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Received</p>
+                <p class="text-slate-900 dark:text-slate-100 font-medium mt-1">{{ $contactMessage->created_at->format('M d, Y h:i A') }}</p>
             </div>
         </div>
-
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-3">Update Status</h3>
-            <form action="{{ route('admin.contact-messages.update-status', $contactMessage) }}" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="flex items-center gap-3">
-                    <select name="status" class="block rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        <option value="new" {{ $contactMessage->status === 'new' ? 'selected' : '' }}>New</option>
-                        <option value="read" {{ $contactMessage->status === 'read' ? 'selected' : '' }}>Read</option>
-                        <option value="replied" {{ $contactMessage->status === 'replied' ? 'selected' : '' }}>Replied</option>
-                    </select>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700">Update</button>
-                </div>
-            </form>
+        <div class="mt-5">
+            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Subject</p>
+            <p class="text-slate-900 dark:text-slate-100 font-semibold mt-1">{{ $contactMessage->subject }}</p>
+        </div>
+        <div class="mt-5">
+            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Message</p>
+            <div class="text-slate-700 dark:text-slate-300 leading-relaxed mt-1 bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4">{{ $contactMessage->message }}</div>
         </div>
     </div>
-@endsection
+
+    <div class="border-t border-slate-200 dark:border-slate-700 pt-5">
+        <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 mb-3">Update Status</h3>
+        <form data-ajax-form data-reload-table="contact-messages-table" method="POST" action="{{ route('admin.contact-messages.update-status', $contactMessage) }}" class="flex items-center gap-3">
+            @csrf @method('PUT')
+            <x-ui.select name="status" :options="['new' => 'New', 'read' => 'Read', 'replied' => 'Replied']" :value="$contactMessage->status" />
+            <button type="submit" class="btn btn-primary shrink-0">Update</button>
+        </form>
+    </div>
+</div>

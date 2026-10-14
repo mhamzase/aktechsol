@@ -48,6 +48,10 @@ class ContactMessageController extends Controller
     {
         $contactMessage->update(['status' => $request->validated('status')]);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json(['message' => 'Message status updated.', 'status' => $contactMessage->status]);
+        }
+
         return redirect()->route('admin.contact-messages.show', $contactMessage)
                          ->with('success', 'Message status updated.');
     }
