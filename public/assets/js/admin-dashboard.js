@@ -125,7 +125,7 @@
             labels: readJson(el, 'labels', []).map((s) =>
                 s.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
             ),
-            colors: ['#93c5fd', '#1d4ed8', '#f59e0b', '#8b5cf6', '#10b981', '#64748b'],
+            colors: ['#3b82f6', '#8b5cf6', '#f59e0b', '#10b981', '#ef4444', '#06b6d4'],
             plotOptions: {
                 pie: { startAngle: -90, endAngle: 270, expandOnClick: false },
             },
