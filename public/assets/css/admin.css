@@ -234,6 +234,7 @@ table.data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
 }
 @media (min-width: 768px) { .drawer { max-width: 37.5rem; } }
 @media (min-width: 1024px) { .drawer { max-width: 43.75rem; } }
+@media (min-width: 1024px) { .drawer.drawer-wide { max-width: 54rem; } }
 .drawer.open { transform: translateX(0); }
 .drawer-body { flex: 1; overflow-y: auto; background: #f8fafc; }
 

@@ -237,9 +237,10 @@
     const overlay = () => document.getElementById('drawer-overlay');
     const drawer = () => document.getElementById('drawer');
 
-    window.openDrawer = async function (url, title = '') {
+    window.openDrawer = async function (url, title = '', wide = false) {
         const d = drawer();
         if (!d) return;
+        d.classList.toggle('drawer-wide', !!wide);
         d.querySelector('[data-drawer-title]').textContent = title;
         d.querySelector('[data-drawer-body]').innerHTML =
             '<div class="p-10"><div class="admin-loader al-lg"><span class="al-ring"></span><span>Loading…</span></div></div>';
@@ -298,7 +299,7 @@
         }
         const editBtn = e.target.closest('[data-row-edit]');
         if (editBtn) {
-            openDrawer(editBtn.dataset.rowEdit, editBtn.dataset.drawerTitle || 'Edit');
+            openDrawer(editBtn.dataset.rowEdit, editBtn.dataset.drawerTitle || 'Edit', editBtn.dataset.drawerWide === '1');
             return;
         }
         const delBtn = e.target.closest('[data-row-delete]');
