@@ -510,7 +510,9 @@
                     });
                     window.notify?.error('Please fix the highlighted errors.');
                 } else {
-                    window.notify?.error(data.message || 'Something went wrong.');
+                    const detail = data.message ? `: ${data.message}` : ` (HTTP ${res.status})`;
+                    window.notify?.error(`Something went wrong${detail}.`);
+                    console.error('[AJAX form]', form.action, res.status, data);
                 }
                 return;
             }
