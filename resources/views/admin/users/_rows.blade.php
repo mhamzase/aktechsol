@@ -10,7 +10,7 @@
                         {{ strtoupper(substr($user->name, 0, 1)) }}
                     @endif
                 </span>
-                <span class="font-semibold text-slate-800 dark:text-slate-100">{{ $user->name }}</span>
+                <span class="font-bold text-slate-900 dark:text-white">{{ $user->name }}</span>
             </span>
         </td>
         <td data-label="Email" class="text-slate-500">{{ $user->email }}</td>
