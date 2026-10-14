@@ -16,20 +16,18 @@
         position: { x: 'right', y: 'bottom' },
         dismissible: true,
     });
-    // Toast notifications — deduplicated: the same type+message won't stack
-    // when the user spam-clicks a button (2.5s window).
+    // Toast notifications — only ONE toast per type visible at a time.
+    // A new toast instantly dismisses the previous one of the same type,
+    // so spam-clicks can never stack duplicates.
     window.notify = (() => {
-        const recent = new Map();
-        const DEDUP_MS = 2500;
+        const last = {};
         const show = (type, msg) => {
-            const key = type + '|' + msg;
-            const now = Date.now();
-            if ((recent.get(key) || 0) > now - DEDUP_MS) return;
-            recent.set(key, now);
-            recent.forEach((t, k) => { if (t < now - DEDUP_MS) recent.delete(k); });
-            if (type === 'success') notyf.success(msg);
-            else if (type === 'error') notyf.error(msg);
-            else notyf.open({ type: 'info', message: msg, background: '#1d4ed8', icon: false });
+            try { last[type]?.dismiss(); } catch (e) {}
+            let n;
+            if (type === 'success') n = notyf.success(msg);
+            else if (type === 'error') n = notyf.error(msg);
+            else n = notyf.open({ type: 'info', message: msg, background: '#1d4ed8', icon: false });
+            last[type] = n;
         };
         return {
             success: (msg) => show('success', msg),
