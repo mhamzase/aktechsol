@@ -166,9 +166,17 @@
         }
         bind() {
             let t;
+            const clearBtn = this.root.querySelector('[data-clear-search]');
+            const toggleClear = () => clearBtn?.classList.toggle('hidden', !this.searchEl?.value);
             this.searchEl?.addEventListener('input', (e) => {
                 clearTimeout(t);
+                toggleClear();
                 t = setTimeout(() => { this.params.search = e.target.value; this.params.page = 1; this.load(); }, 350);
+            });
+            clearBtn?.addEventListener('click', () => {
+                if (this.searchEl) this.searchEl.value = '';
+                toggleClear();
+                this.params.search = ''; this.params.page = 1; this.load();
             });
             this.perPageEl?.addEventListener('change', (e) => {
                 this.params.per_page = e.target.value; this.params.page = 1; this.load();
@@ -252,6 +260,31 @@
         document.body.style.overflow = '';
     };
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') window.closeDrawer(); });
+
+    /* ------------------------------------------------------------------
+       Row actions (x-admin.row-actions) — STANDARD 3-dots menu, delegated.
+       Works for AJAX-loaded rows everywhere. Closes other open menus.
+    ------------------------------------------------------------------ */
+    document.addEventListener('click', (e) => {
+        const toggle = e.target.closest('[data-row-actions-toggle]');
+        // Close menus that don't contain the clicked toggle.
+        document.querySelectorAll('.row-actions-menu:not(.hidden)').forEach((m) => {
+            if (!toggle || !m.closest('[data-row-actions]').contains(toggle)) m.classList.add('hidden');
+        });
+        if (toggle) {
+            toggle.closest('[data-row-actions]')?.querySelector('.row-actions-menu')?.classList.toggle('hidden');
+            return;
+        }
+        const editBtn = e.target.closest('[data-row-edit]');
+        if (editBtn) {
+            openDrawer(editBtn.dataset.rowEdit, editBtn.dataset.drawerTitle || 'Edit');
+            return;
+        }
+        const delBtn = e.target.closest('[data-row-delete]');
+        if (delBtn) {
+            confirmDelete(delBtn.dataset.rowDelete, delBtn.dataset.table || '');
+        }
+    });
 
     // AJAX form submit (delegated — works for drawer-injected forms)
     document.addEventListener('submit', async (e) => {

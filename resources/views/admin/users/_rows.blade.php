@@ -19,10 +19,15 @@
             @endforelse
         </td>
         <td data-label="Joined" class="text-slate-500 whitespace-nowrap">{{ $user->created_at->format('d M Y') }}</td>
-        <td data-label="Actions" class="no-label whitespace-nowrap">
-            <button class="btn btn-secondary !py-1.5 !px-3 !text-xs" data-action="edit" data-id="{{ $user->id }}">Edit</button>
-            @if (!$user->is(auth()->user()))
-                <button class="btn btn-danger !py-1.5 !px-3 !text-xs" data-action="delete" data-id="{{ $user->id }}">Delete</button>
+        <td data-label="Actions" class="no-label whitespace-nowrap text-right">
+            @if ($user->id !== ($protectedId ?? null))
+                <x-admin.row-actions
+                    :edit-url="route('admin.users.edit', $user)"
+                    edit-title="Edit User"
+                    :delete-url="$user->is(auth()->user()) ? null : route('admin.users.destroy', $user)"
+                    table-id="users-table" />
+            @else
+                <span class="text-xs text-slate-300">—</span>
             @endif
         </td>
     </tr>

@@ -28,9 +28,13 @@ class UserController extends Controller
 
         $users = $query->paginate($request->get('per_page', 10));
 
+        // The first-ever Administrator is fully protected: no edit, no delete.
+        $protectedId = User::whereHas('roles', fn ($q) => $q->where('name', 'Administrator'))
+            ->orderBy('id')->value('id');
+
         if ($request->ajax()) {
             return response()->json([
-                'rows'       => view('admin.users._rows', compact('users'))->render(),
+                'rows'       => view('admin.users._rows', compact('users', 'protectedId'))->render(),
                 'pagination' => view('admin.partials.ajax-pagination', ['items' => $users])->render(),
                 'stats'      => "Showing {$users->firstItem()}–{$users->lastItem()} of {$users->total()}",
             ]);

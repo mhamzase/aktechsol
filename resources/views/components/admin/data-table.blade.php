@@ -9,49 +9,47 @@
       ajaxUrl   — index route returning JSON {rows, pagination, stats} for AJAX
       columns   — array of <th> labels
       perPage   — default rows per page
-      createUrl — (optional) "Add new" drawer button URL
-      createTitle — drawer title
       searchPlaceholder
       Slot "filters" — (optional) extra filter inputs rendered in the toolbar.
                        Each input/select needs data-table-filter="paramName".
+    NOTE: the "Add New" button lives in x-admin.page-header's actions slot,
+          NOT in the table toolbar.
 --}}
 @props([
     'id',
     'ajaxUrl',
     'columns' => [],
     'perPage' => 10,
-    'createUrl' => null,
-    'createTitle' => 'Add New',
     'searchPlaceholder' => 'Search…',
 ])
 
 <div id="{{ $id }}" data-admin-table data-ajax-url="{{ $ajaxUrl }}" class="admin-card overflow-hidden">
-    {{-- Toolbar: per-page + stats (left), search + create (right) --}}
-    <div class="flex flex-wrap items-center gap-3 px-4 py-3 border-b border-slate-100">
-        <div class="flex items-center gap-2 text-sm text-slate-500">
+    {{-- Toolbar: per-page + stats (left), search (right) --}}
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3 border-b border-slate-100">
+        <label class="flex items-center gap-2 text-sm text-slate-500">
             <span>Show</span>
-            <select data-per-page class="form-control !w-auto !py-1.5">
-                @foreach ([10, 25, 50, 100] as $n)
-                    <option value="{{ $n }}" @selected($n == $perPage)>{{ $n }}</option>
-                @endforeach
-            </select>
+            <span class="relative">
+                <select data-per-page class="form-control !w-auto !py-1.5 !pr-8 appearance-none font-semibold text-slate-700 cursor-pointer">
+                    @foreach ([10, 25, 50, 100] as $n)
+                        <option value="{{ $n }}" @selected($n == $perPage)>{{ $n }}</option>
+                    @endforeach
+                </select>
+                <svg class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </span>
             <span>entries</span>
-        </div>
-        <span data-stats class="text-xs text-slate-400"></span>
+        </label>
+        <span data-stats class="text-xs font-medium text-slate-400"></span>
         @isset($filters)
             {{ $filters }}
         @endisset
-        <div class="relative ml-auto w-full sm:w-64">
-            <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <div class="relative ml-auto w-full sm:w-72">
+            <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             <input type="text" data-search placeholder="{{ $searchPlaceholder }}"
-                   class="form-control !pl-9" autocomplete="off">
-        </div>
-        @if ($createUrl)
-            <button class="btn btn-primary" onclick="openDrawer('{{ $createUrl }}', '{{ $createTitle }}')">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                Add New
+                   class="form-control !pl-10 !pr-9 !rounded-full !bg-slate-50 focus:!bg-white transition-colors" autocomplete="off">
+            <button type="button" data-clear-search class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500" aria-label="Clear search">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
-        @endif
+        </div>
     </div>
 
     {{-- Table --}}
@@ -70,6 +68,6 @@
         </table>
     </div>
 
-    {{-- Pagination (AJAX-rendered) --}}
-    <div data-pagination class="px-4 py-3 border-t border-slate-100 flex items-center justify-center"></div>
+    {{-- Pagination (AJAX-rendered, includes the Showing X–Y of Z count) --}}
+    <div data-pagination class="px-4 py-3 border-t border-slate-100"></div>
 </div>

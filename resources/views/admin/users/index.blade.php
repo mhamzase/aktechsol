@@ -3,25 +3,17 @@
 @section('title', 'Users & Roles')
 
 @section('content')
-    <x-admin.page-header title="Users & Roles" subtitle="Manage team members and their roles" />
+    <x-admin.page-header title="Users & Roles" subtitle="Manage team members and their roles">
+        <x-slot:actions>
+            <button class="btn btn-primary" onclick="openDrawer('{{ route('admin.users.create') }}', 'Add User')">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Add New
+            </button>
+        </x-slot:actions>
+    </x-admin.page-header>
 
     <x-admin.data-table id="users-table"
         :ajax-url="route('admin.users.index')"
         :columns="['User', 'Email', 'Phone', 'Roles', 'Joined', 'Actions']"
-        create-url="{{ route('admin.users.create') }}"
-        create-title="Add User"
         search-placeholder="Search name or email…" />
 @endsection
-
-@push('scripts')
-<script>
-// Wire row action buttons (delegated, works after AJAX reloads)
-document.getElementById('users-table').addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-action]');
-    if (!btn) return;
-    const id = btn.dataset.id;
-    if (btn.dataset.action === 'edit') openDrawer(`{{ url('admin/users') }}/${id}/edit`, 'Edit User');
-    if (btn.dataset.action === 'delete') confirmDelete(`{{ url('admin/users') }}/${id}`, 'users-table');
-});
-</script>
-@endpush
