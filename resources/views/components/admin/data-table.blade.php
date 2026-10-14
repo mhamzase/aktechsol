@@ -25,8 +25,8 @@
 
 <div id="{{ $id }}" data-admin-table data-ajax-url="{{ $ajaxUrl }}" class="admin-card overflow-hidden">
     {{-- Toolbar: per-page (left), search (right) — tailor-app style --}}
-    <div class="flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3 border-b border-slate-100">
-        <label class="flex items-center gap-2 text-sm text-slate-500">
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3 border-b border-slate-100 dark:border-white/10">
+        <label class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
             <span>Show</span>
             <select data-per-page class="form-control !w-auto !py-1.5 cursor-pointer">
                 @foreach ([10, 25, 50, 100] as $n)
@@ -43,7 +43,7 @@
                 <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </span>
             <input type="text" data-search placeholder="{{ $searchPlaceholder }}"
-                   class="form-control !pl-9 !pr-9 !bg-slate-50 focus:!bg-white transition-colors" autocomplete="off">
+                   class="form-control table-search !pl-9 !pr-9 transition-colors" autocomplete="off">
             <button type="button" data-clear-search class="hidden absolute inset-y-0 right-0 flex items-center pr-3 text-slate-300 hover:text-slate-500" aria-label="Clear search">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
@@ -67,5 +67,5 @@
     </div>
 
     {{-- Pagination (AJAX-rendered, includes the Showing X–Y of Z count) --}}
-    <div data-pagination class="px-4 py-3 border-t border-slate-100"></div>
+    <div data-pagination class="px-4 py-3 border-t border-slate-100 dark:border-white/10"></div>
 </div>
