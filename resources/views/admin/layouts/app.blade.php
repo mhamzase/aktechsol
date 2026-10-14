@@ -22,6 +22,7 @@
     @stack('styles')
 </head>
 <body class="admin-body bg-[#f4f7fe] text-slate-800 antialiased">
+    @include('partials.page-loader')
 
     {{-- Flash messages -> Notyf toasts --}}
     <div id="flash-messages"

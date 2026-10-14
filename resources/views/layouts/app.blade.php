@@ -28,6 +28,7 @@
 </head>
 
 <body class="font-sans antialiased text-gray-800 bg-white">
+    @include('partials.page-loader')
 
     @include('partials.header')
 
