@@ -10,7 +10,7 @@
     <x-admin.page-header title="My Profile" subtitle="Update your account information"
                         icon="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
 
-    <div class="max-w-2xl mx-auto space-y-6" id="profile-root"
+    <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 items-start" id="profile-root"
          data-avatar-url="{{ route('admin.profile.avatar') }}"
          data-tfa-status="{{ route('admin.profile.2fa.status') }}"
          data-tfa-enable="{{ route('admin.profile.2fa.enable') }}"
@@ -55,7 +55,7 @@
             <form id="profile-form" action="{{ route('admin.profile.update') }}" method="POST" class="mt-4 space-y-5" novalidate>
                 @csrf
                 @method('PUT')
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 gap-5">
                     <x-ui.input name="name" label="Name" :value="$user->name" required />
                     <x-ui.input name="email" type="email" label="Email" :value="$user->email" required />
                 </div>
