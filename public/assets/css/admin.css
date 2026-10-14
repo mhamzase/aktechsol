@@ -122,21 +122,21 @@ body.admin-body { font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; }
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 
-/* ---------- Page hero header (tailor-app style, next-level) ---------- */
+/* ---------- Page hero header (blue shades — no black) ---------- */
 .page-hero {
     position: relative; overflow: hidden;
     background:
-        radial-gradient(42rem 16rem at 88% -30%, rgba(212, 175, 55, 0.22), transparent 60%),
-        radial-gradient(30rem 14rem at 8% 130%, rgba(29, 78, 216, 0.35), transparent 60%),
-        linear-gradient(115deg, #0B1530 0%, #0F172A 45%, #1E293B 100%);
+        radial-gradient(44rem 18rem at 90% -40%, rgba(255, 255, 255, 0.16), transparent 60%),
+        radial-gradient(32rem 16rem at 5% 130%, rgba(30, 58, 138, 0.55), transparent 62%),
+        linear-gradient(115deg, #1e3a8a 0%, #1d4ed8 52%, #2f6fed 100%);
     border-radius: 1.1rem; padding: 1.4rem 1.6rem;
-    box-shadow: 0 14px 28px -10px rgba(15, 23, 42, 0.45);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: 0 14px 30px -12px rgba(29, 78, 216, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.14);
 }
 .page-hero::before {
     /* subtle dot texture */
     content: ''; position: absolute; inset: 0; pointer-events: none;
-    background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+    background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
     background-size: 1.35rem 1.35rem;
     mask-image: linear-gradient(100deg, transparent 55%, #000 100%);
     -webkit-mask-image: linear-gradient(100deg, transparent 55%, #000 100%);
@@ -144,26 +144,27 @@ body.admin-body { font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; }
 .page-hero > div { position: relative; z-index: 1; }
 .hero-icon {
     width: 3.1rem; height: 3.1rem; border-radius: 0.85rem;
-    background: linear-gradient(135deg, rgba(212,175,55,0.28), rgba(212,175,55,0.12));
-    border: 1px solid rgba(212, 175, 55, 0.35);
-    color: #f5cf5e; box-shadow: 0 4px 14px rgba(212, 175, 55, 0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.25);
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 /* Small stat chips inside the hero (right side) */
 .hero-chip {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.22);
     backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
     border-radius: 0.8rem; padding: 0.55rem 0.95rem; text-align: center;
     min-width: 5.2rem;
     transition: background 0.18s, transform 0.18s;
 }
-.hero-chip:hover { background: rgba(255, 255, 255, 0.14); transform: translateY(-1px); }
+.hero-chip:hover { background: rgba(255, 255, 255, 0.22); transform: translateY(-1px); }
 .hero-chip .hc-value { color: #fff; font-weight: 800; font-size: 1.15rem; line-height: 1.2; }
-.hero-chip .hc-label { color: #cbd5e1; font-size: 0.68rem; margin-top: 0.15rem; white-space: nowrap; letter-spacing: 0.02em; }
-/* Primary buttons on the navy hero become the gold CTA (tailor-app style) */
-.page-hero .btn-primary { background: #fbbf24; color: #0F172A; }
-.page-hero .btn-primary:hover { background: #D4AF37; }
+.hero-chip .hc-label { color: #dbeafe; font-size: 0.68rem; margin-top: 0.15rem; white-space: nowrap; letter-spacing: 0.02em; }
+/* Primary buttons on the blue hero become white CTAs with blue text */
+.page-hero .btn-primary { background: #fff; color: #1d4ed8; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16); border: none; }
+.page-hero .btn-primary:hover { background: #eff4ff; color: #12307e; }
 /* Translucent dark button for the hero (Export-style secondary action) */
 .btn-dark {
     background: rgba(255, 255, 255, 0.1); color: #fff;

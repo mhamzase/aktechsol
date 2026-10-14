@@ -6,10 +6,10 @@
     $unreadCount = $navBadges['notifications'] ?? 0;
     $latestNotes = $navNotifications ?? collect();
 @endphp
-<header class="admin-topbar h-16 flex items-center justify-between px-4 lg:px-6 shrink-0">
+<header class="admin-topbar h-[4.25rem] flex items-center gap-3 px-4 lg:px-6 shrink-0">
     {{-- Left: mobile menu + breadcrumbs --}}
     <div class="flex items-center gap-3 min-w-0">
-        <button class="lg:hidden text-[#1d4ed8] hover:text-[#12307e]" onclick="toggleSidebar()" aria-label="Open menu">
+        <button class="lg:hidden w-10 h-10 rounded-xl hover:bg-blue-50 text-[#1d4ed8] flex items-center justify-center transition-colors" onclick="toggleSidebar()" aria-label="Open menu">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
         <nav class="hidden sm:flex items-center gap-1.5 min-w-0 text-sm" aria-label="Breadcrumb">
@@ -23,8 +23,22 @@
         </nav>
     </div>
 
+    <div class="flex-1"></div>
+
+    {{-- Global search (Ctrl+K) --}}
+    <div class="relative hidden lg:block w-60 xl:w-72 shrink-0" id="topbar-search">
+        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </span>
+        <input id="global-search-input" type="text" placeholder="Search pages…" autocomplete="off"
+               class="w-full rounded-full bg-slate-100/90 border border-transparent py-2 pl-10 pr-14 text-sm text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-[#1d4ed8] focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all">
+        <kbd class="absolute right-3 top-1/2 -translate-y-1/2 text-[0.62rem] font-bold text-slate-400 bg-white border border-slate-200 rounded-md px-1.5 py-0.5 pointer-events-none">Ctrl K</kbd>
+        <div id="global-search-results"
+             class="hidden absolute right-0 left-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-100 z-50 overflow-hidden py-1.5"></div>
+    </div>
+
     {{-- Right: bell + user --}}
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1.5 shrink-0">
         {{-- Notifications bell --}}
         <div class="relative">
             <button onclick="toggleDropdown('topbar-notifications')" data-dropdown-toggle
@@ -66,6 +80,8 @@
                 </a>
             </div>
         </div>
+
+        <div class="w-px h-8 bg-slate-200/80 mx-1 hidden sm:block"></div>
 
         {{-- User menu --}}
         <div class="relative">

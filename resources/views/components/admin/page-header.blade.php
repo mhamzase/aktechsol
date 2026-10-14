@@ -26,7 +26,7 @@
             <div class="min-w-0">
                 <h1 class="text-lg sm:text-xl lg:text-2xl font-bold text-white truncate">{{ $title }}</h1>
                 @if ($subtitle)
-                    <p class="mt-1 text-sm sm:text-base text-gray-300">{{ $subtitle }}</p>
+                    <p class="mt-1 text-sm sm:text-base text-blue-100/90">{{ $subtitle }}</p>
                 @endif
             </div>
         </div>

@@ -51,6 +51,82 @@
         }
     });
 
+    /* ---------------- Global search (topbar, Ctrl+K) ----------------
+       Builds its index from the rendered sidebar links, so it always
+       respects the user's permissions with zero duplication. */
+    (function initGlobalSearch() {
+        const input = document.getElementById('global-search-input');
+        const box = document.getElementById('global-search-results');
+        if (!input || !box) return;
+
+        const index = [];
+        const seen = new Set();
+        document.querySelectorAll('#admin-sidebar .nav-link').forEach((a) => {
+            const label = a.textContent.replace(/[\d]+$/, '').trim();
+            if (label && a.href && !seen.has(a.href)) {
+                seen.add(a.href);
+                index.push({ label, url: a.href });
+            }
+        });
+
+        let activeIdx = -1;
+
+        function close() { box.classList.add('hidden'); activeIdx = -1; }
+
+        function render(matches) {
+            if (!matches.length) {
+                box.innerHTML = '<p class="px-4 py-6 text-center text-sm text-slate-400">No pages found.</p>';
+            } else {
+                box.innerHTML = matches.slice(0, 7).map((m, i) => `
+                    <a href="${m.url}" data-gs-idx="${i}"
+                       class="gs-item flex items-center justify-between px-4 py-2.5 text-sm ${i === activeIdx ? 'bg-blue-50' : ''} hover:bg-blue-50">
+                        <span class="font-medium text-slate-700">${m.label}</span>
+                        <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </a>`).join('');
+            }
+            box.classList.remove('hidden');
+        }
+
+        let current = [];
+        input.addEventListener('input', () => {
+            const q = input.value.trim().toLowerCase();
+            activeIdx = -1;
+            if (q.length < 2) { close(); return; }
+            current = index.filter((m) => m.label.toLowerCase().includes(q));
+            render(current);
+        });
+        input.addEventListener('keydown', (e) => {
+            if (box.classList.contains('hidden')) return;
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const n = Math.min(current.length, 7);
+                activeIdx = e.key === 'ArrowDown'
+                    ? (activeIdx + 1) % n
+                    : (activeIdx - 1 + n) % n;
+                render(current);
+            } else if (e.key === 'Enter') {
+                const pick = current[activeIdx >= 0 ? activeIdx : 0];
+                if (pick) window.location.href = pick.url;
+            } else if (e.key === 'Escape') {
+                close(); input.blur();
+            }
+        });
+        box.addEventListener('click', (e) => {
+            const a = e.target.closest('.gs-item');
+            if (a) window.location.href = a.href;
+        });
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#topbar-search')) close();
+        });
+        // Ctrl+K / Cmd+K focuses the search from anywhere.
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                input.focus();
+            }
+        });
+    })();
+
     /* ---------------- AdminTable: shared AJAX listing ----------------
        Usage in Blade:
          <x-admin.data-table id="quotes-table" ajax-url="route('admin.quotes.index')"
