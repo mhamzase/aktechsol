@@ -11,8 +11,8 @@
             No records found
         @endif
     </p>
-    @if ($items->hasPages())
-        <nav class="flex flex-wrap items-center gap-1" aria-label="Pagination">
+    {{-- Pagination buttons always visible (disabled on a single page) — tailor-app style --}}
+    <nav class="flex flex-wrap items-center gap-1" aria-label="Pagination">
             {{-- Previous --}}
             @if ($items->onFirstPage())
                 <span class="px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-300 cursor-not-allowed">
@@ -43,5 +43,4 @@
                 </span>
             @endif
         </nav>
-    @endif
 </div>
