@@ -26,7 +26,7 @@
         ];
     @endphp
     <div class="admin-card px-3 mb-5">
-        <div class="flex gap-1 overflow-x-auto border-b border-slate-100" id="settings-tabs" role="tablist">
+        <div class="flex gap-1.5 overflow-x-auto py-1" id="settings-tabs" role="tablist">
             @foreach ($tabs as $key => $label)
                 <button type="button" role="tab" data-tab="{{ $key }}" class="tab-btn shrink-0">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $tabIcons[$key] ?? $tabIcons['general'] }}"/></svg>

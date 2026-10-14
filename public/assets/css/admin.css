@@ -273,22 +273,25 @@ table.data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
 /* ---------- Settings tabs (tailor-app style: underline tabs) ---------- */
 .tab-btn {
     display: inline-flex; align-items: center; gap: 0.5rem;
-    padding: 0.8rem 1rem; font-size: 0.85rem; font-weight: 600; color: #64748b;
-    border-bottom: 3px solid transparent; margin-bottom: -1px; white-space: nowrap;
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
-    border-radius: 0.5rem 0.5rem 0 0;
+    padding: 0.65rem 1.1rem; font-size: 0.85rem; font-weight: 600; color: #64748b;
+    border: 2px solid transparent; margin-bottom: -1px; white-space: nowrap;
+    transition: color 0.15s, background 0.15s, border-color 0.15s;
+    border-radius: 0.7rem;
 }
 .tab-btn svg { width: 1rem; height: 1rem; }
-.tab-btn:hover { color: #1669d9; background: rgba(22, 105, 217, 0.05); }
+.tab-btn:hover { color: #1669d9; background: rgba(22, 105, 217, 0.06); }
 .tab-btn.active {
-    color: #1669d9; border-bottom-color: #1669d9; font-weight: 800;
-    background: linear-gradient(to bottom, transparent, rgba(22, 105, 217, 0.08));
+    color: #ffffff; background: linear-gradient(135deg, #1669d9, #0d4fc2);
+    font-weight: 800; border-color: #0d4fc2;
+    box-shadow: 0 4px 12px rgba(22, 105, 217, 0.35);
 }
+.tab-btn.active svg { color: #ffffff; }
 html.dark .tab-btn { color: #9ca3af; }
-html.dark .tab-btn:hover { color: #60a5fa; background: rgba(96, 165, 250, 0.08); }
+html.dark .tab-btn:hover { color: #93c5fd; background: rgba(96, 165, 250, 0.08); }
 html.dark .tab-btn.active {
-    color: #60a5fa; border-bottom-color: #60a5fa;
-    background: linear-gradient(to bottom, transparent, rgba(96, 165, 250, 0.1));
+    color: #ffffff; background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
 }
 
 /* ---------- Settings section headings ---------- */
