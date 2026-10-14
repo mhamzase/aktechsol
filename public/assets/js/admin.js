@@ -633,3 +633,26 @@ window.confirmMarkAllRead = function () {
         window.notify?.success('All notifications marked as read.');
     });
 };
+
+// Toggle service active/inactive from the listing.
+window.toggleServiceStatus = function (url, btn) {
+    btn.disabled = true;
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+        },
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            const active = !!data.status;
+            btn.classList.toggle('badge-green', active);
+            btn.classList.toggle('badge-red', !active);
+            btn.textContent = active ? 'Active' : 'Inactive';
+            btn.title = active ? 'Click to deactivate' : 'Click to activate';
+            window.notify?.success(data.message);
+        })
+        .catch(() => window.notify?.error('Failed to update status.'))
+        .finally(() => { btn.disabled = false; });
+};

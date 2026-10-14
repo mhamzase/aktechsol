@@ -116,4 +116,15 @@ class ServiceController extends Controller
         return redirect()->route('admin.services.index')
             ->with('success', 'Service deleted successfully.');
     }
+
+    /** Toggle active/inactive status via AJAX. */
+    public function toggleStatus(Service $service)
+    {
+        $service->update(['status' => ! $service->status]);
+
+        return response()->json([
+            'message' => $service->status ? 'Service activated.' : 'Service deactivated.',
+            'status' => (bool) $service->status,
+        ]);
+    }
 }

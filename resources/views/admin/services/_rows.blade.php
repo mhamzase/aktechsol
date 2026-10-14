@@ -12,7 +12,11 @@
         <td data-label="Category" class="text-slate-500 dark:text-slate-400">{{ $service->category?->name ?? '—' }}</td>
         <td data-label="Sort Order" class="text-slate-500 dark:text-slate-400">{{ $service->sort_order }}</td>
         <td data-label="Status">
-            <span class="badge {{ $service->status ? 'badge-green' : 'badge-red' }}">{{ $service->status ? 'Active' : 'Inactive' }}</span>
+            <button onclick="toggleServiceStatus('{{ route('admin.services.toggle-status', $service) }}', this)"
+                    title="Click to {{ $service->status ? 'deactivate' : 'activate' }}"
+                    class="badge {{ $service->status ? 'badge-green' : 'badge-red' }} hover:opacity-80 transition-opacity cursor-pointer">
+                {{ $service->status ? 'Active' : 'Inactive' }}
+            </button>
         </td>
         <td data-label="Actions" class="no-label whitespace-nowrap">
             <x-admin.row-actions

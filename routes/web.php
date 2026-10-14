@@ -159,6 +159,7 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
 
     // Existing content modules
     Route::resource('services', ServiceController::class);
+    Route::post('services/{service}/toggle-status', [ServiceController::class, 'toggleStatus'])->name('services.toggle-status');
     Route::resource('service-categories', ServiceCategoryController::class)->except(['show']);
     Route::resource('projects', ProjectController::class)->except(['show']);
     Route::resource('testimonials', TestimonialController::class)->except(['show']);
