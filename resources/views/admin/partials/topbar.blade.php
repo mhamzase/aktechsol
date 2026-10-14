@@ -31,7 +31,7 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </span>
         <input id="global-search-input" type="text" placeholder="Search pages…" autocomplete="off"
-               class="w-full rounded-full bg-slate-100/90 border border-transparent py-2 pl-10 pr-14 text-sm text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-[#1d4ed8] focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all">
+               class="w-full rounded-md bg-slate-100/90 border border-transparent py-2 pl-10 pr-14 text-sm text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-[#1d4ed8] focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all">
         <kbd class="absolute right-3 top-1/2 -translate-y-1/2 text-[0.62rem] font-bold text-slate-400 bg-white border border-slate-200 rounded-md px-1.5 py-0.5 pointer-events-none">Ctrl K</kbd>
         <div id="global-search-results"
              class="hidden absolute right-0 left-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-100 z-50 overflow-hidden py-1.5"></div>
@@ -41,14 +41,14 @@
     <div class="flex items-center gap-1.5 shrink-0">
         {{-- Dark / light mode toggle --}}
         <button onclick="toggleTheme()" id="theme-toggle-btn" aria-label="Toggle dark mode" title="Dark / light mode"
-                class="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-500 hover:text-[#1d4ed8] transition-colors">
+                class="w-10 h-10 rounded-md hover:bg-slate-100 flex items-center justify-center text-slate-500 hover:text-[#1d4ed8] transition-colors">
             <svg id="theme-icon-moon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
             <svg id="theme-icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
         </button>
         {{-- Notifications bell --}}
         <div class="relative">
             <button onclick="toggleDropdown('topbar-notifications')" data-dropdown-toggle
-                    class="relative w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-500 hover:text-[#1d4ed8] transition-colors"
+                    class="relative w-10 h-10 rounded-md hover:bg-slate-100 flex items-center justify-center text-slate-500 hover:text-[#1d4ed8] transition-colors"
                     aria-label="Notifications">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                 @if ($unreadCount > 0)
@@ -92,7 +92,7 @@
         {{-- User menu --}}
         <div class="relative">
             <button onclick="toggleDropdown('topbar-user')" data-dropdown-toggle
-                    class="flex items-center gap-2 pl-1 pr-2 py-1 rounded-full hover:bg-slate-100 transition-all">
+                    class="flex items-center gap-2 pl-1 pr-2 py-1 rounded-md hover:bg-slate-100 transition-all">
                 <span class="w-9 h-9 rounded-full bg-gradient-to-br from-[#1d4ed8] to-[#12307e] text-white flex items-center justify-center font-bold text-sm overflow-hidden ring-2 ring-blue-100">
                     @if (auth()->user()->getAvatarUrl())
                         <img src="{{ auth()->user()->getAvatarUrl() }}" alt="Avatar" class="w-full h-full object-cover">
