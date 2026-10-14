@@ -12,11 +12,11 @@
 
     <div class="max-w-2xl mx-auto space-y-6" id="profile-root"
          data-avatar-url="{{ route('admin.profile.avatar') }}"
-         data-2fa-status="{{ route('admin.profile.2fa.status') }}"
-         data-2fa-enable="{{ route('admin.profile.2fa.enable') }}"
-         data-2fa-confirm="{{ route('admin.profile.2fa.confirm') }}"
-         data-2fa-disable="{{ route('admin.profile.2fa.disable') }}"
-         data-2fa-regenerate="{{ route('admin.profile.2fa.codes.regenerate') }}">
+         data-tfa-status="{{ route('admin.profile.2fa.status') }}"
+         data-tfa-enable="{{ route('admin.profile.2fa.enable') }}"
+         data-tfa-confirm="{{ route('admin.profile.2fa.confirm') }}"
+         data-tfa-disable="{{ route('admin.profile.2fa.disable') }}"
+         data-tfa-regenerate="{{ route('admin.profile.2fa.codes.regenerate') }}">
         {{-- ============ Profile information ============ --}}
         <div class="admin-card p-6">
             <h3 class="text-lg font-bold text-[#0f2a5c]">Profile Information</h3>
