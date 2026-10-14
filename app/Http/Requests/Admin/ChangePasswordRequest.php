@@ -20,7 +20,18 @@ class ChangePasswordRequest extends FormRequest
                     $fail('The current password is incorrect.');
                 }
             }],
-            'new_password' => ['required', 'string', 'min:8', 'confirmed'],
+            'new_password' => ['required', 'string', 'min:8', 'confirmed', 'different:current_password'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'current_password.required' => 'Please enter your current password.',
+            'new_password.required'     => 'Please enter a new password.',
+            'new_password.min'          => 'New password must be at least 8 characters.',
+            'new_password.confirmed'    => 'Passwords do not match.',
+            'new_password.different'    => 'New password must be different from the current one.',
         ];
     }
 }

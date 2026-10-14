@@ -1,469 +1,531 @@
+{{--
+    Settings — tailor-app style tabbed one-page. No refresh: each tab saves
+    via AJAX (data-ajax-form). Active tab persists in localStorage until the
+    user arrives from another page (then the ?tab= query wins).
+--}}
 @extends('admin.layouts.app')
 
-@section('title', 'Site Settings')
-
-@section('breadcrumbs')
-    <x-admin.breadcrumbs :items="[['label' => 'Dashboard', 'url' => route('admin.dashboard')], ['label' => 'Settings']]" />
-@endsection
+@section('title', 'Settings')
 
 @section('content')
-    <x-admin.page-banner title="Site Settings" subtitle="Manage your website configuration" stats="5 configurable tabs" />
+    <x-admin.page-header title="Settings"
+                        subtitle="Configure your site preferences, notifications, and integrations."
+                        icon="M13 10V3L4 14h7v7l9-11h-7z" />
 
-    <div class="w-full mx-auto">
-        @if ($errors->any())
-            <x-admin.alert type="error" :messages="$errors->all()" />
-        @endif
+    {{-- Tab bar (tailor-app style) --}}
+    @php
+        $tabIcons = [
+            'general'  => 'M21 12a9 9 0 11-18 0 9 9 0 0118 0zM12 3v2m0 14v2m9-9h-2M5 12H3',
+            'contact'  => 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
+            'email'    => 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+            'payments' => 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
+            'popup'    => 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.999 3.999 0 01-1.564-.317z',
+            'homepage' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
+            'seo'      => 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
+            'chatbot'  => 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13a9 9 0 1118 0 9 9 0 01-18 0z',
+        ];
+    @endphp
+    <div class="admin-card pl-1 pr-3 mb-5">
+        <div class="grid grid-cols-2 sm:flex gap-1.5 sm:overflow-x-auto py-1" id="settings-tabs" role="tablist">
+            @foreach ($tabs as $key => $label)
+                <button type="button" role="tab" data-tab="{{ $key }}" class="tab-btn shrink-0">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $tabIcons[$key] ?? $tabIcons['general'] }}"/></svg>
+                    {{ $label }}
+                </button>
+            @endforeach
+        </div>
+    </div>
 
-        <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
+    @php $s = $settings; @endphp
 
-            <!-- Tabs Navigation -->
-            <div class="border-b border-gray-200 mb-6">
-                <nav class="flex flex-wrap -mb-px gap-1" id="settingsTabs" role="tablist">
-                    <button type="button"
-                        class="tab-link active inline-flex items-center px-4 py-3 text-sm font-medium text-blue-600 border-b-2 border-blue-600"
-                        data-tab="general">General</button>
-                    <button type="button"
-                        class="tab-link inline-flex items-center px-4 py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300"
-                        data-tab="branding">Branding</button>
-                    <button type="button"
-                        class="tab-link inline-flex items-center px-4 py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300"
-                        data-tab="footer">Footer</button>
-                    <button type="button"
-                        class="tab-link inline-flex items-center px-4 py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300"
-                        data-tab="social">Social Links</button>
-                    <button type="button"
-                        class="tab-link inline-flex items-center px-4 py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300"
-                        data-tab="about">About Page</button>
-                    <button type="button"
-                        class="tab-link inline-flex items-center px-4 py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300"
-                        data-tab="legal">Legal Pages</button>
-                    <button type="button"
-                        class="tab-link inline-flex items-center px-4 py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300"
-                        data-tab="seo">SEO</button>
-                </nav>
+    {{-- GENERAL --}}
+    <div data-tabpanel="general" class="admin-card p-5 hidden">
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'general') }}" enctype="multipart/form-data" novalidate>
+            @csrf @method('PUT')
+            {{-- Site Information --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-blue">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </span>
+                    Site Information
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <x-ui.input name="site_name" label="Site Name" :value="$s->site_name" required />
+                    <x-ui.input name="site_email" type="email" label="Site Email" :value="$s->site_email" />
+                    <x-ui.input name="site_phone" label="Phone" :value="$s->site_phone" placeholder="+92 300 0000000" />
+                    <x-ui.input name="copyright_text" label="Copyright Text" :value="$s->copyright_text" />
+                    <div class="sm:col-span-2 md:col-span-2"><x-ui.input name="site_address" label="Address" :value="$s->site_address" /></div>
+                    <div class="sm:col-span-2 md:col-span-2"><x-ui.textarea name="footer_text" label="Footer Text" rows="1" :value="$s->footer_text" /></div>
+                </div>
             </div>
 
-            <!-- Tab Panels -->
-            <div id="tabContent">
-                {{-- General Tab --}}
-                <div id="tab-general" class="tab-panel">
-                    <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">General Information</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="site_name" class="block text-sm font-medium text-gray-700 mb-1">Website
-                                    Name</label>
-                                <input type="text" name="site_name" id="site_name"
-                                    value="{{ old('site_name', $settings->site_name) }}" required
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none @error('site_name') border-red-500 @enderror">
-                                @error('site_name')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-                            <div>
-                                <label for="site_email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                <input type="email" name="site_email" id="site_email"
-                                    value="{{ old('site_email', $settings->site_email) }}" required
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none @error('site_email') border-red-500 @enderror">
-                                @error('site_email')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-                            <div>
-                                <label for="site_phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                                <input type="text" name="site_phone" id="site_phone"
-                                    value="{{ old('site_phone', $settings->site_phone) }}"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            </div>
-                            <div class="md:col-span-2">
-                                <label for="site_address"
-                                    class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                                <textarea name="site_address" id="site_address" rows="2"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none">{{ old('site_address', $settings->site_address) }}</textarea>
-                            </div>
-                        </div>
+            {{-- Social Media --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-violet">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+                    </span>
+                    Social Media
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <x-ui.input name="facebook_url" type="url" label="Facebook URL" :value="$s->facebook_url" placeholder="https://" />
+                    <x-ui.input name="instagram_url" type="url" label="Instagram URL" :value="$s->instagram_url" placeholder="https://" />
+                    <x-ui.input name="linkedin_url" type="url" label="LinkedIn URL" :value="$s->linkedin_url" placeholder="https://" />
+                    <x-ui.input name="twitter_url" type="url" label="Twitter URL" :value="$s->twitter_url" placeholder="https://" />
+                </div>
+            </div>
+
+            {{-- Branding --}}
+            <div class="mb-2">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-amber">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    </span>
+                    Branding
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div data-brand-preview="logo">
+                        @if ($logoUrl)<img src="{{ $logoUrl }}" class="h-10 mb-2 rounded-lg bg-slate-100 p-1 dark:bg-white/10" alt="Logo">@endif
+                        <x-ui.file name="logo" label="Logo" accept="image/*" hint="PNG or SVG." />
+                    </div>
+                    <div data-brand-preview="favicon">
+                        @if ($faviconUrl)<img src="{{ $faviconUrl }}" class="h-8 mb-2 rounded-lg bg-slate-100 p-1 dark:bg-white/10" alt="Favicon">@endif
+                        <x-ui.file name="favicon" label="Favicon" accept="image/*" hint="Square, 32×32+." />
                     </div>
                 </div>
+            </div>
+            <x-admin.drawer-footer save-label="Save General" />
+        </form>
+    </div>
 
-                {{-- Branding Tab --}}
-                <div id="tab-branding" class="tab-panel hidden">
-                    <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Branding</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="logo" class="block text-sm font-medium text-gray-700 mb-1">Logo</label>
-                                @if ($logoUrl)
-                                    <div class="mb-2"><img src="{{ $logoUrl }}" alt="Logo"
-                                            class="h-12 object-contain border rounded p-1"></div>
-                                @endif
-                                <input type="file" name="logo" id="logo" accept="image/*"
-                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                                <p class="mt-1 text-xs text-gray-500">Recommended size: 200x60px. Max 2MB.</p>
-                            </div>
-                            <div>
-                                <label for="favicon" class="block text-sm font-medium text-gray-700 mb-1">Favicon</label>
-                                @if ($faviconUrl)
-                                    <div class="mb-2"><img src="{{ $faviconUrl }}" alt="Favicon"
-                                            class="h-8 w-8 object-contain border rounded p-1"></div>
-                                @endif
-                                <input type="file" name="favicon" id="favicon"
-                                    accept="image/x-icon,image/png,image/svg+xml"
-                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                                <p class="mt-1 text-xs text-gray-500">16x16px or 32x32px. ICO, PNG or SVG. Max 1MB.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Footer Tab --}}
-                <div id="tab-footer" class="tab-panel hidden">
-                    <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Footer</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label for="footer_text" class="block text-sm font-medium text-gray-700 mb-1">Footer
-                                    Text</label>
-                                <textarea name="footer_text" id="footer_text" rows="3"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none">{{ old('footer_text', $settings->footer_text) }}</textarea>
-                            </div>
-                            <div>
-                                <label for="copyright_text" class="block text-sm font-medium text-gray-700 mb-1">Copyright
-                                    Text</label>
-                                <input type="text" name="copyright_text" id="copyright_text"
-                                    value="{{ old('copyright_text', $settings->copyright_text) }}"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                                <p class="mt-1 text-xs text-gray-500">Example: © 2024 AK Tech SOL. All rights reserved.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Social Links Tab --}}
-                <div id="tab-social" class="tab-panel hidden">
-                    <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Social Links</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="facebook_url" class="block text-sm font-medium text-gray-700 mb-1">Facebook
-                                    URL</label>
-                                <input type="url" name="facebook_url" id="facebook_url"
-                                    value="{{ old('facebook_url', $settings->facebook_url) }}"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            </div>
-                            <div>
-                                <label for="twitter_url" class="block text-sm font-medium text-gray-700 mb-1">Twitter
-                                    URL</label>
-                                <input type="url" name="twitter_url" id="twitter_url"
-                                    value="{{ old('twitter_url', $settings->twitter_url) }}"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            </div>
-                            <div>
-                                <label for="linkedin_url" class="block text-sm font-medium text-gray-700 mb-1">LinkedIn
-                                    URL</label>
-                                <input type="url" name="linkedin_url" id="linkedin_url"
-                                    value="{{ old('linkedin_url', $settings->linkedin_url) }}"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            </div>
-                            <div>
-                                <label for="instagram_url" class="block text-sm font-medium text-gray-700 mb-1">Instagram
-                                    URL</label>
-                                <input type="url" name="instagram_url" id="instagram_url"
-                                    value="{{ old('instagram_url', $settings->instagram_url) }}"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- About Page Tab --}}
-                <div id="tab-about" class="tab-panel hidden">
-                    <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 space-y-5">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">About Page Content</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="about_hero_title" class="block text-sm font-medium text-gray-700 mb-1">Hero
-                                    Title</label>
-                                <input type="text" name="about_hero_title" id="about_hero_title"
-                                    value="{{ old('about_hero_title', $settings->about_hero_title) }}"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            </div>
-                            <div>
-                                <label for="about_hero_subtitle" class="block text-sm font-medium text-gray-700 mb-1">Hero
-                                    Subtitle</label>
-                                <textarea name="about_hero_subtitle" id="about_hero_subtitle" rows="3"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('about_hero_subtitle', $settings->about_hero_subtitle) }}</textarea>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="about_intro_title" class="block text-sm font-medium text-gray-700 mb-1">Intro
-                                    Title</label>
-                                <input type="text" name="about_intro_title" id="about_intro_title"
-                                    value="{{ old('about_intro_title', $settings->about_intro_title) }}"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            </div>
-                            <div>
-                                <label for="about_intro_text" class="block text-sm font-medium text-gray-700 mb-1">Intro
-                                    Text</label>
-                                <textarea name="about_intro_text" id="about_intro_text" rows="4"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('about_intro_text', $settings->about_intro_text) }}</textarea>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="about_mission_title"
-                                    class="block text-sm font-medium text-gray-700 mb-1">Mission Title</label>
-                                <input type="text" name="about_mission_title" id="about_mission_title"
-                                    value="{{ old('about_mission_title', $settings->about_mission_title) }}"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            </div>
-                            <div>
-                                <label for="about_mission_subtitle"
-                                    class="block text-sm font-medium text-gray-700 mb-1">Mission Subtitle</label>
-                                <input type="text" name="about_mission_subtitle" id="about_mission_subtitle"
-                                    value="{{ old('about_mission_subtitle', $settings->about_mission_subtitle) }}"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            </div>
-                        </div>
-                        @for ($i = 1; $i <= 3; $i++)
-                            <div class="border-t border-gray-100 pt-4">
-                                <h4 class="text-sm font-semibold text-gray-800 mb-2">Mission Card {{ $i }}</h4>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                                        <input type="text" name="about_mission_card{{ $i }}_title"
-                                            value="{{ old("about_mission_card{$i}_title", $settings->{"about_mission_card{$i}_title"}) }}"
-                                            class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Text</label>
-                                        <textarea name="about_mission_card{{ $i }}_text" rows="3"
-                                            class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old("about_mission_card{$i}_text", $settings->{"about_mission_card{$i}_text"}) }}</textarea>
-                                    </div>
+    {{-- CONTACT & WHATSAPP --}}
+    <div data-tabpanel="contact" class="admin-card p-5 hidden">
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'contact') }}" novalidate>
+            @csrf @method('PUT')
+            {{-- WhatsApp --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-green">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    </span>
+                    WhatsApp
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="whatsapp_number" label="WhatsApp Number" :value="$s->whatsapp_number" placeholder="923001234567" hint="Country code + number, no + or spaces." /></div>
+                    <div class="md:col-span-2">
+                        <div class="toggle-box">
+                            <div class="flex items-center gap-3">
+                                <span class="tb-icon sec-green">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                </span>
+                                <div>
+                                    <p class="tb-title">WhatsApp Float Button</p>
+                                    <p class="tb-desc">Show floating WhatsApp button on website</p>
                                 </div>
                             </div>
-                        @endfor
-                        <div>
-                            <label for="about_why_title" class="block text-sm font-medium text-gray-700 mb-1">Why Choose
-                                Us Title</label>
-                            <input type="text" name="about_why_title" id="about_why_title"
-                                value="{{ old('about_why_title', $settings->about_why_title) }}"
-                                class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        </div>
-                        @for ($i = 1; $i <= 4; $i++)
-                            <div class="border-t border-gray-100 pt-4">
-                                <h4 class="text-sm font-semibold text-gray-800 mb-2">Why Choose Item {{ $i }}
-                                </h4>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                                        <input type="text" name="about_why_item{{ $i }}_title"
-                                            value="{{ old("about_why_item{$i}_title", $settings->{"about_why_item{$i}_title"}) }}"
-                                            class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Text</label>
-                                        <textarea name="about_why_item{{ $i }}_text" rows="3"
-                                            class="block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old("about_why_item{$i}_text", $settings->{"about_why_item{$i}_text"}) }}</textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        @endfor
-                    </div>
-                </div>
-
-                {{-- Legal Pages Tab --}}
-                <div id="tab-legal" class="tab-panel hidden">
-                    <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Legal Pages Content</h3>
-                        <div class="space-y-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Privacy Policy</label>
-                                <input type="hidden" name="privacy_policy_content" id="privacy_policy_content"
-                                    value="{{ old('privacy_policy_content', $settings->privacy_policy_content ?? '') }}">
-                                <div id="privacy-editor" style="height: 300px;"></div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Terms & Conditions</label>
-                                <input type="hidden" name="terms_conditions_content" id="terms_conditions_content"
-                                    value="{{ old('terms_conditions_content', $settings->terms_conditions_content ?? '') }}">
-                                <div id="terms-editor" style="height: 300px;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- SEO Tab --}}
-                <div id="tab-seo" class="tab-panel hidden">
-                    <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 space-y-4">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">SEO Settings</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="seo_title" class="block text-sm font-medium text-gray-700 mb-1">Site
-                                    Title</label>
-                                <input type="text" name="seo_title" id="seo_title"
-                                    value="{{ old('seo_title', $settings->seo_title) }}"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            </div>
-                            <div>
-                                <label for="seo_keywords"
-                                    class="block text-sm font-medium text-gray-700 mb-1">Keywords</label>
-                                <input type="text" name="seo_keywords" id="seo_keywords"
-                                    value="{{ old('seo_keywords', $settings->seo_keywords) }}"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            </div>
-                            <div class="md:col-span-2">
-                                <label for="seo_description" class="block text-sm font-medium text-gray-700 mb-1">Meta
-                                    Description</label>
-                                <textarea name="seo_description" id="seo_description" rows="3"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('seo_description', $settings->seo_description) }}</textarea>
-                            </div>
-                            <div>
-                                <label for="seo_canonical_url"
-                                    class="block text-sm font-medium text-gray-700 mb-1">Canonical URL</label>
-                                <input type="url" name="seo_canonical_url" id="seo_canonical_url"
-                                    value="{{ old('seo_canonical_url', $settings->seo_canonical_url) }}"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            </div>
-                            <div>
-                                <label for="seo_og_image" class="block text-sm font-medium text-gray-700 mb-1">OG Image
-                                    URL</label>
-                                <input type="url" name="seo_og_image" id="seo_og_image"
-                                    value="{{ old('seo_og_image', $settings->seo_og_image) }}"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            </div>
-                            <div>
-                                <label for="seo_robots" class="block text-sm font-medium text-gray-700 mb-1">Robots
-                                    Meta</label>
-                                <input type="text" name="seo_robots" id="seo_robots"
-                                    value="{{ old('seo_robots', $settings->seo_robots) }}" placeholder="index, follow"
-                                    class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            </div>
+                            <x-ui.toggle name="whatsapp_enabled" :checked="$s->whatsapp_enabled" />
                         </div>
                     </div>
                 </div>
             </div>
 
-            {{-- Save Button --}}
-            <div class="flex justify-end mt-6">
-                <button type="submit"
-                    class="inline-flex justify-center items-center px-6 py-3 rounded-lg bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
-                    Save Settings
+            {{-- Notifications --}}
+            <div class="mb-2">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-blue">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.003 2.003 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    </span>
+                    Notifications
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="notification_email" type="email" label="Notification Email" :value="$s->notification_email" hint="Receives quote / contact / demo enquiries." /></div>
+                </div>
+            </div>
+            <x-admin.drawer-footer save-label="Save Contact" />
+        </form>
+    </div>
+
+    {{-- EMAIL (SMTP) --}}
+    <div data-tabpanel="email" class="admin-card p-5 hidden">
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'email') }}" novalidate>
+            @csrf @method('PUT')
+            {{-- SMTP Configuration --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-blue">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </span>
+                    SMTP Configuration
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">Leave host/username empty to keep using the server .env mail config.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <x-ui.input name="mail_host" label="SMTP Host" :value="$s->mail_host" placeholder="mail.aktechsol.pk" />
+                    <x-ui.input name="mail_port" type="number" label="SMTP Port" :value="$s->mail_port" placeholder="587" />
+                    <x-ui.input name="mail_username" label="SMTP Username" :value="$s->mail_username" />
+                    <x-ui.password name="mail_password" label="SMTP Password" placeholder="{{ $s->mail_password ? '•••••• (saved — blank keeps)' : '' }}" autocomplete="new-password" />
+                    <x-ui.select name="mail_encryption" label="Encryption" :value="$s->mail_encryption ?? 'tls'" :options="['tls' => 'TLS', 'ssl' => 'SSL', 'none' => 'None']" />
+                </div>
+            </div>
+
+            {{-- Sender --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-violet">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    </span>
+                    Sender
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="mail_from_name" label="From Name" :value="$s->mail_from_name" placeholder="AK Tech Sol" /></div>
+                    <div class="md:col-span-2"><x-ui.input name="mail_from_address" type="email" label="From Address" :value="$s->mail_from_address" placeholder="info@aktechsol.com" /></div>
+                </div>
+            </div>
+
+            {{-- Test Email --}}
+            <div class="mb-2">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-green">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </span>
+                    Test Email
+                </h3>
+                <div class="flex flex-wrap gap-3 items-end">
+                    <div class="w-80 max-w-full"><x-ui.input name="test_email_to" id="test-email-to" type="email" label="Recipient" placeholder="test@example.com" /></div>
+                    <div style="margin-bottom: 1rem;">
+                        <button type="button" class="btn btn-secondary shrink-0" onclick="sendTestEmail(this)">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                            Send Test Email
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <x-admin.drawer-footer save-label="Save Email Settings" />
+        </form>
+    </div>
+
+    {{-- PAYMENTS --}}
+    <div data-tabpanel="payments" class="admin-card p-5 hidden">
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'payments') }}" novalidate>
+            @csrf @method('PUT')
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-green">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                    </span>
+                    Payment Methods
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">Shown to clients on invoices (manual payments). Add each method with its account details.</p>
+                <div id="payment-methods" class="space-y-4">
+                    @forelse (($s->payment_methods ?? []) as $pm)
+                        <div class="pm-card">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                                <div class="ui-field"><label class="ui-label">Payment Method</label><div class="ui-input-wrap"><input name="payment_methods[][method]" class="ui-control" value="{{ $pm['method'] ?? $pm['name'] ?? '' }}" placeholder="Easypaisa / JazzCash / Bank Transfer"></div></div>
+                                <div class="ui-field"><label class="ui-label">Account Holder Name</label><div class="ui-input-wrap"><input name="payment_methods[][account_holder]" class="ui-control" value="{{ $pm['account_holder'] ?? '' }}" placeholder="Muhammad Hamza"></div></div>
+                                <div class="ui-field"><label class="ui-label">Bank Name</label><div class="ui-input-wrap"><input name="payment_methods[][bank_name]" class="ui-control" value="{{ $pm['bank_name'] ?? '' }}" placeholder="Meezan Bank"></div></div>
+                                <div class="ui-field"><label class="ui-label">Account Number</label><div class="ui-input-wrap"><input name="payment_methods[][account_number]" class="ui-control" value="{{ $pm['account_number'] ?? '' }}" placeholder="0300 1234567"></div></div>
+                                <div class="md:col-span-3 ui-field"><label class="ui-label">IBAN</label><div class="ui-input-wrap"><input name="payment_methods[][iban]" class="ui-control" value="{{ $pm['iban'] ?? '' }}" placeholder="PK36SCBL0000001123456702"></div></div>
+                                <div class="flex items-end justify-end"><button type="button" class="btn btn-ghost !text-red-500" onclick="removePaymentRow(this)" title="Remove" class="btn btn-ghost !text-red-500 pm-remove">✕ Remove</button></div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="pm-card">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                                <div class="ui-field"><label class="ui-label">Payment Method</label><div class="ui-input-wrap"><input name="payment_methods[][method]" class="ui-control" placeholder="Easypaisa / JazzCash / Bank Transfer"></div></div>
+                                <div class="ui-field"><label class="ui-label">Account Holder Name</label><div class="ui-input-wrap"><input name="payment_methods[][account_holder]" class="ui-control" placeholder="Muhammad Hamza"></div></div>
+                                <div class="ui-field"><label class="ui-label">Bank Name</label><div class="ui-input-wrap"><input name="payment_methods[][bank_name]" class="ui-control" placeholder="Meezan Bank"></div></div>
+                                <div class="ui-field"><label class="ui-label">Account Number</label><div class="ui-input-wrap"><input name="payment_methods[][account_number]" class="ui-control" placeholder="0300 1234567"></div></div>
+                                <div class="md:col-span-3 ui-field"><label class="ui-label">IBAN</label><div class="ui-input-wrap"><input name="payment_methods[][iban]" class="ui-control" placeholder="PK36SCBL0000001123456702"></div></div>
+                                <div class="flex items-end justify-end"><button type="button" class="btn btn-ghost !text-red-500" onclick="removePaymentRow(this)" title="Remove" class="btn btn-ghost !text-red-500 pm-remove">✕ Remove</button></div>
+                            </div>
+                        </div>
+                    @endforelse
+                </div>
+                <button type="button" class="btn btn-secondary mt-3" onclick="addPaymentRow()">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                    Add Method
                 </button>
             </div>
+            <x-admin.drawer-footer save-label="Save Payments" />
+        </form>
+    </div>
+
+    {{-- POPUP --}}
+    <div data-tabpanel="popup" class="admin-card p-5 hidden">
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'popup') }}" novalidate enctype="multipart/form-data">
+            @csrf @method('PUT')
+            {{-- Visibility --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-violet">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+                    </span>
+                    Visibility
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2">
+                        <div class="toggle-box">
+                            <div class="flex items-center gap-3">
+                                <span class="tb-icon sec-violet">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.999 3.999 0 01-1.564-.317z"/></svg>
+                                </span>
+                                <div>
+                                    <p class="tb-title">Announcement Popup</p>
+                                    <p class="tb-desc">Show popup on website</p>
+                                </div>
+                            </div>
+                            <x-ui.toggle name="popup_enabled" :checked="$s->popup_enabled" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Content --}}
+            <div class="mb-2">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-blue">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    </span>
+                    Content
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-3">
+                    <div class="md:col-span-4"><x-ui.input name="popup_title" label="Popup Title" :value="$s->popup_title" placeholder="Special Offer!" /></div>
+                    <div class="md:col-span-4"><x-ui.input name="popup_btn_text" label="Button Text" :value="$s->popup_btn_text" placeholder="Get Started" /></div>
+                    <div class="md:col-span-4"><x-ui.input name="popup_btn_url" type="url" label="Button URL" :value="$s->popup_btn_url" placeholder="/contact" /></div>
+                    <div class="md:col-span-6"><x-ui.textarea name="popup_message" label="Message" rows="4" :value="$s->popup_message" placeholder="Write your announcement message…" /></div>
+                    <div class="md:col-span-6" data-brand-preview="popup_image">
+                        @if ($popupImageUrl)<img src="{{ $popupImageUrl }}" class="h-16 mb-2 rounded-lg bg-slate-100 p-1 dark:bg-white/10" alt="Popup image">@endif
+                        <x-ui.file name="popup_image" label="Popup Image (optional)" accept="image/jpeg,image/jpg,image/png,image/webp" hint="Shown on the popup. JPG/PNG/WebP, max 2MB." />
+                    </div>
+                </div>
+            </div>
+            <x-admin.drawer-footer save-label="Save Popup" />
+        </form>
+    </div>
+
+    {{-- HOMEPAGE --}}
+    <div data-tabpanel="homepage" class="admin-card p-5 hidden">
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'homepage') }}" novalidate>
+            @csrf @method('PUT')
+            {{-- Brand --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-blue">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                    </span>
+                    Brand
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-4"><x-ui.input name="brand_message" label="Brand Message" :value="$s->brand_message" placeholder="AK Tech Sol is your complete digital solution partner" /></div>
+                </div>
+            </div>
+
+            {{-- Demo Video --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-violet">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </span>
+                    Demo Video
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="demo_video_url" type="url" label="Demo Video URL" :value="$s->demo_video_url" placeholder="https://youtube.com/…" /></div>
+                    <div class="md:col-span-2"><x-ui.input name="demo_video_title" label="Demo Video Title" :value="$s->demo_video_title" placeholder="Watch our story" /></div>
+                </div>
+            </div>
+
+            {{-- About Section --}}
+            <div class="mb-2">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-amber">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </span>
+                    About Section
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="about_hero_title" label="Hero Title" :value="$s->about_hero_title" placeholder="About Us" /></div>
+                    <div class="md:col-span-2"><x-ui.input name="about_intro_title" label="Intro Title" :value="$s->about_intro_title" placeholder="Who We Are" /></div>
+                    <div class="md:col-span-2"><x-ui.textarea name="about_hero_subtitle" label="Hero Subtitle" rows="2" :value="$s->about_hero_subtitle" /></div>
+                    <div class="md:col-span-2"><x-ui.textarea name="about_intro_text" label="Intro Text" rows="2" :value="$s->about_intro_text" /></div>
+                    <div class="md:col-span-2"><x-ui.input name="about_mission_title" label="Mission Title" :value="$s->about_mission_title" placeholder="Our Mission & Values" /></div>
+                    <div class="md:col-span-2"><x-ui.textarea name="about_mission_subtitle" label="Mission Subtitle" rows="2" :value="$s->about_mission_subtitle" /></div>
+                </div>
+            </div>
+            <x-admin.drawer-footer save-label="Save Homepage" />
+        </form>
+    </div>
+
+    {{-- SEO --}}
+    <div data-tabpanel="seo" class="admin-card p-5 hidden">
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'seo') }}" novalidate enctype="multipart/form-data">
+            @csrf @method('PUT')
+            {{-- Meta Tags --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-blue">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                    </span>
+                    Meta Tags
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="seo_title" label="Meta Title" :value="$s->seo_title" placeholder="AK Tech Sol — Digital Agency" /></div>
+                    <div class="md:col-span-2"><x-ui.input name="seo_keywords" label="Meta Keywords" :value="$s->seo_keywords" placeholder="web development, design, …" /></div>
+                    <div class="md:col-span-4"><x-ui.textarea name="seo_description" label="Meta Description" rows="2" :value="$s->seo_description" placeholder="Short description for search engines…" /></div>
+                </div>
+            </div>
+
+            {{-- Indexing & Social --}}
+            <div class="mb-2">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-green">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </span>
+                    Indexing & Social
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="seo_canonical_url" type="url" label="Canonical URL" :value="$s->seo_canonical_url" placeholder="https://aktechsol.pk" /></div>
+                    <div class="md:col-span-2"><x-ui.input name="seo_robots" label="Robots" :value="$s->seo_robots" placeholder="index, follow" /></div>
+                    <div class="md:col-span-2" data-brand-preview="seo_og_image">
+                        @if ($seoOgImageUrl)<img src="{{ $seoOgImageUrl }}" class="h-16 mb-2 rounded-lg bg-slate-100 p-1 dark:bg-white/10" alt="OG image">@endif
+                        <x-ui.file name="seo_og_image" label="OG Image (optional)" accept="image/jpeg,image/jpg,image/png,image/webp" hint="Shown when sharing links. JPG/PNG/WebP, max 2MB." />
+                    </div>
+                </div>
+            </div>
+            <x-admin.drawer-footer save-label="Save SEO" />
+        </form>
+    </div>
+
+    {{-- CHATBOT --}}
+    <div data-tabpanel="chatbot" class="admin-card p-5 hidden">
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'chatbot') }}" novalidate>
+            @csrf @method('PUT')
+            {{-- Widget --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-blue">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    </span>
+                    Widget
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2">
+                        <div class="toggle-box">
+                            <div class="flex items-center gap-3">
+                                <span class="tb-icon sec-blue">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                </span>
+                                <div>
+                                    <p class="tb-title">Chatbot Widget</p>
+                                    <p class="tb-desc">Show on website</p>
+                                </div>
+                            </div>
+                            <x-ui.toggle name="chatbot_enabled" :checked="$s->chatbot_enabled" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Appearance --}}
+            <div class="mb-2">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-violet">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                    </span>
+                    Appearance
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="chatbot_team_name" label="Team Name" :value="$s->chatbot_team_name" placeholder="AK Tech Sol Team" hint="Shown in the widget header." /></div>
+                    <div class="md:col-span-2"><x-ui.input name="chatbot_greeting" label="Greeting Message" :value="$s->chatbot_greeting" placeholder="Hi! How can we help you today?" /></div>
+                </div>
+            </div>
+            <x-admin.drawer-footer save-label="Save Chatbot" />
         </form>
     </div>
 @endsection
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/quill/quill.snow.css') }}">
-    <style>
-        .ql-editor {
-            min-height: 250px;
-        }
-    </style>
-@endpush
-
 @push('scripts')
-    <script src="{{ asset('assets/vendor/quill/quill.js') }}"></script>
-    <script>
-        (function() {
-            // Tab switching
-            const tabLinks = document.querySelectorAll('.tab-link');
-            const tabPanels = document.querySelectorAll('.tab-panel');
+<script>
+// Tab switching with localStorage persistence (tailor-app pattern)
+(function () {
+    const bar = document.getElementById('settings-tabs');
+    const panels = document.querySelectorAll('[data-tabpanel]');
+    const fromUrl = new URLSearchParams(location.search).get('tab');
 
-            function switchTab(targetId) {
-                tabPanels.forEach(panel => panel.classList.add('hidden'));
-                const activePanel = document.getElementById('tab-' + targetId);
-                if (activePanel) activePanel.classList.remove('hidden');
+    function show(key) {
+        bar.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === key));
+        panels.forEach(p => p.classList.toggle('hidden', p.dataset.tabpanel !== key));
+        localStorage.setItem('aktechsol_settings_tab', key);
+    }
+    bar.addEventListener('click', e => {
+        const btn = e.target.closest('[data-tab]');
+        if (btn) show(btn.dataset.tab);
+    });
+    show(fromUrl || localStorage.getItem('aktechsol_settings_tab') || @json($tab));
+})();
 
-                tabLinks.forEach(link => {
-                    link.classList.remove('active', 'text-blue-600', 'border-blue-600');
-                    link.classList.add('text-gray-500', 'border-transparent');
-                });
-                const activeLink = document.querySelector(`.tab-link[data-tab="${targetId}"]`);
-                if (activeLink) {
-                    activeLink.classList.add('active', 'text-blue-600', 'border-blue-600');
-                    activeLink.classList.remove('text-gray-500', 'border-transparent');
-                }
+function addPaymentRow() {
+    const wrap = document.getElementById('payment-methods');
+    const div = document.createElement('div');
+    div.className = 'pm-card';
+    div.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="ui-field"><label class="ui-label">Payment Method</label><div class="ui-input-wrap"><input name="payment_methods[][method]" class="ui-control" placeholder="Easypaisa / JazzCash / Bank Transfer"></div></div>
+        <div class="ui-field"><label class="ui-label">Account Holder Name</label><div class="ui-input-wrap"><input name="payment_methods[][account_holder]" class="ui-control" placeholder="Muhammad Hamza"></div></div>
+        <div class="ui-field"><label class="ui-label">Bank Name</label><div class="ui-input-wrap"><input name="payment_methods[][bank_name]" class="ui-control" placeholder="Meezan Bank"></div></div>
+        <div class="ui-field"><label class="ui-label">Account Number</label><div class="ui-input-wrap"><input name="payment_methods[][account_number]" class="ui-control" placeholder="0300 1234567"></div></div>
+        <div class="md:col-span-3 ui-field"><label class="ui-label">IBAN</label><div class="ui-input-wrap"><input name="payment_methods[][iban]" class="ui-control" placeholder="PK36SCBL0000001123456702"></div></div>
+        <div class="flex items-end justify-end"><button type="button" class="btn btn-ghost !text-red-500 pm-remove" onclick="removePaymentRow(this)">✕ Remove</button></div>
+    </div>`;
+    wrap.appendChild(div);
+    refreshPaymentRemoveButtons();
+}
+function removePaymentRow(btn) {
+    const wrap = document.getElementById('payment-methods');
+    const cards = wrap.querySelectorAll('.pm-card');
+    if (cards.length <= 1) {
+        window.notify?.error('At least one payment method is required.');
+        return;
+    }
+    btn.closest('.pm-card').remove();
+    refreshPaymentRemoveButtons();
+}
+function refreshPaymentRemoveButtons() {
+    const wrap = document.getElementById('payment-methods');
+    if (!wrap) return;
+    const cards = wrap.querySelectorAll('.pm-card');
+    cards.forEach((card) => {
+        const btn = card.querySelector('.pm-remove');
+        if (btn) btn.style.display = cards.length > 1 ? '' : 'none';
+    });
+}
+// Init on page load
+document.addEventListener('DOMContentLoaded', refreshPaymentRemoveButtons);
 
-                // Initialize Quill editors when legal tab is opened
-                if (targetId === 'legal' && !window.legalEditorsInitialized) {
-                    initLegalEditors();
-                    window.legalEditorsInitialized = true;
-                }
-            }
-
-            tabLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    switchTab(this.getAttribute('data-tab'));
-                });
-            });
-
-            // Quill initialization for legal pages
-            function initLegalEditors() {
-                var privacyHidden = document.getElementById('privacy_policy_content');
-                var privacyEditor = document.getElementById('privacy-editor');
-                if (privacyHidden && privacyEditor) {
-                    var quillPrivacy = new Quill(privacyEditor, {
-                        theme: 'snow',
-                        modules: {
-                            toolbar: [
-                                ['bold', 'italic', 'underline'],
-                                [{
-                                    'list': 'ordered'
-                                }, {
-                                    'list': 'bullet'
-                                }],
-                                ['link'],
-                                ['clean']
-                            ]
-                        }
-                    });
-                    quillPrivacy.root.innerHTML = privacyHidden.value;
-                    var form = privacyHidden.closest('form');
-                    if (form) {
-                        form.addEventListener('submit', function() {
-                            privacyHidden.value = quillPrivacy.root.innerHTML;
-                        });
-                    }
-                }
-
-                var termsHidden = document.getElementById('terms_conditions_content');
-                var termsEditor = document.getElementById('terms-editor');
-                if (termsHidden && termsEditor) {
-                    var quillTerms = new Quill(termsEditor, {
-                        theme: 'snow',
-                        modules: {
-                            toolbar: [
-                                ['bold', 'italic', 'underline'],
-                                [{
-                                    'list': 'ordered'
-                                }, {
-                                    'list': 'bullet'
-                                }],
-                                ['link'],
-                                ['clean']
-                            ]
-                        }
-                    });
-                    quillTerms.root.innerHTML = termsHidden.value;
-                    var termsForm = termsHidden.closest('form');
-                    if (termsForm) {
-                        termsForm.addEventListener('submit', function() {
-                            termsHidden.value = quillTerms.root.innerHTML;
-                        });
-                    }
-                }
-            }
-
-            // If the legal tab is active on load (e.g., after validation error), initialize immediately
-            if (document.querySelector('.tab-link[data-tab="legal"].active')) {
-                initLegalEditors();
-                window.legalEditorsInitialized = true;
-            }
-        })();
-    </script>
+async function sendTestEmail(btn) {
+    const input = document.getElementById('test-email-to');
+    const to = (input?.value || '').trim();
+    if (!to) {
+        window.notify.error('Enter a recipient email first.');
+        input?.focus();
+        return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+        window.notify.error('Please enter a valid email address.');
+        input?.focus();
+        return;
+    }
+    btn = btn || document.querySelector('[onclick^="sendTestEmail"]');
+    const original = btn ? btn.innerHTML : '';
+    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin inline-block">◌</span> Sending…'; }
+    try {
+        const res = await fetch(@json(route('admin.settings.test-email')), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, Accept: 'application/json' },
+            body: JSON.stringify({ email: to }),
+        });
+        const data = await res.json().catch(() => ({}));
+        res.ok ? window.notify.success(data.message || 'Test email sent.') : window.notify.error(data.message || `Failed (HTTP ${res.status}).`);
+    } catch (e) { window.notify.error('Request failed. Check your connection.'); }
+    finally { if (btn) { btn.disabled = false; btn.innerHTML = original; } }
+}
+</script>
 @endpush

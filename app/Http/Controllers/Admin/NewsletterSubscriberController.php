@@ -24,7 +24,15 @@ class NewsletterSubscriberController extends Controller
             }
         }
 
-        $subscribers = $query->paginate(10)->withQueryString();
+        $subscribers = $query->paginate($request->get('per_page', 10));
+
+        if ($request->ajax()) {
+            return response()->json([
+                'rows'       => view('admin.newsletter-subscribers._rows', ['subscribers' => $subscribers])->render(),
+                'pagination' => view('admin.partials.ajax-pagination', ['items' => $subscribers])->render(),
+                'stats'      => "Showing {$subscribers->firstItem()}–{$subscribers->lastItem()} of {$subscribers->total()}",
+            ]);
+        }
 
         return view('admin.newsletter-subscribers.index', compact('subscribers'));
     }
@@ -32,6 +40,11 @@ class NewsletterSubscriberController extends Controller
     public function destroy(NewsletterSubscriber $newsletterSubscriber)
     {
         $newsletterSubscriber->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Subscriber deleted successfully.']);
+        }
+
 
         return redirect()->route('admin.newsletter-subscribers.index')
                          ->with('success', 'Subscriber deleted successfully.');

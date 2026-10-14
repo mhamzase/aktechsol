@@ -1,73 +1,98 @@
+{{--
+    Admin profile — avatar drag & drop (AJAX), profile info (AJAX),
+    two-factor authentication with confirm flow (AJAX).
+--}}
 @extends('admin.layouts.app')
 
 @section('title', 'My Profile')
 
-@section('breadcrumbs')
-    <x-admin.breadcrumbs :items="[['label' => 'Dashboard', 'url' => route('admin.dashboard')], ['label' => 'Profile']]" />
-@endsection
-
 @section('content')
-    <x-admin.page-banner
-        title="My Profile"
-        subtitle="Update your account information"
-    />
+    <x-admin.page-header title="My Profile" subtitle="Update your account information"
+                        icon="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
 
-    <div class="max-w-2xl mx-auto">
-        @if ($errors->any())
-            <x-admin.alert type="error" :messages="$errors->all()" />
-        @endif
+    <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 items-start" id="profile-root"
+         data-avatar-url="{{ route('admin.profile.avatar') }}"
+         data-tfa-status="{{ route('admin.profile.2fa.status') }}"
+         data-tfa-enable="{{ route('admin.profile.2fa.enable') }}"
+         data-tfa-confirm="{{ route('admin.profile.2fa.confirm') }}"
+         data-tfa-disable="{{ route('admin.profile.2fa.disable') }}"
+         data-tfa-regenerate="{{ route('admin.profile.2fa.codes.regenerate') }}">
+        {{-- ============ Profile information ============ --}}
+        <div class="admin-card p-6">
+            <h3 class="text-lg font-bold text-[#0f2a5c]">Profile Information</h3>
 
-        <form action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
-
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6">
-                <h3 class="text-lg font-semibold text-gray-800">Profile Information</h3>
-
-                {{-- Avatar --}}
-                <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden flex-shrink-0">
-                        @if($avatarUrl)
-                            <img src="{{ $avatarUrl }}" alt="Avatar" class="w-full h-full object-cover">
+            {{-- Avatar drag & drop zone --}}
+            <div class="mt-5">
+                <div id="avatar-dropzone"
+                     class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center cursor-pointer transition-colors hover:border-[#1d4ed8] hover:bg-blue-50/50">
+                    <div class="w-24 h-24 mx-auto rounded-full overflow-hidden bg-blue-100 flex items-center justify-center ring-4 ring-blue-50">
+                        @if ($avatarUrl)
+                            <img id="avatar-preview" src="{{ $avatarUrl }}" alt="Avatar" class="w-full h-full object-cover">
+                            <span id="avatar-initial" class="hidden text-3xl font-bold text-blue-600">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
                         @else
-                            <span class="text-2xl font-semibold text-blue-600">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
+                            <img id="avatar-preview" src="" alt="Avatar" class="w-full h-full object-cover hidden">
+                            <span id="avatar-initial" class="text-3xl font-bold text-blue-600">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
                         @endif
                     </div>
-                    <div>
-                        <label for="avatar" class="block text-sm font-medium text-gray-700 mb-1">Profile Photo</label>
-                        <input type="file" name="avatar" id="avatar" accept="image/*"
-                               class="block w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                        <p class="mt-1 text-xs text-gray-400">Max 2MB. JPG, PNG, WEBP.</p>
-                        @if($avatarUrl)
-                            <label class="inline-flex items-center mt-2 text-sm text-red-600 cursor-pointer">
-                                <input type="checkbox" name="remove_avatar" value="1" class="rounded border-gray-300 text-red-600">
-                                <span class="ml-1">Remove current photo</span>
-                            </label>
-                        @endif
-                    </div>
+                    <p class="mt-3 text-sm text-slate-600">
+                        Drag &amp; drop your photo here, or
+                        <span class="font-semibold text-[#1d4ed8]">browse files</span>
+                    </p>
+                    <p class="mt-1 text-xs text-slate-400">JPG, PNG, WEBP · max 2MB · uploads instantly</p>
+                    <input type="file" id="avatar-input" accept="image/jpeg,image/png,image/webp" class="hidden">
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">Name <span class="text-red-500">*</span></label>
-                        <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required
-                               class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('name') border-red-500 @enderror">
-                        @error('name')<p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">Email <span class="text-red-500">*</span></label>
-                        <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required
-                               class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('email') border-red-500 @enderror">
-                        @error('email')<p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>@enderror
-                    </div>
+                <div class="mt-2 flex items-center justify-between min-h-[1.75rem]">
+                    <p id="avatar-status" class="text-xs text-slate-400"></p>
+                    @if ($avatarUrl)
+                        <button type="button" id="avatar-remove" class="text-xs font-semibold text-red-600 hover:text-red-700">Remove photo</button>
+                    @else
+                        <button type="button" id="avatar-remove" class="hidden text-xs font-semibold text-red-600 hover:text-red-700">Remove photo</button>
+                    @endif
                 </div>
             </div>
 
-            <div class="flex justify-end mt-6">
-                <button type="submit" class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
-                    Update Profile
-                </button>
+            {{-- Name / email (AJAX) --}}
+            <form id="profile-form" action="{{ route('admin.profile.update') }}" method="POST" class="mt-4 space-y-5" novalidate>
+                @csrf
+                @method('PUT')
+                <div class="grid grid-cols-1 gap-5">
+                    <x-ui.input name="name" label="Name" :value="$user->name" required />
+                    <x-ui.input name="email" type="email" label="Email" :value="$user->email" required />
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" id="profile-save-btn" class="btn btn-primary px-6 py-2.5">
+                        Update Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {{-- ============ Two-factor authentication ============ --}}
+        <div class="admin-card p-6">
+            <div class="flex items-center justify-between gap-3">
+                <h3 class="text-lg font-bold text-[#0f2a5c]">Two-Factor Authentication</h3>
+                <span id="tfa-badge"></span>
             </div>
-        </form>
+            <div id="tfa-body" class="mt-4">
+                <x-admin.loader size="sm" />
+            </div>
+        </div>
+    </div>
+
+    {{-- ============ Generic confirm modal ============ --}}
+    <div id="pf-confirm-modal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/50" data-pf-close></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
+            <h4 id="pf-cm-title" class="text-base font-bold text-slate-800"></h4>
+            <p id="pf-cm-text" class="mt-2 text-sm text-slate-500"></p>
+            <div class="mt-5 flex justify-end gap-2">
+                <button type="button" data-pf-close class="btn btn-secondary">Cancel</button>
+                <button type="button" id="pf-cm-ok" class="btn btn-danger">Confirm</button>
+            </div>
+        </div>
     </div>
 @endsection
+
+@push('scripts')
+<script src="{{ asset('assets/js/admin-profile.js') }}"></script>
+@endpush

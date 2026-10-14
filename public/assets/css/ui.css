@@ -1,0 +1,175 @@
+/* ==========================================================================
+   AK Tech Sol — shared UI form components (x-ui.*).
+   One theme, one pattern, everywhere: admin + frontend.
+   Tokens: border #dbe3f5 · radius .6rem · focus #1d4ed8 · Sora font.
+   ========================================================================== */
+
+/* ---- Generic white card (shared) ---- */
+.card { background: #fff; border: 1px solid #eef2fa; border-radius: 1rem; box-shadow: 0 1px 3px rgba(15, 42, 92, 0.05); }
+
+/* ---- Field wrapper / label / hint / error ---- */
+.ui-field { margin-bottom: 1rem; }
+.ui-label { display: block; font-size: 0.78rem; font-weight: 600; color: #334155; margin-bottom: 0.35rem; }
+.ui-label .ui-required { color: #dc2626; font-weight: 700; margin-left: 0.15rem; }
+.ui-hint { font-size: 0.72rem; color: #94a3b8; margin-top: 0.3rem; }
+.ui-error { font-size: 0.72rem; color: #b91c1c; margin-top: 0.3rem; }
+.ui-control-error { border-color: #f87171 !important; }
+.ui-control-error:focus { box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12) !important; }
+
+/* ---- Base control (shared by input/select/textarea/date) ---- */
+.ui-control {
+    width: 100%; border: 1px solid #dbe3f5; border-radius: 0.6rem;
+    padding: 0.55rem 0.8rem; font-size: 0.85rem; color: #0f2a5c; background: #fff;
+    font-family: 'Sora', sans-serif; transition: border-color 0.15s, box-shadow 0.15s;
+}
+.ui-control::placeholder { color: #a3b3d1; }
+.ui-control:focus { outline: none; border-color: #1d4ed8; box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12); }
+.ui-control:disabled { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; }
+select.ui-control {
+    appearance: none; -webkit-appearance: none; padding-right: 2.2rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 0.7rem center; background-size: 1rem;
+}
+textarea.ui-control { resize: vertical; min-height: 5.5rem; }
+
+/* ---- Input with icon / password toggle ---- */
+.ui-input-wrap { position: relative; }
+.ui-input-wrap .ui-icon-left,
+.ui-input-wrap .ui-icon-right { position: absolute; top: 50%; transform: translateY(-50%); color: #94a3b8; display: flex; }
+.ui-input-wrap .ui-icon-left { left: 0.8rem; }
+.ui-input-wrap .ui-icon-right { right: 0.8rem; }
+.ui-input-wrap .ui-icon-left + .ui-control,
+.ui-input-wrap .ui-has-icon-left { padding-left: 2.4rem; }
+.ui-input-wrap .ui-has-icon-right { padding-right: 2.4rem; }
+.ui-icon-btn { background: none; border: none; cursor: pointer; color: #94a3b8; display: flex; padding: 0.15rem; border-radius: 0.35rem; }
+.ui-icon-btn:hover { color: #1d4ed8; background: #eff4ff; }
+
+/* ---- Checkbox & radio (custom, theme-colored) ---- */
+.ui-check { display: flex; align-items: flex-start; gap: 0.6rem; cursor: pointer; user-select: none; }
+.ui-check input { position: absolute; opacity: 0; width: 0; height: 0; }
+.ui-check .ui-box {
+    flex-shrink: 0; width: 1.15rem; height: 1.15rem; margin-top: 0.1rem;
+    border: 2px solid #c3cede; background: #fff; display: inline-flex;
+    align-items: center; justify-content: center; transition: all 0.15s;
+}
+.ui-check input[type="checkbox"] + .ui-box { border-radius: 0.35rem; }
+.ui-check input[type="radio"] + .ui-box { border-radius: 9999px; }
+.ui-check input:checked + .ui-box { background: #1d4ed8; border-color: #1d4ed8; }
+.ui-check input:checked + .ui-box svg { display: block; }
+.ui-check .ui-box svg { display: none; width: 0.7rem; height: 0.7rem; color: #fff; }
+.ui-check input[type="radio"]:checked + .ui-box svg { width: 0.5rem; height: 0.5rem; }
+.ui-check input:focus-visible + .ui-box { box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.25); }
+.ui-check input:disabled + .ui-box { background: #f1f5f9; border-color: #e2e8f0; }
+.ui-check .ui-check-label { font-size: 0.85rem; color: #334155; }
+.ui-check .ui-check-desc { font-size: 0.72rem; color: #94a3b8; margin-top: 0.1rem; }
+.ui-check-group { display: flex; flex-direction: column; gap: 0.55rem; }
+.ui-check-group.ui-inline { flex-direction: row; flex-wrap: wrap; gap: 0.55rem 1.25rem; }
+
+/* ---- Toggle switch (active / inactive) ---- */
+.ui-toggle { display: inline-flex; align-items: center; gap: 0.6rem; cursor: pointer; user-select: none; }
+.ui-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+.ui-toggle .ui-track {
+    flex-shrink: 0; width: 2.6rem; height: 1.45rem; border-radius: 9999px;
+    background: #cbd5e1; position: relative; transition: background 0.2s;
+}
+.ui-toggle .ui-track::after {
+    content: ""; position: absolute; top: 0.2rem; left: 0.2rem;
+    width: 1.05rem; height: 1.05rem; border-radius: 9999px; background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25); transition: transform 0.2s;
+}
+.ui-toggle input:checked + .ui-track { background: #1d4ed8; }
+.ui-toggle input:checked + .ui-track::after { transform: translateX(1.15rem); }
+.ui-toggle input:focus-visible + .ui-track { box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.25); }
+.ui-toggle .ui-toggle-label { font-size: 0.85rem; color: #334155; font-weight: 500; }
+
+/* ---- Multi-select (custom dropdown + tags) ---- */
+.ui-ms { position: relative; }
+.ui-ms-btn {
+    width: 100%; border: 1px solid #dbe3f5; border-radius: 0.6rem; background: #fff;
+    padding: 0.45rem 2.2rem 0.45rem 0.7rem; min-height: 2.6rem; cursor: pointer;
+    display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; text-align: left;
+}
+.ui-ms-btn:focus { outline: none; border-color: #1d4ed8; box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12); }
+.ui-ms-placeholder { color: #a3b3d1; font-size: 0.85rem; }
+.ui-ms-chev { position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%); color: #64748b; pointer-events: none; }
+.ui-ms-tag {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    background: #e8effe; color: #1d4ed8; font-size: 0.75rem; font-weight: 600;
+    border-radius: 9999px; padding: 0.2rem 0.35rem 0.2rem 0.65rem;
+}
+.ui-ms-tag button { display: flex; border: none; background: none; cursor: pointer; color: #1d4ed8; opacity: 0.6; padding: 0.1rem; border-radius: 9999px; }
+.ui-ms-tag button:hover { opacity: 1; background: rgba(29,78,216,0.12); }
+.ui-ms-drop {
+    position: absolute; left: 0; right: 0; top: calc(100% + 0.3rem); z-index: 50;
+    background: #fff; border: 1px solid #e5edfb; border-radius: 0.6rem;
+    box-shadow: 0 12px 28px rgba(15, 42, 92, 0.14); max-height: 14rem; overflow-y: auto; padding: 0.35rem;
+}
+.ui-ms-search { width: 100%; border: 1px solid #e5edfb; border-radius: 0.45rem; padding: 0.4rem 0.6rem; font-size: 0.8rem; margin-bottom: 0.35rem; }
+.ui-ms-search:focus { outline: none; border-color: #1d4ed8; }
+.ui-ms-opt { display: flex; align-items: center; gap: 0.55rem; padding: 0.45rem 0.55rem; border-radius: 0.45rem; cursor: pointer; font-size: 0.83rem; color: #334155; }
+.ui-ms-opt:hover { background: #f2f6ff; }
+.ui-ms-opt.ui-selected { background: #e8effe; color: #1d4ed8; font-weight: 600; }
+.ui-ms-empty { padding: 0.8rem; text-align: center; color: #94a3b8; font-size: 0.8rem; }
+
+/* ---- Date picker (custom calendar popup) ---- */
+.ui-date { position: relative; }
+.ui-date-display { cursor: pointer; background: #fff; }
+.ui-cal {
+    position: absolute; left: 0; top: calc(100% + 0.35rem); z-index: 60; width: 17rem;
+    background: #fff; border: 1px solid #e5edfb; border-radius: 0.75rem;
+    box-shadow: 0 16px 36px rgba(15, 42, 92, 0.16); padding: 0.8rem;
+}
+.ui-cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
+.ui-cal-title { font-weight: 700; font-size: 0.85rem; color: #0f2a5c; display: flex; align-items: center; gap: 0.35rem; }
+.ui-cal-title select { border: 1px solid #e5edfb; border-radius: 0.4rem; font-size: 0.8rem; font-weight: 600; color: #0f2a5c; padding: 0.15rem 0.3rem; background: #fff; }
+.ui-cal-nav { display: flex; gap: 0.15rem; }
+.ui-cal-nav button { width: 1.7rem; height: 1.7rem; border-radius: 0.45rem; border: none; background: none; cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center; }
+.ui-cal-nav button:hover { background: #eef2ff; color: #1d4ed8; }
+.ui-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.1rem; }
+.ui-cal-dow { text-align: center; font-size: 0.65rem; font-weight: 700; color: #94a3b8; padding: 0.25rem 0; text-transform: uppercase; }
+.ui-cal-day {
+    aspect-ratio: 1; border: none; background: none; border-radius: 0.5rem; cursor: pointer;
+    font-size: 0.8rem; color: #334155; display: flex; align-items: center; justify-content: center; font-family: 'Sora', sans-serif;
+}
+.ui-cal-day:hover:not(:disabled) { background: #eef2ff; color: #1d4ed8; }
+.ui-cal-day.ui-out { color: #cbd5e1; }
+.ui-cal-day.ui-today { font-weight: 800; color: #1d4ed8; box-shadow: inset 0 0 0 1.5px #1d4ed8; }
+.ui-cal-day.ui-selected { background: #1d4ed8; color: #fff; font-weight: 700; }
+.ui-cal-day:disabled { color: #e2e8f0; cursor: not-allowed; }
+.ui-cal-foot { display: flex; justify-content: space-between; margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid #f1f5f9; }
+.ui-cal-foot button { border: none; background: none; cursor: pointer; font-size: 0.75rem; font-weight: 600; color: #1d4ed8; padding: 0.25rem 0.5rem; border-radius: 0.4rem; font-family: 'Sora', sans-serif; }
+.ui-cal-foot button:hover { background: #eef2ff; }
+.ui-cal-foot .ui-clear { color: #94a3b8; }
+
+/* ---- Rich text (Quill) ---- */
+.ui-rich .ql-toolbar.ql-snow { border: 1px solid #dbe3f5; border-bottom: none; border-radius: 0.6rem 0.6rem 0 0; background: #f8faff; }
+.ui-rich .ql-container.ql-snow { border: 1px solid #dbe3f5; border-radius: 0 0 0.6rem 0.6rem; font-family: 'Sora', sans-serif; font-size: 0.85rem; }
+.ui-rich .ql-container.ql-snow:focus-within { border-color: #1d4ed8; box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12); }
+.ui-rich .ql-editor { min-height: 9rem; color: #0f2a5c; }
+
+/* ---- File input ---- */
+.ui-file-drop {
+    border: 1.5px dashed #c3cede; border-radius: 0.6rem; background: #f8faff;
+    padding: 1.1rem; text-align: center; cursor: pointer; transition: all 0.15s; display: block;
+}
+.ui-file-drop:hover, .ui-file-drop.ui-drag { border-color: #1d4ed8; background: #eef2ff; }
+.ui-file-drop .ui-file-icon { color: #1d4ed8; margin-bottom: 0.35rem; }
+.ui-file-drop p { font-size: 0.8rem; color: #64748b; margin: 0; }
+.ui-file-drop p strong { color: #1d4ed8; }
+.ui-file-preview { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+.ui-file-preview img { width: 4rem; height: 4rem; object-fit: cover; border-radius: 0.5rem; border: 1px solid #e5edfb; }
+/* Dark mode */
+html.dark .ui-file-drop { background: #1e293b; border-color: #475569; }
+html.dark .ui-file-drop:hover, html.dark .ui-file-drop.ui-drag { border-color: #60a5fa; background: #1e3a5f; }
+html.dark .ui-file-drop .ui-file-icon { color: #60a5fa; }
+html.dark .ui-file-drop p { color: #9ca3af; }
+html.dark .ui-file-drop p strong { color: #60a5fa; }
+.ui-file-preview .ui-file-chip {
+    display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.75rem;
+    background: #eef2ff; color: #334155; border-radius: 0.5rem; padding: 0.35rem 0.6rem;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 640px) {
+    .ui-cal { position: fixed; left: 1rem; right: 1rem; top: auto; bottom: 1rem; width: auto; }
+}

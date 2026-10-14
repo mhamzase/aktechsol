@@ -27,14 +27,29 @@ class TestimonialController extends Controller
             $query->where('status', $status === 'active');
         }
 
-        $testimonials = $query->paginate(10)->withQueryString();
+        $testimonials = $query->paginate($request->get('per_page', 10));
+
+        if ($request->ajax()) {
+            return response()->json([
+                'rows'       => view('admin.testimonials._rows', ['testimonials' => $testimonials])->render(),
+                'pagination' => view('admin.partials.ajax-pagination', ['items' => $testimonials])->render(),
+                'stats'      => "Showing {$testimonials->firstItem()}–{$testimonials->lastItem()} of {$testimonials->total()}",
+            ]);
+        }
 
         return view('admin.testimonials.index', compact('testimonials'));
     }
 
     public function create()
     {
-        return view('admin.testimonials.create');
+        return view('admin.testimonials._form', [
+            'testimonial' => new Testimonial(),
+            'photoUrl' => null,
+            'action' => route('admin.testimonials.store'),
+            'method' => 'POST',
+            'tableId' => 'testimonials-table',
+            'formTitle' => 'Add Testimonial',
+        ]);
     }
 
     public function store(StoreTestimonialRequest $request)
@@ -46,14 +61,24 @@ class TestimonialController extends Controller
                         ->toMediaCollection('photo');
         }
 
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Testimonial created successfully.']);
+        }
+
         return redirect()->route('admin.testimonials.index')
                          ->with('success', 'Testimonial created successfully.');
     }
 
     public function edit(Testimonial $testimonial)
     {
-        $photoUrl = $testimonial->getPhotoUrl();
-        return view('admin.testimonials.edit', compact('testimonial', 'photoUrl'));
+        return view('admin.testimonials._form', [
+            'testimonial' => $testimonial,
+            'photoUrl' => $testimonial->getPhotoUrl(),
+            'action' => route('admin.testimonials.update', $testimonial),
+            'method' => 'PUT',
+            'tableId' => 'testimonials-table',
+            'formTitle' => 'Edit Testimonial',
+        ]);
     }
 
     public function update(UpdateTestimonialRequest $request, Testimonial $testimonial)
@@ -66,6 +91,10 @@ class TestimonialController extends Controller
                         ->toMediaCollection('photo');
         }
 
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Testimonial updated successfully.']);
+        }
+
         return redirect()->route('admin.testimonials.index')
                          ->with('success', 'Testimonial updated successfully.');
     }
@@ -73,6 +102,11 @@ class TestimonialController extends Controller
     public function destroy(Testimonial $testimonial)
     {
         $testimonial->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Testimonial deleted successfully.']);
+        }
+
         return redirect()->route('admin.testimonials.index')
                          ->with('success', 'Testimonial deleted successfully.');
     }

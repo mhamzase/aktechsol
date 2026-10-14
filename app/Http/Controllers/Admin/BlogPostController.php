@@ -30,15 +30,30 @@ class BlogPostController extends Controller
             $query->where('status', $status === 'active');
         }
 
-        $posts = $query->paginate(10)->withQueryString();
+        $posts = $query->paginate($request->get('per_page', 10));
+
+        if ($request->ajax()) {
+            return response()->json([
+                'rows'       => view('admin.blog-posts._rows', ['posts' => $posts])->render(),
+                'pagination' => view('admin.partials.ajax-pagination', ['items' => $posts])->render(),
+                'stats'      => "Showing {$posts->firstItem()}–{$posts->lastItem()} of {$posts->total()}",
+            ]);
+        }
 
         return view('admin.blog-posts.index', compact('posts'));
     }
 
     public function create()
     {
-        $categories = BlogCategory::orderBy('name')->get();
-        return view('admin.blog-posts.create', compact('categories'));
+        return view('admin.blog-posts._form', [
+            'blogPost' => new BlogPost(),
+            'categories' => BlogCategory::orderBy('name')->get(),
+            'featuredUrl' => null,
+            'action' => route('admin.blog-posts.store'),
+            'method' => 'POST',
+            'tableId' => 'blog-posts-table',
+            'formTitle' => 'Add Post',
+        ]);
     }
 
     public function store(StoreBlogPostRequest $request)
@@ -50,15 +65,25 @@ class BlogPostController extends Controller
                 ->toMediaCollection('featured_image');
         }
 
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Blog post created successfully.']);
+        }
+
         return redirect()->route('admin.blog-posts.index')
             ->with('success', 'Blog post created successfully.');
     }
 
     public function edit(BlogPost $blogPost)
     {
-        $categories = BlogCategory::orderBy('name')->get();
-        $featuredUrl = $blogPost->getFeaturedImageUrl();
-        return view('admin.blog-posts.edit', compact('blogPost', 'categories', 'featuredUrl'));
+        return view('admin.blog-posts._form', [
+            'blogPost' => $blogPost,
+            'categories' => BlogCategory::orderBy('name')->get(),
+            'featuredUrl' => $blogPost->getFeaturedImageUrl(),
+            'action' => route('admin.blog-posts.update', $blogPost),
+            'method' => 'PUT',
+            'tableId' => 'blog-posts-table',
+            'formTitle' => 'Edit Post',
+        ]);
     }
 
     public function update(UpdateBlogPostRequest $request, BlogPost $blogPost)
@@ -71,6 +96,10 @@ class BlogPostController extends Controller
                 ->toMediaCollection('featured_image');
         }
 
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Blog post updated successfully.']);
+        }
+
         return redirect()->route('admin.blog-posts.index')
             ->with('success', 'Blog post updated successfully.');
     }
@@ -78,6 +107,11 @@ class BlogPostController extends Controller
     public function destroy(BlogPost $blogPost)
     {
         $blogPost->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Blog post deleted successfully.']);
+        }
+
         return redirect()->route('admin.blog-posts.index')
             ->with('success', 'Blog post deleted successfully.');
     }

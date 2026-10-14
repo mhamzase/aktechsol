@@ -31,15 +31,30 @@ class ServiceController extends Controller
             $query->where('status', $status === 'active');
         }
 
-        $services = $query->paginate(10)->withQueryString();
+        $services = $query->paginate($request->get('per_page', 10));
 
-        return view('admin.services.index', compact('services'));
+        if ($request->ajax()) {
+            return response()->json([
+                'rows'       => view('admin.services._rows', compact('services'))->render(),
+                'pagination' => view('admin.partials.ajax-pagination', ['items' => $services])->render(),
+                'stats'      => "Showing {$services->firstItem()}–{$services->lastItem()} of {$services->total()}",
+            ]);
+        }
+
+        return view('admin.services.index');
     }
 
     public function create()
     {
-        $categories = ServiceCategory::orderBy('name')->get();
-        return view('admin.services.create', compact('categories'));
+        return view('admin.services._form', [
+            'service' => new Service(),
+            'categories' => ServiceCategory::orderBy('name')->get(),
+            'thumbnailUrl' => null,
+            'action' => route('admin.services.store'),
+            'method' => 'POST',
+            'tableId' => 'services-table',
+            'formTitle' => 'Add Service',
+        ]);
     }
 
     public function store(StoreServiceRequest $request)
@@ -51,16 +66,26 @@ class ServiceController extends Controller
                 ->toMediaCollection('service_image');
         }
 
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Service created successfully.']);
+        }
+
         return redirect()->route('admin.services.index')
             ->with('success', 'Service created successfully.');
     }
 
-  public function edit(Service $service)
-{
-    $categories = ServiceCategory::orderBy('name')->get();
-    $thumbnailUrl = $service->getThumbnailUrl();
-    return view('admin.services.edit', compact('service', 'categories', 'thumbnailUrl'));
-}
+      public function edit(Service $service)
+    {
+        return view('admin.services._form', [
+            'service' => $service,
+            'categories' => ServiceCategory::orderBy('name')->get(),
+            'thumbnailUrl' => $service->getThumbnailUrl(),
+            'action' => route('admin.services.update', $service),
+            'method' => 'PUT',
+            'tableId' => 'services-table',
+            'formTitle' => 'Edit Service',
+        ]);
+    }
 
     public function update(UpdateServiceRequest $request, Service $service)
     {
@@ -72,6 +97,10 @@ class ServiceController extends Controller
                 ->toMediaCollection('service_image');
         }
 
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Service updated successfully.']);
+        }
+
         return redirect()->route('admin.services.index')
             ->with('success', 'Service updated successfully.');
     }
@@ -79,6 +108,11 @@ class ServiceController extends Controller
     public function destroy(Service $service)
     {
         $service->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Service deleted successfully.']);
+        }
+
         return redirect()->route('admin.services.index')
             ->with('success', 'Service deleted successfully.');
     }

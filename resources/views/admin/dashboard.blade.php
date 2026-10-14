@@ -3,104 +3,165 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <x-admin.page-banner
-        title="Dashboard"
-        subtitle="Welcome back, {{ auth()->user()->name }}!"
-        stats="{{ $stats['services'] }} services | {{ $stats['projects'] }} projects"
-    />
+    @php
+        $firstName = explode(' ', trim(auth()->user()->name ?? 'Admin'))[0];
+        $todayLine = now()->format('l, d F Y');
+    @endphp
+    <x-admin.page-header title="Welcome back, {{ $firstName }}"
+                        subtitle="Here's what's happening at your agency today · {{ $todayLine }}."
+                        icon="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+        <x-slot:meta>
+            <div class="hero-chip">
+                <p class="hc-value">{{ $stats['quotes_new'] }}</p>
+                <p class="hc-label">New Quotes</p>
+            </div>
+            <div class="hero-chip">
+                <p class="hc-value">{{ $stats['chats_unanswered'] }}</p>
+                <p class="hc-label">Unanswered</p>
+            </div>
+        </x-slot:meta>
+    </x-admin.page-header>
 
     {{-- Stat cards --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {{-- Services --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                <svg class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                </svg>
-            </div>
-            <div>
-                <p class="text-2xl font-bold text-gray-900">{{ $stats['services'] }}</p>
-                <p class="text-sm text-gray-500 font-medium">Services</p>
-            </div>
-        </div>
+    @php
+        $revNow = (float) $stats['revenue_month'];
+        $revLast = (float) $trends['revenue_last_month'];
+        $revTrend = $revLast > 0
+            ? ['dir' => $revNow >= $revLast ? 'up' : 'down',
+               'text' => abs(round(($revNow - $revLast) / $revLast * 100)) . '% vs last month']
+            : ['dir' => $revNow > 0 ? 'up' : 'flat',
+               'text' => $revNow > 0 ? 'first revenue this month' : 'no revenue yet'];
 
-        {{-- Projects --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
-                <svg class="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                </svg>
-            </div>
-            <div>
-                <p class="text-2xl font-bold text-gray-900">{{ $stats['projects'] }}</p>
-                <p class="text-sm text-gray-500 font-medium">Projects</p>
-            </div>
-        </div>
-
-        {{-- Blog Posts --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
-                <svg class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-                </svg>
-            </div>
-            <div>
-                <p class="text-2xl font-bold text-gray-900">{{ $stats['blog_posts'] }}</p>
-                <p class="text-sm text-gray-500 font-medium">Blog Posts</p>
-            </div>
-        </div>
-
-        {{-- Testimonials --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
-                <svg class="h-6 w-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                </svg>
-            </div>
-            <div>
-                <p class="text-2xl font-bold text-gray-900">{{ $stats['testimonials'] }}</p>
-                <p class="text-sm text-gray-500 font-medium">Testimonials</p>
-            </div>
-        </div>
-    </div>
-
-    {{-- Quick Actions --}}
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
-        <div class="flex flex-wrap gap-3">
-            <a href="{{ route('admin.services.create') }}" class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition">
-                + New Service
-            </a>
-            <a href="{{ route('admin.projects.create') }}" class="inline-flex items-center px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition">
-                + New Project
-            </a>
-            <a href="{{ route('admin.blog-posts.create') }}" class="inline-flex items-center px-4 py-2 rounded-lg bg-purple-600 text-white text-sm font-semibold hover:bg-purple-700 transition">
-                + New Blog Post
-            </a>
-            <a href="{{ route('admin.testimonials.create') }}" class="inline-flex items-center px-4 py-2 rounded-lg bg-amber-600 text-white text-sm font-semibold hover:bg-amber-700 transition">
-                + New Testimonial
-            </a>
-        </div>
-    </div>
-
-    {{-- Recent Contact Messages --}}
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold text-gray-800">Recent Contact Messages</h3>
-            <a href="{{ route('admin.contact-messages.index') }}" class="text-sm text-blue-600 hover:text-blue-800">View All</a>
-        </div>
-        <div class="space-y-3">
-            @forelse($recentMessages as $message)
-                <div class="flex items-center justify-between border-b border-gray-100 pb-3 last:border-0">
-                    <div>
-                        <p class="text-sm font-medium text-gray-900">{{ $message->name }}</p>
-                        <p class="text-xs text-gray-500">{{ $message->subject }}</p>
+        $cards = [
+            ['label' => 'New Quotes', 'value' => $stats['quotes_new'],
+             'tile' => 'bg-amber-100 text-amber-600', 'accent' => '#f59e0b',
+             'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
+             'trend' => ['dir' => $trends['quotes_week'] > 0 ? 'up' : 'flat',
+                         'text' => $trends['quotes_week'] > 0 ? '+' . $trends['quotes_week'] . ' this week' : 'none this week']],
+            ['label' => 'Active Projects', 'value' => $stats['projects_active'],
+             'tile' => 'bg-blue-100 text-blue-600', 'accent' => '#1d4ed8',
+             'icon' => 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10',
+             'trend' => ['dir' => 'flat', 'text' => 'in pipeline']],
+            ['label' => 'Revenue · this month', 'value' => 'PKR ' . number_format($stats['revenue_month']),
+             'tile' => 'bg-emerald-100 text-emerald-600', 'accent' => '#10b981',
+             'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+             'trend' => $revTrend],
+            ['label' => 'Unanswered Chats', 'value' => $stats['chats_unanswered'],
+             'tile' => 'bg-violet-100 text-violet-600', 'accent' => '#8b5cf6',
+             'icon' => 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
+             'trend' => ['dir' => $stats['chats_unanswered'] > 0 ? 'down' : 'up',
+                         'text' => $stats['chats_unanswered'] > 0 ? 'need a reply' : 'all caught up']],
+        ];
+        $trendArrow = ['up' => '↑', 'down' => '↓', 'flat' => '→'];
+    @endphp
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+        @foreach ($cards as $card)
+            <div class="admin-card stat-card p-5" style="--stat-accent: {{ $card['accent'] }};">
+                <div class="flex items-center gap-4">
+                    <div class="stat-tile {{ $card['tile'] }}">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $card['icon'] }}"/></svg>
                     </div>
-                    <span class="text-xs text-gray-400">{{ $message->created_at->diffForHumans() }}</span>
+                    <div class="min-w-0">
+                        <p class="text-sm text-slate-500">{{ $card['label'] }}</p>
+                        <p class="text-2xl font-extrabold text-slate-900 mt-0.5 truncate">{{ $card['value'] }}</p>
+                    </div>
                 </div>
-            @empty
-                <p class="text-sm text-gray-500">No messages yet.</p>
-            @endforelse
+                <span class="stat-trend {{ $card['trend']['dir'] }}">{{ $trendArrow[$card['trend']['dir']] }} {{ $card['trend']['text'] }}</span>
+            </div>
+        @endforeach
+    </div>
+
+    {{-- Charts --}}
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-6">
+        <div class="admin-card p-5 xl:col-span-2">
+            <div class="flex items-start justify-between mb-3">
+                <div>
+                    <h3 class="font-bold text-slate-900">Quotes & Revenue</h3>
+                    <p class="text-xs text-slate-400 mt-0.5">Last 6 months</p>
+                </div>
+                <svg class="h-5 w-5 card-corner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            </div>
+            <div id="chart-quotes-revenue"
+                 data-labels='@json($quotesByMonth->keys())'
+                 data-quotes='@json($quotesByMonth->values())'
+                 data-revenue='@json($revenueByMonth->values())'></div>
+        </div>
+        <div class="admin-card p-5">
+            <div class="flex items-start justify-between mb-3">
+                <div>
+                    <h3 class="font-bold text-slate-900">Project Pipeline</h3>
+                    <p class="text-xs text-slate-400 mt-0.5">By status</p>
+                </div>
+                <svg class="h-5 w-5 card-corner-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+            </div>
+            <div id="chart-pipeline"
+                 data-labels='@json($projectPipeline->keys())'
+                 data-values='@json($projectPipeline->values())'></div>
+        </div>
+    </div>
+
+    {{-- Needs Attention --}}
+    <div class="admin-card p-5">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h3 class="font-bold text-slate-900">Needs Attention</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Items waiting for your action</p>
+            </div>
+            @php $pending = $attention['quotes']->count() + $attention['chats']->count() + $attention['invoices']->count() + $attention['demos']->count() + $attention['jobs']->count(); @endphp
+            <span class="badge {{ $pending ? 'badge-red' : 'badge-green' }}">{{ $pending }} pending</span>
+        </div>
+
+        @php
+            $groups = [
+                ['title' => 'New Quotes', 'items' => $attention['quotes'], 'route' => 'admin.quotes.index',
+                 'color' => '#1d4ed8', 'tint' => '#e8f0fe',
+                 'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
+                 'line' => fn($q) => $q->name . ($q->subject ? ' — ' . $q->subject : '')],
+                ['title' => 'Unanswered Chats', 'items' => $attention['chats'], 'route' => 'admin.chatbot.index',
+                 'color' => '#8b5cf6', 'tint' => '#f0eafe',
+                 'icon' => 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
+                 'line' => fn($c) => \Illuminate\Support\Str::limit($c->query, 50)],
+                ['title' => 'Unpaid Invoices', 'items' => $attention['invoices'], 'route' => 'admin.invoices.index',
+                 'color' => '#f59e0b', 'tint' => '#fef5e3',
+                 'icon' => 'M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z',
+                 'line' => fn($i) => $i->invoice_no . ' — PKR ' . number_format($i->balance(), 0)],
+                ['title' => 'New Demo Requests', 'items' => $attention['demos'], 'route' => 'admin.demo-bookings.index',
+                 'color' => '#10b981', 'tint' => '#e6f9f1',
+                 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
+                 'line' => fn($d) => $d->name . ($d->preferred_date ? ' — ' . $d->preferred_date->format('d M') : '')],
+                ['title' => 'New Applications', 'items' => $attention['jobs'], 'route' => 'admin.job-applications.index',
+                 'color' => '#f43f5e', 'tint' => '#ffeef1',
+                 'icon' => 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+                 'line' => fn($j) => $j->name],
+            ];
+        @endphp
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+            @foreach ($groups as $g)
+                <div class="att-card" style="--att: {{ $g['color'] }};">
+                    <div class="flex items-start justify-between">
+                        <span class="att-icon" style="color: {{ $g['color'] }}; background: {{ $g['tint'] }};">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $g['icon'] }}"/></svg>
+                        </span>
+                        <span class="att-count" style="color: {{ $g['color'] }};">{{ $g['items']->count() }}<small>pending</small></span>
+                    </div>
+                    <p class="att-title">{{ $g['title'] }}</p>
+                    <div class="att-items">
+                        @forelse ($g['items']->take(3) as $item)
+                            <p class="att-item"><span class="att-bullet" style="background: {{ $g['color'] }};"></span><span class="truncate">{{ $g['line']($item) }}</span></p>
+                        @empty
+                            <p class="att-clear">✓ All clear</p>
+                        @endforelse
+                        @if ($g['items']->count() > 3)
+                            <p class="att-more">+{{ $g['items']->count() - 3 }} more</p>
+                        @endif
+                    </div>
+                    <a href="{{ route($g['route']) }}" class="att-link">View all <span>→</span></a>
+                </div>
+            @endforeach
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script src="{{ asset('assets/js/admin-dashboard.js') }}"></script>
+@endpush

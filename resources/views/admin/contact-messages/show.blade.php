@@ -2,12 +2,9 @@
 
 @section('title', 'View Message')
 
-@section('breadcrumbs')
-    <x-admin.breadcrumbs :items="[['label' => 'Dashboard', 'url' => route('admin.dashboard')], ['label' => 'Contact Messages', 'url' => route('admin.contact-messages.index')], ['label' => 'View']]" />
-@endsection
-
 @section('content')
-    <x-admin.page-banner title="Message Details" subtitle="View contact message" />
+    <x-admin.page-header title="Message Details" subtitle="View contact message"
+                        icon="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
 
     <div class="max-w-3xl mx-auto">
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
