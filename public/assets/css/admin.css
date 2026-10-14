@@ -286,6 +286,13 @@ table.data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
 .tab-btn:hover { color: #1d4ed8; }
 .tab-btn.active { color: #1d4ed8; border-bottom-color: #1d4ed8; }
 
+/* ---------- Profile page ---------- */
+#avatar-dropzone.dz-active { border-color: #1d4ed8; background: #eff4ff; }
+html.dark #avatar-dropzone.dz-active { background: #1b2745; }
+#avatar-dropzone.dz-error { border-color: #ef4444; }
+#tfa-qr svg { width: 100%; height: 100%; display: block; }
+.tfa-code-input { letter-spacing: 0.45em; text-indent: 0.45em; }
+
 /* ==========================================================================
    DARK MODE — enabled by the `dark` class on <html> (topbar toggle).
    Overrides Tailwind light utilities + admin components with a deep-navy

@@ -170,7 +170,7 @@ return [
         // Two-factor authentication: OFF by default. Each user can enable it
         // from their own Profile page (admin/profile). No 'confirm' step so
         // enabling is a single scan; recovery codes are shown immediately.
-        Features::twoFactorAuthentication(),
+        Features::twoFactorAuthentication(['confirm' => true]),
         // Features::passkeys([
             // 'confirmPassword' => true,
         // ]),

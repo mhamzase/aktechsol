@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\NewsletterSubscriberController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\TwoFactorController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\ServiceCategoryController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -104,6 +105,16 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/avatar', [ProfileController::class, 'avatar'])->name('profile.avatar');
+
+    // Two-factor authentication (AJAX, Fortify confirm mode)
+    Route::prefix('/profile/two-factor')->name('profile.2fa.')->group(function () {
+        Route::get('/status', [TwoFactorController::class, 'status'])->name('status');
+        Route::post('/enable', [TwoFactorController::class, 'enable'])->name('enable');
+        Route::post('/confirm', [TwoFactorController::class, 'confirm'])->name('confirm');
+        Route::delete('/disable', [TwoFactorController::class, 'disable'])->name('disable');
+        Route::post('/recovery-codes/regenerate', [TwoFactorController::class, 'regenerateCodes'])->name('codes.regenerate');
+    });
 
     // UI component kit demo (dev/QA only — showcases every x-ui.* component)
     Route::get('/ui-demo', function () {

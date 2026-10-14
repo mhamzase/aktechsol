@@ -93,7 +93,7 @@
         <div class="relative">
             <button onclick="toggleDropdown('topbar-user')" data-dropdown-toggle
                     class="flex items-center gap-2 pl-1 pr-2 py-1 rounded-md hover:bg-slate-100 transition-all">
-                <span class="w-9 h-9 rounded-full bg-gradient-to-br from-[#1d4ed8] to-[#12307e] text-white flex items-center justify-center font-bold text-sm overflow-hidden ring-2 ring-blue-100">
+                <span id="topbar-avatar" class="w-9 h-9 rounded-full bg-gradient-to-br from-[#1d4ed8] to-[#12307e] text-white flex items-center justify-center font-bold text-sm overflow-hidden ring-2 ring-blue-100">
                     @if (auth()->user()->getAvatarUrl())
                         <img src="{{ auth()->user()->getAvatarUrl() }}" alt="Avatar" class="w-full h-full object-cover">
                     @else
@@ -101,7 +101,7 @@
                     @endif
                 </span>
                 <span class="hidden md:block text-left leading-tight">
-                    <span class="block font-bold text-[0.8rem] text-slate-800 max-w-[9rem] truncate">{{ auth()->user()->name }}</span>
+                    <span id="topbar-username" class="block font-bold text-[0.8rem] text-slate-800 max-w-[9rem] truncate">{{ auth()->user()->name }}</span>
                     <span class="block text-[0.65rem] text-slate-400">{{ auth()->user()->getRoleNames()->first() ?? 'Team' }}</span>
                 </span>
                 <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
