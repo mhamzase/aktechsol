@@ -657,22 +657,46 @@ window.toggleServiceStatus = function (url, btn) {
         .finally(() => { btn.disabled = false; });
 };
 
-// Auto-generate slug from title (services, blog, etc.).
+// Auto-generate slug from title/name (services, categories, blog, etc.).
 // Only fills the slug if the user hasn't manually edited it.
-document.addEventListener('input', function (e) {
-    if (e.target.name !== 'title') return;
-    const form = e.target.closest('form');
-    if (!form) return;
-    const slugInput = form.querySelector('[name="slug"]');
-    if (!slugInput || slugInput.dataset.manual === '1') return;
-    slugInput.value = e.target.value
-        .toLowerCase()
-        .trim()
+function slugify(text) {
+    return text.toLowerCase().trim()
         .replace(/[^a-z0-9\s-]/g, '')
         .replace(/[\s_]+/g, '-')
         .replace(/-+/g, '-')
         .replace(/^-|-$/g, '');
+}
+document.addEventListener('input', function (e) {
+    if (e.target.name !== 'title' && e.target.name !== 'name') return;
+    const form = e.target.closest('form');
+    if (!form) return;
+    const slugInput = form.querySelector('[name="slug"]');
+    if (!slugInput || slugInput.dataset.manual === '1') return;
+    slugInput.value = slugify(e.target.value);
 });
 document.addEventListener('input', function (e) {
     if (e.target.name === 'slug') e.target.dataset.manual = '1';
 });
+
+// Toggle service category active/inactive from the listing.
+window.toggleCategoryStatus = function (url, btn) {
+    btn.disabled = true;
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+        },
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            const active = !!data.status;
+            btn.classList.toggle('badge-green', active);
+            btn.classList.toggle('badge-red', !active);
+            btn.textContent = active ? 'Active' : 'Inactive';
+            btn.title = active ? 'Click to deactivate' : 'Click to activate';
+            window.notify?.success(data.message);
+        })
+        .catch(() => window.notify?.error('Failed to update status.'))
+        .finally(() => { btn.disabled = false; });
+};

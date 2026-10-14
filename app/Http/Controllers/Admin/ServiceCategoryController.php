@@ -84,6 +84,14 @@ class ServiceCategoryController extends Controller
             ->with('success', 'Service category updated successfully.');
     }
 
+    /** Drawer: view category details. */
+    public function show(ServiceCategory $serviceCategory)
+    {
+        $serviceCategory->loadCount('services');
+
+        return view('admin.service-categories.show', ['category' => $serviceCategory]);
+    }
+
     public function destroy(ServiceCategory $serviceCategory)
     {
         $serviceCategory->delete();
@@ -95,5 +103,16 @@ class ServiceCategoryController extends Controller
 
         return redirect()->route('admin.service-categories.index')
             ->with('success', 'Service category deleted successfully.');
+    }
+
+    /** Toggle active/inactive status via AJAX. */
+    public function toggleStatus(ServiceCategory $serviceCategory)
+    {
+        $serviceCategory->update(['status' => ! $serviceCategory->status]);
+
+        return response()->json([
+            'message' => $serviceCategory->status ? 'Category activated.' : 'Category deactivated.',
+            'status' => (bool) $serviceCategory->status,
+        ]);
     }
 }
