@@ -39,10 +39,12 @@
             {{ $filters }}
         @endisset
         <div class="relative ml-auto w-full sm:w-72">
-            <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none" aria-hidden="true">
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </span>
             <input type="text" data-search placeholder="{{ $searchPlaceholder }}"
-                   class="form-control !pl-10 !pr-9 !rounded-full !bg-slate-50 focus:!bg-white transition-colors" autocomplete="off">
-            <button type="button" data-clear-search class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500" aria-label="Clear search">
+                   class="form-control !pl-9 !pr-9 !rounded-full !bg-slate-50 focus:!bg-white transition-colors" autocomplete="off">
+            <button type="button" data-clear-search class="hidden absolute inset-y-0 right-0 flex items-center pr-3 text-slate-300 hover:text-slate-500" aria-label="Clear search">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
