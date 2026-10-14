@@ -101,25 +101,35 @@
 
     {{-- CONTACT & WHATSAPP --}}
     <div data-tabpanel="contact" class="admin-card p-5 hidden">
-        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'contact') }}">
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'contact') }}" novalidate>
             @csrf @method('PUT')
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="form-label">WhatsApp Number <span class="text-slate-400 font-normal">(e.g. 923001234567)</span></label>
-                    <input name="whatsapp_number" class="form-control" value="{{ $s->whatsapp_number }}">
-                </div>
-                <div class="flex items-end pb-1">
-                    <label class="flex items-center gap-2 text-sm font-medium text-slate-600">
-                        <input type="checkbox" name="whatsapp_enabled" value="1" @checked($s->whatsapp_enabled) class="w-4 h-4 accent-[#1d4ed8]">
-                        Show WhatsApp float button on website
-                    </label>
-                </div>
-                <div class="md:col-span-2">
-                    <label class="form-label">Notification Email <span class="text-slate-400 font-normal">(receives quote / contact / demo enquiries)</span></label>
-                    <input name="notification_email" type="email" class="form-control" value="{{ $s->notification_email }}">
+            {{-- WhatsApp --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-green">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    </span>
+                    WhatsApp
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="whatsapp_number" label="WhatsApp Number" :value="$s->whatsapp_number" placeholder="923001234567" hint="Country code + number, no + or spaces." /></div>
+                    <div class="md:col-span-2 flex items-end pb-1"><x-ui.checkbox name="whatsapp_enabled" label="Show WhatsApp float button on website" :checked="$s->whatsapp_enabled" /></div>
                 </div>
             </div>
-            <div class="mt-5 flex justify-end"><button class="btn btn-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-7m-5-5h5m0 0v5m0-5L8 16"/></svg> Save Contact</button></div>
+
+            {{-- Notifications --}}
+            <div class="mb-2">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-blue">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.003 2.003 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    </span>
+                    Notifications
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="notification_email" type="email" label="Notification Email" :value="$s->notification_email" hint="Receives quote / contact / demo enquiries." /></div>
+                </div>
+            </div>
+            <x-admin.drawer-footer save-label="Save Contact" />
         </form>
     </div>
 
