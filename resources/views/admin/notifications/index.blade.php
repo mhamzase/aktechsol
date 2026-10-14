@@ -170,30 +170,27 @@ function loadMoreNotifications(btn) {
 }
 
 function confirmDeleteAll() {
-    // Step 1: normal confirmation.
-    openNotifConfirm('Delete all notifications?', 'This will permanently delete every notification. This cannot be undone.', () => {
-        // Step 2: type DELETE to confirm.
-        openNotifConfirm(
-            'Final confirmation',
-            'To be extra sure, please type DELETE below.',
-            () => {
-                fetch(`{{ route('admin.notifications.destroy-all') }}`, {
-                    method: 'DELETE',
-                    headers: { 'X-CSRF-TOKEN': notifCsrf, 'Accept': 'application/json' },
-                }).then(() => {
-                    document.getElementById('notifications-list').innerHTML = `
-                        <div class="px-5 py-16 text-center">
-                            <p class="mt-3 text-sm text-slate-500 dark:text-slate-400 font-medium">No notifications yet</p>
-                            <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">You're all caught up.</p>
-                        </div>`;
-                    document.getElementById('load-more-wrap')?.remove();
-                    updateBellCount(0, true);
-                    window.notify?.success('All notifications deleted.');
-                });
-            },
-            true // needsTyping
-        );
-    });
+    // Single popup: confirmation message + type DELETE.
+    openNotifConfirm(
+        'Delete all notifications?',
+        'This will permanently delete every notification. This cannot be undone. To confirm, type DELETE below.',
+        () => {
+            fetch(`{{ route('admin.notifications.destroy-all') }}`, {
+                method: 'DELETE',
+                headers: { 'X-CSRF-TOKEN': notifCsrf, 'Accept': 'application/json' },
+            }).then(() => {
+                document.getElementById('notifications-list').innerHTML = `
+                    <div class="px-5 py-16 text-center">
+                        <p class="mt-3 text-sm text-slate-500 dark:text-slate-400 font-medium">No notifications yet</p>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">You're all caught up.</p>
+                    </div>`;
+                document.getElementById('load-more-wrap')?.remove();
+                updateBellCount(0, true);
+                window.notify?.success('All notifications deleted.');
+            });
+        },
+        true // needsTyping
+    );
 }
 
 function updateBellCount(delta, absolute = false) {
