@@ -305,18 +305,53 @@
 
     {{-- HOMEPAGE --}}
     <div data-tabpanel="homepage" class="admin-card p-5 hidden">
-        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'homepage') }}">
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'homepage') }}" novalidate>
             @csrf @method('PUT')
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="md:col-span-2"><label class="form-label">Brand Message</label><input name="brand_message" class="form-control" value="{{ $s->brand_message }}" placeholder="AK Tech Sol is your complete digital solution partner"></div>
-                <div><label class="form-label">Demo Video URL</label><input name="demo_video_url" class="form-control" value="{{ $s->demo_video_url }}" placeholder="https://youtube.com/..."></div>
-                <div><label class="form-label">Demo Video Title</label><input name="demo_video_title" class="form-control" value="{{ $s->demo_video_title }}"></div>
-                <div><label class="form-label">About — Hero Title</label><input name="about_hero_title" class="form-control" value="{{ $s->about_hero_title }}"></div>
-                <div><label class="form-label">About — Intro Title</label><input name="about_intro_title" class="form-control" value="{{ $s->about_intro_title }}"></div>
-                <div class="md:col-span-2"><label class="form-label">About — Hero Subtitle</label><textarea name="about_hero_subtitle" rows="2" class="form-control">{{ $s->about_hero_subtitle }}</textarea></div>
-                <div class="md:col-span-2"><label class="form-label">About — Intro Text</label><textarea name="about_intro_text" rows="3" class="form-control">{{ $s->about_intro_text }}</textarea></div>
+            {{-- Brand --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-blue">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                    </span>
+                    Brand
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-4"><x-ui.input name="brand_message" label="Brand Message" :value="$s->brand_message" placeholder="AK Tech Sol is your complete digital solution partner" /></div>
+                </div>
             </div>
-            <div class="mt-5 flex justify-end"><button class="btn btn-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-7m-5-5h5m0 0v5m0-5L8 16"/></svg> Save Homepage</button></div>
+
+            {{-- Demo Video --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-violet">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </span>
+                    Demo Video
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="demo_video_url" type="url" label="Demo Video URL" :value="$s->demo_video_url" placeholder="https://youtube.com/…" /></div>
+                    <div class="md:col-span-2"><x-ui.input name="demo_video_title" label="Demo Video Title" :value="$s->demo_video_title" placeholder="Watch our story" /></div>
+                </div>
+            </div>
+
+            {{-- About Section --}}
+            <div class="mb-2">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-amber">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </span>
+                    About Section
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="about_hero_title" label="Hero Title" :value="$s->about_hero_title" placeholder="About Us" /></div>
+                    <div class="md:col-span-2"><x-ui.input name="about_intro_title" label="Intro Title" :value="$s->about_intro_title" placeholder="Who We Are" /></div>
+                    <div class="md:col-span-2"><x-ui.textarea name="about_hero_subtitle" label="Hero Subtitle" rows="2" :value="$s->about_hero_subtitle" /></div>
+                    <div class="md:col-span-2"><x-ui.textarea name="about_intro_text" label="Intro Text" rows="2" :value="$s->about_intro_text" /></div>
+                    <div class="md:col-span-2"><x-ui.input name="about_mission_title" label="Mission Title" :value="$s->about_mission_title" placeholder="Our Mission & Values" /></div>
+                    <div class="md:col-span-2"><x-ui.textarea name="about_mission_subtitle" label="Mission Subtitle" rows="2" :value="$s->about_mission_subtitle" /></div>
+                </div>
+            </div>
+            <x-admin.drawer-footer save-label="Save Homepage" />
         </form>
     </div>
 
