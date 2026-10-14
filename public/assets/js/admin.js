@@ -261,7 +261,8 @@
         const btn = form.querySelector('[type="submit"]');
         const original = btn ? btn.innerHTML : '';
         if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin inline-block">◌</span> Saving…'; }
-        form.querySelectorAll('.form-error').forEach((el) => el.remove());
+        form.querySelectorAll('.form-error, .ui-error').forEach((el) => el.remove());
+        form.querySelectorAll('.ui-control-error').forEach((el) => el.classList.remove('ui-control-error'));
 
         try {
             const res = await fetch(form.action, {
@@ -274,10 +275,15 @@
                 if (res.status === 422 && data.errors) {
                     Object.entries(data.errors).forEach(([field, msgs]) => {
                         const input = form.querySelector(`[name="${field}"]`);
+                        if (!input) return;
+                        input.classList.add('ui-control-error');
                         const err = document.createElement('p');
-                        err.className = 'form-error';
+                        err.className = 'ui-error';
                         err.textContent = msgs[0];
-                        (input?.closest('div') || form).appendChild(err);
+                        // x-ui components: place after the input wrapper; otherwise append to the field div.
+                        const wrap = input.closest('.ui-input-wrap');
+                        if (wrap) wrap.after(err);
+                        else (input.closest('div') || form).appendChild(err);
                     });
                     window.notify.error('Please fix the highlighted errors.');
                 } else {
