@@ -488,6 +488,16 @@
             showFieldError(form, pwc, 'Passwords do not match.');
             valid = false;
         }
+        // Payment methods: if any field in a card is filled, method name is required.
+        form.querySelectorAll('.pm-card').forEach((card) => {
+            const methodInput = card.querySelector('[name="payment_methods[][method]"]');
+            if (!methodInput) return;
+            const anyFilled = [...card.querySelectorAll('input')].some((i) => i.value.trim() !== '');
+            if (anyFilled && !methodInput.value.trim()) {
+                showFieldError(form, methodInput, 'Payment method name is required.');
+                valid = false;
+            }
+        });
         if (!valid) {
             // Cooldown: keep the button disabled briefly so rapid double-clicks
             // can't spawn duplicate submissions/toasts.

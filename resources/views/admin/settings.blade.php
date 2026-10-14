@@ -223,7 +223,7 @@
                                 <div class="ui-field"><label class="ui-label">Bank Name</label><div class="ui-input-wrap"><input name="payment_methods[][bank_name]" class="ui-control" value="{{ $pm['bank_name'] ?? '' }}" placeholder="Meezan Bank"></div></div>
                                 <div class="ui-field"><label class="ui-label">Account Number</label><div class="ui-input-wrap"><input name="payment_methods[][account_number]" class="ui-control" value="{{ $pm['account_number'] ?? '' }}" placeholder="0300 1234567"></div></div>
                                 <div class="md:col-span-3 ui-field"><label class="ui-label">IBAN</label><div class="ui-input-wrap"><input name="payment_methods[][iban]" class="ui-control" value="{{ $pm['iban'] ?? '' }}" placeholder="PK36SCBL0000001123456702"></div></div>
-                                <div class="flex items-end justify-end"><button type="button" class="btn btn-ghost !text-red-500" onclick="this.closest('.pm-card').remove()" title="Remove">✕ Remove</button></div>
+                                <div class="flex items-end justify-end"><button type="button" class="btn btn-ghost !text-red-500" onclick="removePaymentRow(this)" title="Remove" class="btn btn-ghost !text-red-500 pm-remove">✕ Remove</button></div>
                             </div>
                         </div>
                     @empty
@@ -234,7 +234,7 @@
                                 <div class="ui-field"><label class="ui-label">Bank Name</label><div class="ui-input-wrap"><input name="payment_methods[][bank_name]" class="ui-control" placeholder="Meezan Bank"></div></div>
                                 <div class="ui-field"><label class="ui-label">Account Number</label><div class="ui-input-wrap"><input name="payment_methods[][account_number]" class="ui-control" placeholder="0300 1234567"></div></div>
                                 <div class="md:col-span-3 ui-field"><label class="ui-label">IBAN</label><div class="ui-input-wrap"><input name="payment_methods[][iban]" class="ui-control" placeholder="PK36SCBL0000001123456702"></div></div>
-                                <div class="flex items-end justify-end"><button type="button" class="btn btn-ghost !text-red-500" onclick="this.closest('.pm-card').remove()" title="Remove">✕ Remove</button></div>
+                                <div class="flex items-end justify-end"><button type="button" class="btn btn-ghost !text-red-500" onclick="removePaymentRow(this)" title="Remove" class="btn btn-ghost !text-red-500 pm-remove">✕ Remove</button></div>
                             </div>
                         </div>
                     @endforelse
@@ -349,10 +349,32 @@ function addPaymentRow() {
         <div class="ui-field"><label class="ui-label">Bank Name</label><div class="ui-input-wrap"><input name="payment_methods[][bank_name]" class="ui-control" placeholder="Meezan Bank"></div></div>
         <div class="ui-field"><label class="ui-label">Account Number</label><div class="ui-input-wrap"><input name="payment_methods[][account_number]" class="ui-control" placeholder="0300 1234567"></div></div>
         <div class="md:col-span-3 ui-field"><label class="ui-label">IBAN</label><div class="ui-input-wrap"><input name="payment_methods[][iban]" class="ui-control" placeholder="PK36SCBL0000001123456702"></div></div>
-        <div class="flex items-end justify-end"><button type="button" class="btn btn-ghost !text-red-500" onclick="this.closest('.pm-card').remove()">✕ Remove</button></div>
+        <div class="flex items-end justify-end"><button type="button" class="btn btn-ghost !text-red-500 pm-remove" onclick="removePaymentRow(this)">✕ Remove</button></div>
     </div>`;
     wrap.appendChild(div);
+    refreshPaymentRemoveButtons();
 }
+function removePaymentRow(btn) {
+    const wrap = document.getElementById('payment-methods');
+    const cards = wrap.querySelectorAll('.pm-card');
+    if (cards.length <= 1) {
+        window.notify?.error('At least one payment method is required.');
+        return;
+    }
+    btn.closest('.pm-card').remove();
+    refreshPaymentRemoveButtons();
+}
+function refreshPaymentRemoveButtons() {
+    const wrap = document.getElementById('payment-methods');
+    if (!wrap) return;
+    const cards = wrap.querySelectorAll('.pm-card');
+    cards.forEach((card) => {
+        const btn = card.querySelector('.pm-remove');
+        if (btn) btn.style.display = cards.length > 1 ? '' : 'none';
+    });
+}
+// Init on page load
+document.addEventListener('DOMContentLoaded', refreshPaymentRemoveButtons);
 
 async function sendTestEmail(btn) {
     const input = document.getElementById('test-email-to');
