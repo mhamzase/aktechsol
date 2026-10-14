@@ -355,7 +355,7 @@
                             <button class="btn btn-primary">Confirm &amp; Enable</button>
                         </form>
                         <p id="tfa-code-error" class="ui-error hidden mt-2"></p>
-                        <button id="tfa-cancel" class="mt-3 text-xs font-semibold text-slate-400 hover:text-slate-600">Cancel setup</button>
+                        <button id="tfa-cancel" class="btn btn-danger mt-3">Cancel setup</button>
                     </div>
                 </li>
             </ol>`;
