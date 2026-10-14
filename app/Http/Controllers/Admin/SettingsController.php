@@ -7,6 +7,7 @@ use App\Models\SiteAsset;
 use App\Settings\SiteSettings;
 use App\Support\MailConfig;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 /**
@@ -144,7 +145,15 @@ class SettingsController extends Controller
         }
 
         $settings->fill($data);
-        $settings->save();
+        // Spatie throws MissingSettings on partial tab saves when some properties
+        // were never persisted. Update submitted keys directly instead.
+        foreach ($data as $key => $value) {
+            DB::table('settings')->updateOrInsert(
+                ['group' => SiteSettings::group(), 'name' => $key],
+                ['payload' => json_encode($value), 'updated_at' => now(), 'created_at' => now()],
+            );
+            $settings->$key = $value;
+        }
 
         // Logo / favicon uploads (general tab).
         if ($tab === 'general') {

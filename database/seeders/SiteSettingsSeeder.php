@@ -58,6 +58,43 @@ class SiteSettingsSeeder extends Seeder
             'seo_canonical_url'  => null,
             'seo_og_image'       => null,
             'seo_robots'         => 'index, follow',
+
+            // Contact & WhatsApp
+            'whatsapp_number'  => null,
+            'whatsapp_enabled' => false,
+
+            // Email
+            'mail_host'         => null,
+            'mail_port'         => 587,
+            'mail_username'     => null,
+            'mail_password'     => null,
+            'mail_encryption'   => 'tls',
+            'mail_from_address' => null,
+            'mail_from_name'    => null,
+            'notification_email' => null,
+
+            // Payments
+            'payment_methods' => [],
+
+            // Popup
+            'popup_enabled'  => false,
+            'popup_title'    => null,
+            'popup_message'  => null,
+            'popup_btn_text' => null,
+            'popup_btn_url'  => null,
+
+            // Homepage
+            'demo_video_url'   => null,
+            'demo_video_title' => null,
+            'brand_message'    => null,
+
+            // Chatbot
+            'chatbot_enabled'  => false,
+            'chatbot_greeting' => null,
+            'chatbot_team_name' => null,
+
+            // Policies
+            'policies_content' => null,
         ];
 
         foreach ($settings as $property => $value) {
