@@ -192,8 +192,8 @@
             });
         }
         async load() {
-            this.rowsEl.innerHTML = `<tr><td colspan="20" class="text-center py-8 text-gray-400">
-                <span class="spin inline-block">◌</span> Loading…</td></tr>`;
+            this.rowsEl.innerHTML = `<tr><td colspan="20" class="text-center py-10">
+                <div class="admin-loader al-lg"><span class="al-ring"></span><span>Loading…</span></div></td></tr>`;
             const qs = new URLSearchParams(this.params).toString();
             try {
                 const res = await fetch(`${this.url}?${qs}`, {
@@ -234,7 +234,7 @@
         if (!d) return;
         d.querySelector('[data-drawer-title]').textContent = title;
         d.querySelector('[data-drawer-body]').innerHTML =
-            '<div class="p-8 text-center text-gray-400"><span class="spin inline-block">◌</span> Loading…</div>';
+            '<div class="p-10"><div class="admin-loader al-lg"><span class="al-ring"></span><span>Loading…</span></div></div>';
         overlay().classList.add('open');
         d.classList.add('open');
         document.body.style.overflow = 'hidden';

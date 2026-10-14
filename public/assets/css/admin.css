@@ -253,9 +253,9 @@ table.data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
     padding: 0.55rem 1.1rem; transition: background 0.15s, transform 0.1s; cursor: pointer;
 }
 .btn:active { transform: scale(0.98); }
-.btn-primary { background: #1d4ed8; color: #fff; }
-.btn-primary:hover { background: #1e40af; }
-.btn-secondary { background: #eef2ff; color: #1d4ed8; }
+.btn-primary { background: #1669d9; color: #fff; }
+.btn-primary:hover { background: #125cb8; }
+.btn-secondary { background: #e8f0fe; color: #1669d9; }
 .btn-secondary:hover { background: #e0e7ff; }
 .btn-danger { background: #dc2626; color: #fff; }
 .btn-danger:hover { background: #b91c1c; }
@@ -313,6 +313,31 @@ html.dark #avatar-dropzone.dz-active { background: #374151; }
 html.dark .apex-custom-tip { background: #2b3646; border-color: rgba(255, 255, 255, 0.1); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45); }
 html.dark .apex-custom-title, html.dark .apex-custom-row b { color: #f1f5f9; }
 html.dark .apex-custom-row { color: #cbd5e1; }
+
+/* ---------- Shared blue loader (x-admin.loader) — ONE loader for everything ---------- */
+.admin-loader {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    color: #1669d9;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+.admin-loader .al-ring {
+    border-radius: 50%;
+    border: 3px solid rgba(22, 105, 217, 0.18);
+    border-top-color: #1669d9;
+    animation: al-spin 0.8s linear infinite;
+    flex-shrink: 0;
+}
+.admin-loader.al-sm { font-size: 0.75rem; gap: 0.45rem; }
+.admin-loader.al-sm .al-ring { width: 1rem; height: 1rem; border-width: 2px; }
+.admin-loader.al-md .al-ring { width: 1.5rem; height: 1.5rem; }
+.admin-loader.al-lg .al-ring { width: 2.25rem; height: 2.25rem; border-width: 4px; }
+@keyframes al-spin { to { transform: rotate(360deg); } }
+html.dark .admin-loader { color: #60a5fa; }
+html.dark .admin-loader .al-ring { border-color: rgba(96, 165, 250, 0.2); border-top-color: #60a5fa; }
 
 /* ---------- ApexCharts custom tooltip (dashboard) ---------- */
 .att-card {

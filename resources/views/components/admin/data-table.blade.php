@@ -65,7 +65,7 @@
                 </tr>
             </thead>
             <tbody data-rows>
-                <tr><td colspan="{{ count($columns) ?: 1 }}" class="text-center py-8 text-slate-400">Loading…</td></tr>
+                <tr><td colspan="{{ count($columns) ?: 1 }}" class="text-center py-10"><x-admin.loader size="lg" /></td></tr>
             </tbody>
         </table>
     </div>

@@ -74,9 +74,7 @@
                 <span id="tfa-badge"></span>
             </div>
             <div id="tfa-body" class="mt-4">
-                <div class="flex items-center gap-3 text-sm text-slate-400">
-                    <span class="spin inline-block">◌</span> Loading…
-                </div>
+                <x-admin.loader size="sm" />
             </div>
         </div>
     </div>
