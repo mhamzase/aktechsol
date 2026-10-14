@@ -78,6 +78,7 @@ class SettingsController extends Controller
                 'popup_message' => 'nullable|string',
                 'popup_btn_text' => 'nullable|string|max:100',
                 'popup_btn_url' => 'nullable|string|max:500',
+                'popup_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             ],
             'homepage' => [
                 'brand_message' => 'nullable|string|max:500',
@@ -118,6 +119,7 @@ class SettingsController extends Controller
             'tabs' => self::TABS,
             'logoUrl' => $siteAsset->getLogoUrl(),
             'faviconUrl' => $siteAsset->getFaviconUrl(),
+            'popupImageUrl' => $siteAsset->getPopupImageUrl(),
         ]);
     }
 
@@ -174,11 +176,23 @@ class SettingsController extends Controller
             }
         }
 
+        // Popup image upload (popup tab, optional).
+        if ($tab === 'popup') {
+            $siteAsset = SiteAsset::firstOrCreate(['name' => 'default']);
+            if ($request->hasFile('popup_image')) {
+                $siteAsset->clearMediaCollection('popup_image');
+                $siteAsset->addMediaFromRequest('popup_image')->toMediaCollection('popup_image');
+            }
+        }
+
         $response = ['message' => self::TABS[$tab] . ' settings saved.'];
+        $siteAsset = SiteAsset::first();
         if ($tab === 'general') {
-            $siteAsset = SiteAsset::first();
             $response['logo_url'] = $siteAsset?->getLogoUrl();
             $response['favicon_url'] = $siteAsset?->getFaviconUrl();
+        }
+        if ($tab === 'popup') {
+            $response['popup_image_url'] = $siteAsset?->getPopupImageUrl();
         }
 
         // Re-apply mail config immediately so the next mail uses it.

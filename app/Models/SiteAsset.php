@@ -23,6 +23,10 @@ class SiteAsset extends Model implements HasMedia
         $this->addMediaCollection('favicon')
              ->singleFile()
              ->acceptsMimeTypes(['image/x-icon', 'image/vnd.microsoft.icon', 'image/png', 'image/svg+xml']);
+
+        $this->addMediaCollection('popup_image')
+             ->singleFile()
+             ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
     }
 
     // Helper to get logo URL
@@ -35,5 +39,11 @@ class SiteAsset extends Model implements HasMedia
     public function getFaviconUrl(): ?string
     {
         return $this->getFirstMediaUrl('favicon');
+    }
+
+    // Helper to get popup image URL
+    public function getPopupImageUrl(): ?string
+    {
+        return $this->getFirstMediaUrl('popup_image');
     }
 }

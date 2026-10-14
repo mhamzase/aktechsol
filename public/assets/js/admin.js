@@ -544,6 +544,7 @@
                 };
                 updatePreview('logo', data.logo_url);
                 updatePreview('favicon', data.favicon_url);
+                updatePreview('popup_image', data.popup_image_url);
             }
             window.closeDrawer();
             if (form.dataset.reloadTable) window.reloadAdminTable(form.dataset.reloadTable);
