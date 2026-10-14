@@ -95,7 +95,7 @@
                         '</div>';
                 },
             },
-            markers: { size: [0, 4], colors: ['#f59e0b'], strokeColors: '#fff', strokeWidth: 2, hover: { size: 6 } },
+            markers: { size: [0, 0] },
             legend: { position: 'top', horizontalAlign: 'right', fontFamily: FONT, labels: { colors: axisColor() } },
             grid: { borderColor: gridColor(), strokeDasharray: 0 },
             xaxis: {
@@ -134,7 +134,7 @@
             ),
             colors: ['#93c5fd', '#1d4ed8', '#f59e0b', '#8b5cf6', '#10b981', '#64748b'],
             plotOptions: {
-                pie: { startAngle: -90, expandOnClick: false },
+                pie: { startAngle: -90, endAngle: 270, expandOnClick: false },
             },
             dataLabels: {
                 style: { fontFamily: FONT },
