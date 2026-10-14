@@ -61,6 +61,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'phone' => 'nullable|string|max:30',
             'password' => 'required|string|min:8|confirmed',
+            'avatar' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'roles' => 'nullable|array',
             'roles.*' => 'exists:roles,name',
         ]);
@@ -71,6 +72,10 @@ class UserController extends Controller
             'phone' => $data['phone'] ?? null,
             'password' => bcrypt($data['password']),
         ]);
+        // Spatie Media Library — single source for ALL media in the project.
+        if ($request->hasFile('avatar')) {
+            $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
+        }
         $user->syncRoles($data['roles'] ?? []);
 
         ActivityLog::record('user.created', $user, "User {$user->email} created.");
@@ -96,6 +101,8 @@ class UserController extends Controller
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'phone' => 'nullable|string|max:30',
             'password' => 'nullable|string|min:8|confirmed',
+            'avatar' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
+            'remove_avatar' => 'nullable|in:1',
             'roles' => 'nullable|array',
             'roles.*' => 'exists:roles,name',
         ]);
@@ -106,6 +113,14 @@ class UserController extends Controller
             'phone' => $data['phone'] ?? null,
             ...(isset($data['password']) ? ['password' => bcrypt($data['password'])] : []),
         ]);
+
+        // Spatie Media Library — avatar collection.
+        if (($data['remove_avatar'] ?? null) === '1') {
+            $user->clearMediaCollection('avatar');
+        } elseif ($request->hasFile('avatar')) {
+            $user->clearMediaCollection('avatar');
+            $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
+        }
 
         // Never let the last Administrator lock themselves out.
         if ($user->is(auth()->user()) && ! in_array('Administrator', $data['roles'] ?? [])) {

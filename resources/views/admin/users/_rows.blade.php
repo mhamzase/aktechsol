@@ -3,10 +3,14 @@
     <tr>
         <td data-label="User">
             <span class="flex items-center gap-2.5">
-                <span class="w-8 h-8 rounded-full bg-gradient-to-br from-[#1d4ed8] to-[#12307e] text-white text-xs font-bold flex items-center justify-center shrink-0">
-                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                <span class="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-[#1669d9] to-[#0d3a7a] text-white text-xs font-bold flex items-center justify-center shrink-0">
+                    @if ($user->getAvatarUrl())
+                        <img src="{{ $user->getAvatarUrl() }}" alt="" class="w-full h-full object-cover">
+                    @else
+                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                    @endif
                 </span>
-                <span class="font-semibold text-slate-800">{{ $user->name }}</span>
+                <span class="font-semibold text-slate-800 dark:text-slate-100">{{ $user->name }}</span>
             </span>
         </td>
         <td data-label="Email" class="text-slate-500">{{ $user->email }}</td>

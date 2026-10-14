@@ -363,6 +363,37 @@
         const err = wrap ? wrap.nextElementSibling : e.target.closest('div')?.querySelector('.ui-error');
         if (err && err.classList.contains('ui-error')) err.remove();
     });
+    // Avatar picker: instant preview + remove flag (delegated, drawer-safe).
+    document.addEventListener('change', (e) => {
+        const input = e.target.closest('[data-avatar-input]');
+        if (!input) return;
+        const form = input.closest('form');
+        const preview = form?.querySelector('[data-avatar-preview]');
+        const file = input.files?.[0];
+        if (!file || !preview) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            preview.innerHTML = `<img src="${ev.target.result}" alt="" class="w-full h-full object-cover">`;
+        };
+        reader.readAsDataURL(file);
+        const flag = form.querySelector('[data-avatar-remove-flag]');
+        if (flag) flag.value = '0';
+    });
+    document.addEventListener('click', (e) => {
+        const rmBtn = e.target.closest('[data-avatar-remove]');
+        if (!rmBtn) return;
+        const form = rmBtn.closest('form');
+        const preview = form?.querySelector('[data-avatar-preview]');
+        const input = form?.querySelector('[data-avatar-input]');
+        const flag = form?.querySelector('[data-avatar-remove-flag]');
+        if (input) input.value = '';
+        if (flag) flag.value = '1';
+        if (preview) {
+            const name = form.querySelector('[name="name"]')?.value || 'U';
+            preview.innerHTML = name.trim().charAt(0).toUpperCase() || 'U';
+        }
+        rmBtn.remove();
+    });
     document.addEventListener('click', (e) => {
         const form = e.target.closest('form[data-perm-form]');
         if (!form) return;
