@@ -40,7 +40,7 @@
 
     {{-- GENERAL --}}
     <div data-tabpanel="general" class="admin-card p-5 hidden">
-        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'general') }}" enctype="multipart/form-data" novalidate>
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'general') }}" enctype="multipart/form-data" novalidate class="max-w-4xl">
             @csrf @method('PUT')
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <x-ui.input name="site_name" label="Site Name" :value="$s->site_name" required />
