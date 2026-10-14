@@ -42,26 +42,26 @@
     <div data-tabpanel="general" class="admin-card p-5 hidden">
         <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'general') }}" enctype="multipart/form-data" novalidate>
             @csrf @method('PUT')
-            {{-- 12-col grid: each input sized by its natural content length, zero gaps --}}
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
-                <div class="md:col-span-3"><x-ui.input name="site_name" label="Site Name" :value="$s->site_name" required /></div>
-                <div class="md:col-span-3"><x-ui.input name="site_email" type="email" label="Site Email" :value="$s->site_email" /></div>
-                <div class="md:col-span-3"><x-ui.input name="site_phone" label="Phone" :value="$s->site_phone" placeholder="+92 300 0000000" /></div>
-                <div class="md:col-span-3"><x-ui.input name="copyright_text" label="Copyright Text" :value="$s->copyright_text" /></div>
-                <div class="md:col-span-7"><x-ui.input name="site_address" label="Address" :value="$s->site_address" /></div>
-                <div class="md:col-span-5"><x-ui.textarea name="footer_text" label="Footer Text" rows="1" :value="$s->footer_text" /></div>
-                <div class="md:col-span-3"><x-ui.input name="facebook_url" type="url" label="Facebook URL" :value="$s->facebook_url" placeholder="https://" /></div>
-                <div class="md:col-span-3"><x-ui.input name="instagram_url" type="url" label="Instagram URL" :value="$s->instagram_url" placeholder="https://" /></div>
-                <div class="md:col-span-3"><x-ui.input name="linkedin_url" type="url" label="LinkedIn URL" :value="$s->linkedin_url" placeholder="https://" /></div>
-                <div class="md:col-span-3"><x-ui.input name="twitter_url" type="url" label="Twitter URL" :value="$s->twitter_url" placeholder="https://" /></div>
-                <div class="md:col-span-3">
+            {{-- 4 inputs per row, compact --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <x-ui.input name="site_name" label="Site Name" :value="$s->site_name" required />
+                <x-ui.input name="site_email" type="email" label="Site Email" :value="$s->site_email" />
+                <x-ui.input name="site_phone" label="Phone" :value="$s->site_phone" placeholder="+92 300 0000000" />
+                <x-ui.input name="copyright_text" label="Copyright Text" :value="$s->copyright_text" />
+                <x-ui.input name="site_address" label="Address" :value="$s->site_address" />
+                <x-ui.input name="facebook_url" type="url" label="Facebook URL" :value="$s->facebook_url" placeholder="https://" />
+                <x-ui.input name="instagram_url" type="url" label="Instagram URL" :value="$s->instagram_url" placeholder="https://" />
+                <x-ui.input name="linkedin_url" type="url" label="LinkedIn URL" :value="$s->linkedin_url" placeholder="https://" />
+                <x-ui.input name="twitter_url" type="url" label="Twitter URL" :value="$s->twitter_url" placeholder="https://" />
+                <div>
                     @if ($logoUrl)<img src="{{ $logoUrl }}" class="h-10 mb-2 rounded-lg bg-slate-100 p-1 dark:bg-white/10" alt="Logo">@endif
                     <x-ui.file name="logo" label="Logo" accept="image/*" hint="PNG or SVG." />
                 </div>
-                <div class="md:col-span-3">
+                <div>
                     @if ($faviconUrl)<img src="{{ $faviconUrl }}" class="h-8 mb-2 rounded-lg bg-slate-100 p-1 dark:bg-white/10" alt="Favicon">@endif
                     <x-ui.file name="favicon" label="Favicon" accept="image/*" hint="Square, 32×32+." />
                 </div>
+                <div class="sm:col-span-2 lg:col-span-1"><x-ui.textarea name="footer_text" label="Footer Text" rows="1" :value="$s->footer_text" /></div>
             </div>
             <x-admin.drawer-footer save-label="Save General" />
         </form>
