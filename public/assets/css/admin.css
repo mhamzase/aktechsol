@@ -537,21 +537,16 @@ html.dark .form-label, html.dark .ui-label { color: #cbd5e1; }
 html.dark .form-hint, html.dark .ui-hint { color: #9ca3af; }
 html.dark .ui-check .ui-box { background: #374151; border-color: #4b5563; }
 html.dark .ui-check .ui-check-label { color: #cbd5e1; }
-/* ---- Selects: custom chevron, no native arrow (prevents doubled chevron) ---- */
+/* ---- Selects: native arrow only (custom backgrounds caused doubled chevrons) ---- */
 select.form-control, select.ui-control {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.7rem center;
-    background-size: 0.85rem;
-    padding-right: 2.1rem;
+    appearance: auto;
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
+    padding-right: 0.8rem;
+    color-scheme: light;
 }
-select.form-control::-ms-expand, select.ui-control::-ms-expand { display: none; }
-html.dark select.ui-control, html.dark select.form-control {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-}
+html.dark select.form-control, html.dark select.ui-control { color-scheme: dark; }
+select.form-control::-ms-expand, select.ui-control::-ms-expand { display: block; }
 
 /* ---- Table search input: theme-aware ---- */
 .table-search { background: #f8fafc; }
