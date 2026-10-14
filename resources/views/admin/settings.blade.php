@@ -357,16 +357,41 @@
 
     {{-- SEO --}}
     <div data-tabpanel="seo" class="admin-card p-5 hidden">
-        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'seo') }}">
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'seo') }}" novalidate enctype="multipart/form-data">
             @csrf @method('PUT')
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><label class="form-label">Meta Title</label><input name="seo_title" class="form-control" value="{{ $s->seo_title }}"></div>
-                <div><label class="form-label">Meta Keywords</label><input name="seo_keywords" class="form-control" value="{{ $s->seo_keywords }}"></div>
-                <div class="md:col-span-2"><label class="form-label">Meta Description</label><textarea name="seo_description" rows="2" class="form-control">{{ $s->seo_description }}</textarea></div>
-                <div><label class="form-label">Canonical URL</label><input name="seo_canonical_url" class="form-control" value="{{ $s->seo_canonical_url }}"></div>
-                <div><label class="form-label">Robots</label><input name="seo_robots" class="form-control" value="{{ $s->seo_robots }}" placeholder="index, follow"></div>
+            {{-- Meta Tags --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-blue">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                    </span>
+                    Meta Tags
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="seo_title" label="Meta Title" :value="$s->seo_title" placeholder="AK Tech Sol — Digital Agency" /></div>
+                    <div class="md:col-span-2"><x-ui.input name="seo_keywords" label="Meta Keywords" :value="$s->seo_keywords" placeholder="web development, design, …" /></div>
+                    <div class="md:col-span-4"><x-ui.textarea name="seo_description" label="Meta Description" rows="2" :value="$s->seo_description" placeholder="Short description for search engines…" /></div>
+                </div>
             </div>
-            <div class="mt-5 flex justify-end"><button class="btn btn-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-7m-5-5h5m0 0v5m0-5L8 16"/></svg> Save SEO</button></div>
+
+            {{-- Indexing & Social --}}
+            <div class="mb-2">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-green">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </span>
+                    Indexing & Social
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="seo_canonical_url" type="url" label="Canonical URL" :value="$s->seo_canonical_url" placeholder="https://aktechsol.pk" /></div>
+                    <div class="md:col-span-2"><x-ui.input name="seo_robots" label="Robots" :value="$s->seo_robots" placeholder="index, follow" /></div>
+                    <div class="md:col-span-2" data-brand-preview="seo_og_image">
+                        @if ($seoOgImageUrl)<img src="{{ $seoOgImageUrl }}" class="h-16 mb-2 rounded-lg bg-slate-100 p-1 dark:bg-white/10" alt="OG image">@endif
+                        <x-ui.file name="seo_og_image" label="OG Image (optional)" accept="image/jpeg,image/jpg,image/png,image/webp" hint="Shown when sharing links. JPG/PNG/WebP, max 2MB." />
+                    </div>
+                </div>
+            </div>
+            <x-admin.drawer-footer save-label="Save SEO" />
         </form>
     </div>
 

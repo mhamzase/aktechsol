@@ -96,7 +96,7 @@ class SettingsController extends Controller
                 'seo_description' => 'nullable|string|max:500',
                 'seo_keywords' => 'nullable|string|max:500',
                 'seo_canonical_url' => 'nullable|url|max:500',
-                'seo_og_image' => 'nullable|string|max:500',
+                'seo_og_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
                 'seo_robots' => 'nullable|string|max:255',
             ],
             'chatbot' => [
@@ -120,6 +120,7 @@ class SettingsController extends Controller
             'logoUrl' => $siteAsset->getLogoUrl(),
             'faviconUrl' => $siteAsset->getFaviconUrl(),
             'popupImageUrl' => $siteAsset->getPopupImageUrl(),
+            'seoOgImageUrl' => $siteAsset->getSeoOgImageUrl(),
         ]);
     }
 
@@ -185,6 +186,15 @@ class SettingsController extends Controller
             }
         }
 
+        // OG image upload (seo tab, optional).
+        if ($tab === 'seo') {
+            $siteAsset = SiteAsset::firstOrCreate(['name' => 'default']);
+            if ($request->hasFile('seo_og_image')) {
+                $siteAsset->clearMediaCollection('seo_og_image');
+                $siteAsset->addMediaFromRequest('seo_og_image')->toMediaCollection('seo_og_image');
+            }
+        }
+
         $response = ['message' => self::TABS[$tab] . ' settings saved.'];
         $siteAsset = SiteAsset::first();
         if ($tab === 'general') {
@@ -193,6 +203,9 @@ class SettingsController extends Controller
         }
         if ($tab === 'popup') {
             $response['popup_image_url'] = $siteAsset?->getPopupImageUrl();
+        }
+        if ($tab === 'seo') {
+            $response['seo_og_image_url'] = $siteAsset?->getSeoOgImageUrl();
         }
 
         // Re-apply mail config immediately so the next mail uses it.
