@@ -113,7 +113,7 @@
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                     <div class="md:col-span-2"><x-ui.input name="whatsapp_number" label="WhatsApp Number" :value="$s->whatsapp_number" placeholder="923001234567" hint="Country code + number, no + or spaces." /></div>
-                    <div class="md:col-span-2 flex items-end pb-1"><x-ui.checkbox name="whatsapp_enabled" label="Show WhatsApp float button on website" :checked="$s->whatsapp_enabled" /></div>
+                    <div class="md:col-span-2 flex items-end pb-1"><x-ui.toggle name="whatsapp_enabled" label="Show WhatsApp float button on website" :checked="$s->whatsapp_enabled" /></div>
                 </div>
             </div>
 
