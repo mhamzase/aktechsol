@@ -44,7 +44,8 @@
     const tooltipTheme = () => (isDark() ? 'dark' : 'light');
 
     function renderCharts() {
-        /* ---- Quotes (bars) + Revenue (area), last 6 months ---- */
+        /* ---- Quotes + Revenue — AREA line chart (tailor-app style: smooth
+               lines, gradient fills, soft drop-shadow on the series) ---- */
         renderInto('chart-quotes-revenue', (el) => {
             // Captured once — the tooltip reads THESE arrays, so the hovered
             // month always matches its own values (no label/index mismatch).
@@ -52,23 +53,15 @@
             const quotesData = readJson(el, 'quotes', []).map(Number);
             const revenueData = readJson(el, 'revenue', []).map(Number);
             return {
-            chart: { type: 'line', height: 300, toolbar: { show: false }, fontFamily: FONT },
+            chart: { type: 'area', height: 300, toolbar: { show: false }, fontFamily: FONT, zoom: { enabled: false } },
             series: [
-                {
-                    name: 'Quotes',
-                    type: 'column',
-                    data: quotesData,
-                },
-                {
-                    name: 'Revenue (PKR)',
-                    type: 'area',
-                    data: revenueData,
-                },
+                { name: 'Quotes', data: quotesData },
+                { name: 'Revenue (PKR)', data: revenueData },
             ],
             colors: ['#1d4ed8', '#f59e0b'],
-            stroke: { width: [0, 3], curve: 'smooth' },
+            stroke: { curve: 'smooth', width: 3 },
             fill: {
-                type: ['solid', 'gradient'],
+                type: 'gradient',
                 gradient: {
                     shadeIntensity: 0.4,
                     opacityFrom: 0.7,
@@ -76,9 +69,7 @@
                     stops: [0, 100],
                 },
             },
-            plotOptions: {
-                bar: { borderRadius: 4, columnWidth: '52%' },
-            },
+            markers: { size: 0, hover: { size: 6 } },
             dataLabels: { enabled: false },
             tooltip: {
                 shared: true,
@@ -95,7 +86,6 @@
                         '</div>';
                 },
             },
-            markers: { size: [0, 0] },
             legend: { position: 'top', horizontalAlign: 'right', fontFamily: FONT, labels: { colors: axisColor() } },
             grid: { borderColor: gridColor(), strokeDasharray: 0 },
             xaxis: {
@@ -122,6 +112,9 @@
                     },
                 },
             ],
+            states: {
+                hover: { filter: { type: 'lighten', value: 0.08 } },
+            },
             };
         });
 

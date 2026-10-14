@@ -287,7 +287,15 @@ html.dark #avatar-dropzone.dz-active { background: #374151; }
 #tfa-qr svg { width: 100%; height: 100%; display: block; }
 .tfa-code-input { letter-spacing: 0.45em; text-indent: 0.45em; }
 
-/* ---------- ApexCharts custom tooltip (dashboard) ---------- */
+/* ---------- Dashboard area chart: soft shadow under the lines ---------- */
+#chart-quotes-revenue .apexcharts-area-series .apexcharts-area {
+    filter: drop-shadow(0 8px 10px rgba(29, 78, 216, 0.28));
+}
+#chart-quotes-revenue .apexcharts-area-series:nth-child(2) .apexcharts-area {
+    filter: drop-shadow(0 8px 10px rgba(245, 158, 11, 0.28));
+}
+
+/* ---------- Needs Attention cards (dashboard) ---------- */
 .apex-custom-tip {
     background: #fff;
     border: 1px solid #e5edfb;
@@ -306,7 +314,7 @@ html.dark .apex-custom-tip { background: #2b3646; border-color: rgba(255, 255, 2
 html.dark .apex-custom-title, html.dark .apex-custom-row b { color: #f1f5f9; }
 html.dark .apex-custom-row { color: #cbd5e1; }
 
-/* ---------- Needs Attention cards (dashboard) ---------- */
+/* ---------- ApexCharts custom tooltip (dashboard) ---------- */
 .att-card {
     --att: #1d4ed8;
     position: relative;
