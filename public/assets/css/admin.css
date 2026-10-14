@@ -284,17 +284,17 @@ table.data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
 .tab-btn svg { width: 1rem; height: 1rem; }
 .tab-btn:hover { color: #1669d9; background: rgba(22, 105, 217, 0.06); }
 .tab-btn.active {
-    color: #ffffff; background: linear-gradient(135deg, #1669d9, #0d4fc2);
-    font-weight: 800; border-color: #0d4fc2;
+    color: #ffffff; background: #1669d9;
+    font-weight: 800; border-color: #1669d9;
     box-shadow: 0 4px 12px rgba(22, 105, 217, 0.35);
 }
 .tab-btn.active svg { color: #ffffff; }
 html.dark .tab-btn { color: #9ca3af; }
 html.dark .tab-btn:hover { color: #93c5fd; background: rgba(96, 165, 250, 0.08); }
 html.dark .tab-btn.active {
-    color: #ffffff; background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    border-color: #3b82f6;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
+    color: #ffffff; background: #1669d9;
+    border-color: #1669d9;
+    box-shadow: 0 4px 12px rgba(22, 105, 217, 0.45);
 }
 
 /* ---------- Settings section headings ---------- */
