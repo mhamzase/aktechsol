@@ -43,7 +43,7 @@
         <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'general') }}" enctype="multipart/form-data" novalidate>
             @csrf @method('PUT')
             {{-- 4 inputs per row, compact --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                 <x-ui.input name="site_name" label="Site Name" :value="$s->site_name" required />
                 <x-ui.input name="site_email" type="email" label="Site Email" :value="$s->site_email" />
                 <x-ui.input name="site_phone" label="Phone" :value="$s->site_phone" placeholder="+92 300 0000000" />
@@ -61,7 +61,7 @@
                     @if ($faviconUrl)<img src="{{ $faviconUrl }}" class="h-8 mb-2 rounded-lg bg-slate-100 p-1 dark:bg-white/10" alt="Favicon">@endif
                     <x-ui.file name="favicon" label="Favicon" accept="image/*" hint="Square, 32×32+." />
                 </div>
-                <div class="sm:col-span-2 lg:col-span-1"><x-ui.textarea name="footer_text" label="Footer Text" rows="1" :value="$s->footer_text" /></div>
+                <div class="sm:col-span-2 md:col-span-1"><x-ui.textarea name="footer_text" label="Footer Text" rows="1" :value="$s->footer_text" /></div>
             </div>
             <x-admin.drawer-footer save-label="Save General" />
         </form>
