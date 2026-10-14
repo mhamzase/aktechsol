@@ -170,29 +170,82 @@
     });
 
     /* ================= PROFILE FORM ================= */
+    /* ================= PROFILE INFO (AJAX + full validation) ================= */
     const form = document.getElementById('profile-form');
+
+    function clearFieldErrors(scope) {
+        scope.querySelectorAll('.ui-error').forEach((el) => el.remove());
+        scope.querySelectorAll('.ui-control-error').forEach((el) => el.classList.remove('ui-control-error'));
+    }
+
+    function fieldError(input, message) {
+        if (!input) return;
+        input.classList.add('ui-control-error');
+        // Avoid stacking duplicate messages under the same field.
+        const wrap = input.closest('.ui-input-wrap');
+        const next = wrap ? wrap.nextElementSibling : null;
+        if (next && next.classList.contains('ui-error')) next.remove();
+        const err = document.createElement('p');
+        err.className = 'ui-error';
+        err.textContent = message;
+        wrap?.after(err);
+    }
+
+    function serverErrors(scope, errors) {
+        Object.entries(errors).forEach(([field, msgs]) => {
+            fieldError(scope.querySelector(`[name="${field}"]`), msgs[0]);
+        });
+    }
+
+    // Client-side validation — instant feedback before any request is sent.
+    function validateProfile() {
+        clearFieldErrors(form);
+        const name = form.querySelector('[name="name"]');
+        const email = form.querySelector('[name="email"]');
+        let ok = true;
+        if (!name.value.trim()) {
+            fieldError(name, 'Please enter your name.');
+            ok = false;
+        } else if (name.value.trim().length < 3) {
+            fieldError(name, 'Name must be at least 3 characters.');
+            ok = false;
+        }
+        if (!email.value.trim()) {
+            fieldError(email, 'Please enter your email address.');
+            ok = false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())) {
+            fieldError(email, 'Please enter a valid email address.');
+            ok = false;
+        }
+        return ok;
+    }
+
+    // Live: clear a field's error as soon as the user fixes it.
+    form.addEventListener('input', (e) => {
+        const input = e.target.closest('.ui-control');
+        if (!input || !input.classList.contains('ui-control-error')) return;
+        input.classList.remove('ui-control-error');
+        const next = input.closest('.ui-input-wrap')?.nextElementSibling;
+        if (next && next.classList.contains('ui-error')) next.remove();
+    });
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         e.stopPropagation(); // keep the generic data-ajax-form handler away
+        if (!validateProfile()) {
+            notifyErr('Please fix the highlighted errors.');
+            return;
+        }
         const btn = document.getElementById('profile-save-btn');
         const original = btn.innerHTML;
-        form.querySelectorAll('.ui-error').forEach((el) => el.remove());
-        form.querySelectorAll('.ui-control-error').forEach((el) => el.classList.remove('ui-control-error'));
         btn.disabled = true;
         btn.innerHTML = '<span class="spin inline-block">◌</span> Saving…';
         try {
             const { res, data } = await api(form.action, { method: 'POST', body: new FormData(form) });
             if (!res.ok) {
                 if (res.status === 422 && data.errors) {
-                    Object.entries(data.errors).forEach(([field, msgs]) => {
-                        const input = form.querySelector(`[name="${field}"]`);
-                        if (!input) return;
-                        input.classList.add('ui-control-error');
-                        const err = document.createElement('p');
-                        err.className = 'ui-error';
-                        err.textContent = msgs[0];
-                        input.closest('.ui-input-wrap')?.after(err);
-                    });
+                    clearFieldErrors(form);
+                    serverErrors(form, data.errors);
                     notifyErr('Please fix the highlighted errors.');
                 } else notifyErr(data.message);
                 return;
