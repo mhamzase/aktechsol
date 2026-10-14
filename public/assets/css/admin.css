@@ -333,6 +333,14 @@ html.dark .toggle-box { background: #1e293b; border-color: #334155; }
 html.dark .toggle-box .tb-title { color: #f1f5f9; }
 html.dark .toggle-box .tb-desc { color: #94a3b8; }
 
+/* ---------- Settings payment method card ---------- */
+.pm-card {
+    border-radius: 0.85rem; border: 1.5px solid #e2e8f0;
+    background: #ffffff; padding: 1.1rem;
+    box-shadow: 0 1px 3px rgba(15, 42, 92, 0.05);
+}
+html.dark .pm-card { background: #1e293b; border-color: #334155; box-shadow: none; }
+
 /* ---------- Profile page ---------- */
 #avatar-dropzone.dz-active { border-color: #1d4ed8; background: #eff4ff; }
 html.dark #avatar-dropzone.dz-active { background: #374151; }
