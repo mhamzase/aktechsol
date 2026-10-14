@@ -316,6 +316,74 @@
     window.addEventListener('scroll', closeRowMenus, true);
     window.addEventListener('resize', closeRowMenus);
 
+    /* ------------------------------------------------------------------
+       Permissions drawer (data-perm-form) — delegated, works for AJAX-
+       loaded drawer content. Inline <script> never runs via innerHTML,
+       so all logic lives here.
+    ------------------------------------------------------------------ */
+    const permBoxes = (form) => [...form.querySelectorAll('.perm-check')];
+    const refreshPermCounts = (form) => {
+        const all = permBoxes(form);
+        const on = all.filter((b) => b.checked).length;
+        const totalEl = form.querySelector('[data-perm-total]');
+        if (totalEl) totalEl.textContent = on;
+        const master = form.querySelector('[data-perm-toggle]');
+        if (master) master.textContent = on === all.length && all.length ? 'Deselect all' : 'Select all';
+        form.querySelectorAll('[data-perm-group]').forEach((g) => {
+            const gb = [...g.querySelectorAll('.perm-check')];
+            const gon = gb.filter((b) => b.checked).length;
+            const cnt = g.querySelector('[data-perm-count]');
+            if (cnt) cnt.textContent = gon + ' / ' + gb.length + ' enabled';
+            const allBtn = g.querySelector('[data-perm-group-all]');
+            if (allBtn) allBtn.textContent = gon === gb.length && gb.length ? 'None' : 'All';
+        });
+    };
+    // Init counts when the drawer content arrives (after openDrawer injects it).
+    const drawerBody = document.querySelector('#drawer [data-drawer-body]');
+    if (drawerBody) {
+        new MutationObserver((mutations) => {
+            mutations.forEach((m) => m.addedNodes.forEach((n) => {
+                if (n.nodeType !== 1) return;
+                const form = n.matches?.('form[data-perm-form]') ? n : n.querySelector?.('form[data-perm-form]');
+                if (form) refreshPermCounts(form);
+            }));
+        }).observe(drawerBody, { childList: true });
+    }
+
+    document.addEventListener('change', (e) => {
+        const form = e.target.closest('form[data-perm-form]');
+        if (form) refreshPermCounts(form);
+    });
+    document.addEventListener('click', (e) => {
+        const form = e.target.closest('form[data-perm-form]');
+        if (!form) return;
+        // Collapse / expand group.
+        const grpToggle = e.target.closest('[data-perm-group-toggle]');
+        if (grpToggle) {
+            const list = grpToggle.closest('[data-perm-group]').querySelector('[data-perm-list]');
+            const chev = grpToggle.querySelector('[data-perm-chevron]');
+            list.classList.toggle('hidden');
+            if (chev) chev.style.transform = list.classList.contains('hidden') ? 'rotate(-90deg)' : '';
+            return;
+        }
+        // Per-group All / None.
+        const grpAll = e.target.closest('[data-perm-group-all]');
+        if (grpAll) {
+            const gb = [...grpAll.closest('[data-perm-group]').querySelectorAll('.perm-check')];
+            const target = gb.some((b) => !b.checked);
+            gb.forEach((b) => { b.checked = target; });
+            refreshPermCounts(form);
+            return;
+        }
+        // Master Select all / Deselect all.
+        if (e.target.closest('[data-perm-toggle]')) {
+            const all = permBoxes(form);
+            const target = all.some((b) => !b.checked);
+            all.forEach((b) => { b.checked = target; });
+            refreshPermCounts(form);
+        }
+    });
+
     // AJAX form submit (delegated — works for drawer-injected forms)
     document.addEventListener('submit', async (e) => {
         const form = e.target.closest('form[data-ajax-form]');
