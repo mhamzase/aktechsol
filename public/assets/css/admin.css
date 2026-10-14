@@ -74,6 +74,18 @@ body.admin-body { font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; }
 .admin-topbar .crumb { font-size: 0.82rem; color: #64748b; display: inline-flex; align-items: center; gap: 0.4rem; }
 .admin-topbar .crumb a:hover { color: #1d4ed8; }
 .admin-topbar .crumb-current { color: #0f2a5c; font-weight: 700; }
+/* Mobile: topbar dropdowns become centered fixed panels (never clip off-screen) */
+@media (max-width: 640px) {
+    #topbar-notifications[data-dropdown],
+    #topbar-user[data-dropdown] {
+        position: fixed;
+        top: 4.75rem;
+        left: 0.75rem;
+        right: 0.75rem;
+        width: auto;
+        max-width: none;
+    }
+}
 /* Pulsing notification dot */
 @keyframes bell-ping {
     0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55); }
