@@ -158,7 +158,7 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
         ->middleware('can:view activity log')->name('activity-log.index');
 
     // Existing content modules
-    Route::resource('services', ServiceController::class)->except(['show']);
+    Route::resource('services', ServiceController::class);
     Route::resource('service-categories', ServiceCategoryController::class)->except(['show']);
     Route::resource('projects', ProjectController::class)->except(['show']);
     Route::resource('testimonials', TestimonialController::class)->except(['show']);
