@@ -168,12 +168,19 @@ class SettingsController extends Controller
             }
         }
 
+        $response = ['message' => self::TABS[$tab] . ' settings saved.'];
+        if ($tab === 'general') {
+            $siteAsset = SiteAsset::first();
+            $response['logo_url'] = $siteAsset?->getLogoUrl();
+            $response['favicon_url'] = $siteAsset?->getFaviconUrl();
+        }
+
         // Re-apply mail config immediately so the next mail uses it.
         if ($tab === 'email') {
             MailConfig::apply();
         }
 
-        return response()->json(['message' => self::TABS[$tab] . ' settings saved.']);
+        return response()->json($response);
     }
 
     /** Send a test email to verify the SMTP configuration. */

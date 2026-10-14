@@ -11,7 +11,11 @@
     (function () { try { if (localStorage.getItem('aktechsol-admin-theme') === 'dark') document.documentElement.classList.add('dark'); } catch (e) {} })();
     </script>
 
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    @if (!empty($faviconUrl))
+        <link rel="icon" href="{{ $faviconUrl }}">
+    @else
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    @endif
 
     {{-- Local assets only — no CDNs --}}
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">

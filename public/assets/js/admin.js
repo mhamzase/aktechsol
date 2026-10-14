@@ -517,6 +517,24 @@
                 return;
             }
             window.notify?.success(data.message || 'Saved successfully.');
+            // Update branding previews (settings general tab) without a page refresh.
+            if (data.logo_url || data.favicon_url) {
+                const updatePreview = (key, url) => {
+                    if (!url) return;
+                    const box = form.querySelector(`[data-brand-preview="${key}"]`);
+                    if (!box) return;
+                    let img = box.querySelector('img');
+                    if (!img) {
+                        img = document.createElement('img');
+                        img.alt = key;
+                        img.className = 'h-10 mb-2 rounded-lg bg-slate-100 p-1 dark:bg-white/10';
+                        box.prepend(img);
+                    }
+                    img.src = url + '?t=' + Date.now();
+                };
+                updatePreview('logo', data.logo_url);
+                updatePreview('favicon', data.favicon_url);
+            }
             window.closeDrawer();
             if (form.dataset.reloadTable) window.reloadAdminTable(form.dataset.reloadTable);
             if (data.redirect) window.location.href = data.redirect;

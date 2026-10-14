@@ -85,11 +85,11 @@
                     Branding
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-                    <div>
+                    <div data-brand-preview="logo">
                         @if ($logoUrl)<img src="{{ $logoUrl }}" class="h-10 mb-2 rounded-lg bg-slate-100 p-1 dark:bg-white/10" alt="Logo">@endif
                         <x-ui.file name="logo" label="Logo" accept="image/*" hint="PNG or SVG." />
                     </div>
-                    <div>
+                    <div data-brand-preview="favicon">
                         @if ($faviconUrl)<img src="{{ $faviconUrl }}" class="h-8 mb-2 rounded-lg bg-slate-100 p-1 dark:bg-white/10" alt="Favicon">@endif
                         <x-ui.file name="favicon" label="Favicon" accept="image/*" hint="Square, 32×32+." />
                     </div>
