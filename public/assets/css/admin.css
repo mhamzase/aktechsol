@@ -323,6 +323,7 @@ html.dark .stat-card:hover { box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.55); }
 
 /* ---- Surfaces ---- */
 html.dark .bg-white { background-color: #141f38 !important; }
+html.dark .bg-white\/60 { background-color: rgba(20, 31, 56, 0.6) !important; }
 html.dark .bg-slate-50, html.dark .bg-gray-50 { background-color: #0f1930 !important; }
 html.dark .bg-slate-100 { background-color: #1b2745 !important; }
 html.dark .bg-slate-200 { background-color: #243156 !important; }
