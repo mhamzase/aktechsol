@@ -42,21 +42,26 @@
 
     function renderCharts() {
         /* ---- Quotes (bars) + Revenue (area), last 6 months ---- */
-        renderInto('chart-quotes-revenue', (el) => ({
+        renderInto('chart-quotes-revenue', (el) => {
+            // Captured once — the tooltip reads THESE arrays, so the hovered
+            // month always matches its own values (no label/index mismatch).
+            const monthLabels = readJson(el, 'labels', []);
+            const quotesData = readJson(el, 'quotes', []).map(Number);
+            const revenueData = readJson(el, 'revenue', []).map(Number);
+            return {
             chart: { type: 'line', height: 300, toolbar: { show: false }, fontFamily: FONT },
             series: [
                 {
                     name: 'Quotes',
                     type: 'column',
-                    data: readJson(el, 'quotes', []),
+                    data: quotesData,
                 },
                 {
                     name: 'Revenue (PKR)',
                     type: 'area',
-                    data: readJson(el, 'revenue', []),
+                    data: revenueData,
                 },
             ],
-            labels: readJson(el, 'labels', []),
             colors: ['#1d4ed8', '#f59e0b'],
             stroke: { width: [0, 3], curve: 'smooth' },
             fill: {
@@ -75,13 +80,11 @@
             tooltip: {
                 shared: true,
                 intersect: false,
-                // Custom tooltip: dataPointIndex is the hovered point — always
-                // shows THAT month's values (no off-by-one from shared snapping).
-                custom: ({ series, dataPointIndex, w }) => {
+                custom: ({ dataPointIndex }) => {
                     const i = dataPointIndex;
-                    const label = (w.globals.labels && w.globals.labels[i]) || '';
-                    const q = (series[0] && series[0][i] != null) ? series[0][i] : 0;
-                    const r = (series[1] && series[1][i] != null) ? series[1][i] : 0;
+                    const label = monthLabels[i] || '';
+                    const q = quotesData[i] ?? 0;
+                    const r = revenueData[i] ?? 0;
                     return '<div class="apex-custom-tip">' +
                         '<div class="apex-custom-title">' + label + '</div>' +
                         '<div class="apex-custom-row"><span class="dot" style="background:#1d4ed8"></span>Quotes<b>' + q + '</b></div>' +
@@ -93,6 +96,7 @@
             legend: { position: 'top', horizontalAlign: 'right', fontFamily: FONT, labels: { colors: axisColor() } },
             grid: { borderColor: gridColor(), strokeDasharray: 0 },
             xaxis: {
+                categories: monthLabels,
                 labels: { style: { fontFamily: FONT, colors: axisColor() } },
                 axisBorder: { show: false },
                 axisTicks: { show: false },
@@ -115,12 +119,13 @@
                     },
                 },
             ],
-        }));
+            };
+        });
 
         /* ---- Project pipeline — PIE (not donut) ---- */
         renderInto('chart-pipeline', (el) => ({
             chart: { type: 'pie', height: 300, fontFamily: FONT, redrawOnParentResize: true },
-            series: readJson(el, 'values', []),
+            series: readJson(el, 'values', []).map(Number),
             labels: readJson(el, 'labels', []).map((s) =>
                 s.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
             ),
