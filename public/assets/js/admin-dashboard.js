@@ -15,9 +15,12 @@
         const el = document.getElementById(id);
         if (!el || typeof ApexCharts === 'undefined') return;
         if (rendered[id]) {
-            rendered[id].destroy();
+            try { rendered[id].destroy(); } catch (e) { /* ignore */ }
             delete rendered[id];
         }
+        // Force-clean: destroy() can leave a stale SVG behind, and a second
+        // SVG stacked on top is what glitches the pie / breaks hover mapping.
+        el.innerHTML = '';
         const chart = new ApexCharts(el, buildOptions(el));
         rendered[id] = chart;
         chart.render();
@@ -147,8 +150,8 @@
 
     // Exposed so the theme toggle can re-render charts in the new mode.
     window.renderAdminCharts = renderCharts;
+    // Single render on DOM ready. (No window.load re-render: a second render
+    // right after the first is what stacked duplicate SVGs and glitched the
+    // charts. renderInto() force-cleans the container, so theme toggles are safe.)
     document.addEventListener('DOMContentLoaded', renderCharts);
-    // Re-render once fonts + layout are fully settled — fixes charts that
-    // measured their container too early (misplaced / clipped pies).
-    window.addEventListener('load', () => setTimeout(renderCharts, 350));
 })();
