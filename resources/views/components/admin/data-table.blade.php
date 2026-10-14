@@ -24,21 +24,17 @@
 ])
 
 <div id="{{ $id }}" data-admin-table data-ajax-url="{{ $ajaxUrl }}" class="admin-card overflow-hidden">
-    {{-- Toolbar: per-page + stats (left), search (right) --}}
+    {{-- Toolbar: per-page (left), search (right) — tailor-app style --}}
     <div class="flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3 border-b border-slate-100">
         <label class="flex items-center gap-2 text-sm text-slate-500">
             <span>Show</span>
-            <span class="relative">
-                <select data-per-page class="form-control !w-auto !py-1.5 !pr-8 appearance-none font-semibold text-slate-700 cursor-pointer">
-                    @foreach ([10, 25, 50, 100] as $n)
-                        <option value="{{ $n }}" @selected($n == $perPage)>{{ $n }}</option>
-                    @endforeach
-                </select>
-                <svg class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-            </span>
+            <select data-per-page class="form-control !w-auto !py-1.5 cursor-pointer">
+                @foreach ([10, 25, 50, 100] as $n)
+                    <option value="{{ $n }}" @selected($n == $perPage)>{{ $n }}</option>
+                @endforeach
+            </select>
             <span>entries</span>
         </label>
-        <span data-stats class="text-xs font-medium text-slate-400"></span>
         @isset($filters)
             {{ $filters }}
         @endisset

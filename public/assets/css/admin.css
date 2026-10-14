@@ -319,42 +319,45 @@ html.dark .apex-custom-row { color: #cbd5e1; }
 .row-actions-btn {
     width: 2rem; height: 2rem;
     display: inline-flex; align-items: center; justify-content: center;
-    border-radius: 0.6rem;
+    border-radius: 0.5rem;
     color: #94a3b8;
     transition: background 0.15s, color 0.15s;
 }
-.row-actions-btn:hover { background: #eef2ff; color: #1669d9; }
+.row-actions-btn:hover { background: #f1f5f9; color: #475569; }
 .row-actions-btn svg { width: 1.15rem; height: 1.15rem; }
 .row-actions-menu {
     position: absolute;
     right: 0; top: calc(100% + 4px);
-    min-width: 11rem;
+    min-width: 10rem;
     background: #fff;
-    border: 1px solid #e5edfb;
-    border-radius: 0.8rem;
-    box-shadow: 0 12px 32px -8px rgba(18, 48, 126, 0.18);
-    padding: 0.35rem;
+    border-radius: 0.6rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 0.25rem;
     z-index: 40;
 }
 .row-actions-menu button {
-    display: flex; align-items: center; gap: 0.65rem;
+    display: flex; align-items: center; gap: 0.6rem;
     width: 100%;
-    padding: 0.55rem 0.75rem;
-    font-size: 0.82rem; font-weight: 600;
-    color: #334155;
-    border-radius: 0.55rem;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.85rem; font-weight: 500;
+    color: #374151;
+    border-radius: 0.4rem;
     transition: background 0.12s;
     text-align: left;
 }
-.row-actions-menu button:hover { background: #f1f5f9; }
-.row-actions-menu button svg { width: 1rem; height: 1rem; flex-shrink: 0; }
+.row-actions-menu button:hover { background: #f3f4f6; }
+.row-actions-menu button svg { width: 1rem; height: 1rem; flex-shrink: 0; color: #6b7280; }
 .row-actions-menu button.danger { color: #dc2626; }
+.row-actions-menu button.danger svg { color: #dc2626; }
 .row-actions-menu button.danger:hover { background: #fef2f2; }
-html.dark .row-actions-btn:hover { background: #374151; color: #60a5fa; }
-html.dark .row-actions-menu { background: #2b3646; border-color: rgba(255, 255, 255, 0.1); box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.5); }
+html.dark .row-actions-btn:hover { background: #374151; color: #cbd5e1; }
+html.dark .row-actions-menu { background: #2b3646; border-color: rgba(255, 255, 255, 0.1); }
 html.dark .row-actions-menu button { color: #cbd5e1; }
+html.dark .row-actions-menu button svg { color: #94a3b8; }
 html.dark .row-actions-menu button:hover { background: #374151; }
 html.dark .row-actions-menu button.danger { color: #f87171; }
+html.dark .row-actions-menu button.danger svg { color: #f87171; }
 html.dark .row-actions-menu button.danger:hover { background: rgba(220, 38, 38, 0.15); }
 
 /* ---------- Shared blue loader (x-admin.loader) — ONE loader for everything ---------- */
