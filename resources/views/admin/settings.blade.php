@@ -288,15 +288,15 @@
                     </span>
                     Content
                 </h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-                    <div class="md:col-span-2"><x-ui.input name="popup_title" label="Popup Title" :value="$s->popup_title" placeholder="Special Offer!" /></div>
-                    <div class="md:col-span-2"><x-ui.input name="popup_btn_text" label="Button Text" :value="$s->popup_btn_text" placeholder="Get Started" /></div>
-                    <div class="md:col-span-2"><x-ui.input name="popup_btn_url" type="url" label="Button URL" :value="$s->popup_btn_url" placeholder="/contact" /></div>
-                    <div class="md:col-span-2" data-brand-preview="popup_image">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-3">
+                    <div class="md:col-span-4"><x-ui.input name="popup_title" label="Popup Title" :value="$s->popup_title" placeholder="Special Offer!" /></div>
+                    <div class="md:col-span-4"><x-ui.input name="popup_btn_text" label="Button Text" :value="$s->popup_btn_text" placeholder="Get Started" /></div>
+                    <div class="md:col-span-4"><x-ui.input name="popup_btn_url" type="url" label="Button URL" :value="$s->popup_btn_url" placeholder="/contact" /></div>
+                    <div class="md:col-span-6"><x-ui.textarea name="popup_message" label="Message" rows="4" :value="$s->popup_message" placeholder="Write your announcement message…" /></div>
+                    <div class="md:col-span-6" data-brand-preview="popup_image">
                         @if ($popupImageUrl)<img src="{{ $popupImageUrl }}" class="h-16 mb-2 rounded-lg bg-slate-100 p-1 dark:bg-white/10" alt="Popup image">@endif
                         <x-ui.file name="popup_image" label="Popup Image (optional)" accept="image/jpeg,image/jpg,image/png,image/webp" hint="Shown on the popup. JPG/PNG/WebP, max 2MB." />
                     </div>
-                    <div class="md:col-span-4"><x-ui.textarea name="popup_message" label="Message" rows="3" :value="$s->popup_message" placeholder="Write your announcement message…" /></div>
                 </div>
             </div>
             <x-admin.drawer-footer save-label="Save Popup" />
