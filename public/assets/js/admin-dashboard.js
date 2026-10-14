@@ -73,10 +73,20 @@
             },
             dataLabels: { enabled: false },
             tooltip: {
-                shared: true, intersect: false, theme: tooltipTheme(),
-                y: {
-                    formatter: (v, { seriesIndex }) =>
-                        seriesIndex === 1 ? 'PKR ' + Number(v).toLocaleString() : v,
+                shared: true,
+                intersect: false,
+                // Custom tooltip: dataPointIndex is the hovered point — always
+                // shows THAT month's values (no off-by-one from shared snapping).
+                custom: ({ series, dataPointIndex, w }) => {
+                    const i = dataPointIndex;
+                    const label = (w.globals.labels && w.globals.labels[i]) || '';
+                    const q = (series[0] && series[0][i] != null) ? series[0][i] : 0;
+                    const r = (series[1] && series[1][i] != null) ? series[1][i] : 0;
+                    return '<div class="apex-custom-tip">' +
+                        '<div class="apex-custom-title">' + label + '</div>' +
+                        '<div class="apex-custom-row"><span class="dot" style="background:#1d4ed8"></span>Quotes<b>' + q + '</b></div>' +
+                        '<div class="apex-custom-row"><span class="dot" style="background:#f59e0b"></span>Revenue (PKR)<b>PKR ' + Number(r).toLocaleString('en-PK') + '</b></div>' +
+                        '</div>';
                 },
             },
             markers: { size: [0, 4], colors: ['#f59e0b'], strokeColors: '#fff', strokeWidth: 2, hover: { size: 6 } },
@@ -109,7 +119,7 @@
 
         /* ---- Project pipeline — PIE (not donut) ---- */
         renderInto('chart-pipeline', (el) => ({
-            chart: { type: 'pie', height: 300, fontFamily: FONT },
+            chart: { type: 'pie', height: 300, fontFamily: FONT, redrawOnParentResize: true },
             series: readJson(el, 'values', []),
             labels: readJson(el, 'labels', []).map((s) =>
                 s.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
@@ -133,4 +143,7 @@
     // Exposed so the theme toggle can re-render charts in the new mode.
     window.renderAdminCharts = renderCharts;
     document.addEventListener('DOMContentLoaded', renderCharts);
+    // Re-render once fonts + layout are fully settled — fixes charts that
+    // measured their container too early (misplaced / clipped pies).
+    window.addEventListener('load', () => setTimeout(renderCharts, 350));
 })();
