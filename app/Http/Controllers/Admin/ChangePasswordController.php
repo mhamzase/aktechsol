@@ -18,6 +18,14 @@ class ChangePasswordController extends Controller
         auth()->user()->update([
             'password' => Hash::make($request->new_password),
         ]);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Password changed successfully.',
+            ]);
+        }
+
         return redirect()->route('admin.change-password')->with('success', 'Password changed successfully.');
     }
 }
