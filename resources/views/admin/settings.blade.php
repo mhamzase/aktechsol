@@ -218,22 +218,22 @@
                     @forelse (($s->payment_methods ?? []) as $pm)
                         <div class="pm-card rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40 p-4">
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-                                <x-ui.input name="payment_methods[][method]" label="Payment Method" :value="$pm['method'] ?? $pm['name'] ?? ''" placeholder="Easypaisa / JazzCash / Bank Transfer" />
-                                <x-ui.input name="payment_methods[][account_holder]" label="Account Holder Name" :value="$pm['account_holder'] ?? ''" placeholder="Muhammad Hamza" />
-                                <x-ui.input name="payment_methods[][bank_name]" label="Bank Name" :value="$pm['bank_name'] ?? ''" placeholder="Meezan Bank" />
-                                <x-ui.input name="payment_methods[][account_number]" label="Account Number" :value="$pm['account_number'] ?? ''" placeholder="0300 1234567" />
-                                <div class="md:col-span-3"><x-ui.input name="payment_methods[][iban]" label="IBAN" :value="$pm['iban'] ?? ''" placeholder="PK36SCBL0000001123456702" /></div>
+                                <div class="ui-field"><label class="ui-label">Payment Method</label><div class="ui-input-wrap"><input name="payment_methods[][method]" class="ui-control" value="{{ $pm['method'] ?? $pm['name'] ?? '' }}" placeholder="Easypaisa / JazzCash / Bank Transfer"></div></div>
+                                <div class="ui-field"><label class="ui-label">Account Holder Name</label><div class="ui-input-wrap"><input name="payment_methods[][account_holder]" class="ui-control" value="{{ $pm['account_holder'] ?? '' }}" placeholder="Muhammad Hamza"></div></div>
+                                <div class="ui-field"><label class="ui-label">Bank Name</label><div class="ui-input-wrap"><input name="payment_methods[][bank_name]" class="ui-control" value="{{ $pm['bank_name'] ?? '' }}" placeholder="Meezan Bank"></div></div>
+                                <div class="ui-field"><label class="ui-label">Account Number</label><div class="ui-input-wrap"><input name="payment_methods[][account_number]" class="ui-control" value="{{ $pm['account_number'] ?? '' }}" placeholder="0300 1234567"></div></div>
+                                <div class="md:col-span-3 ui-field"><label class="ui-label">IBAN</label><div class="ui-input-wrap"><input name="payment_methods[][iban]" class="ui-control" value="{{ $pm['iban'] ?? '' }}" placeholder="PK36SCBL0000001123456702"></div></div>
                                 <div class="flex items-end justify-end"><button type="button" class="btn btn-ghost !text-red-500" onclick="this.closest('.pm-card').remove()" title="Remove">✕ Remove</button></div>
                             </div>
                         </div>
                     @empty
                         <div class="pm-card rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40 p-4">
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-                                <x-ui.input name="payment_methods[][method]" label="Payment Method" placeholder="Easypaisa / JazzCash / Bank Transfer" />
-                                <x-ui.input name="payment_methods[][account_holder]" label="Account Holder Name" placeholder="Muhammad Hamza" />
-                                <x-ui.input name="payment_methods[][bank_name]" label="Bank Name" placeholder="Meezan Bank" />
-                                <x-ui.input name="payment_methods[][account_number]" label="Account Number" placeholder="0300 1234567" />
-                                <div class="md:col-span-3"><x-ui.input name="payment_methods[][iban]" label="IBAN" placeholder="PK36SCBL0000001123456702" /></div>
+                                <div class="ui-field"><label class="ui-label">Payment Method</label><div class="ui-input-wrap"><input name="payment_methods[][method]" class="ui-control" placeholder="Easypaisa / JazzCash / Bank Transfer"></div></div>
+                                <div class="ui-field"><label class="ui-label">Account Holder Name</label><div class="ui-input-wrap"><input name="payment_methods[][account_holder]" class="ui-control" placeholder="Muhammad Hamza"></div></div>
+                                <div class="ui-field"><label class="ui-label">Bank Name</label><div class="ui-input-wrap"><input name="payment_methods[][bank_name]" class="ui-control" placeholder="Meezan Bank"></div></div>
+                                <div class="ui-field"><label class="ui-label">Account Number</label><div class="ui-input-wrap"><input name="payment_methods[][account_number]" class="ui-control" placeholder="0300 1234567"></div></div>
+                                <div class="md:col-span-3 ui-field"><label class="ui-label">IBAN</label><div class="ui-input-wrap"><input name="payment_methods[][iban]" class="ui-control" placeholder="PK36SCBL0000001123456702"></div></div>
                                 <div class="flex items-end justify-end"><button type="button" class="btn btn-ghost !text-red-500" onclick="this.closest('.pm-card').remove()" title="Remove">✕ Remove</button></div>
                             </div>
                         </div>
