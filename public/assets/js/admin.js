@@ -656,3 +656,23 @@ window.toggleServiceStatus = function (url, btn) {
         .catch(() => window.notify?.error('Failed to update status.'))
         .finally(() => { btn.disabled = false; });
 };
+
+// Auto-generate slug from title (services, blog, etc.).
+// Only fills the slug if the user hasn't manually edited it.
+document.addEventListener('input', function (e) {
+    if (e.target.name !== 'title') return;
+    const form = e.target.closest('form');
+    if (!form) return;
+    const slugInput = form.querySelector('[name="slug"]');
+    if (!slugInput || slugInput.dataset.manual === '1') return;
+    slugInput.value = e.target.value
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/[\s_]+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+});
+document.addEventListener('input', function (e) {
+    if (e.target.name === 'slug') e.target.dataset.manual = '1';
+});
