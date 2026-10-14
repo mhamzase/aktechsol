@@ -291,6 +291,28 @@ html.dark .tab-btn.active {
     background: linear-gradient(to bottom, transparent, rgba(96, 165, 250, 0.1));
 }
 
+/* ---------- Settings section headings ---------- */
+.section-heading {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-size: 0.9rem; font-weight: 800; color: #0f2a5c;
+    margin-bottom: 0.85rem;
+}
+.section-heading .sec-icon {
+    width: 1.9rem; height: 1.9rem; border-radius: 0.6rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.section-heading .sec-icon svg { width: 1.05rem; height: 1.05rem; }
+.sec-blue { background: #dbeafe; color: #1669d9; }
+.sec-violet { background: #ede9fe; color: #7c3aed; }
+.sec-amber { background: #fef3c7; color: #d97706; }
+.sec-green { background: #dcfce7; color: #16a34a; }
+html.dark .section-heading { color: #f1f5f9; }
+html.dark .sec-blue { background: rgba(37, 99, 235, 0.25); color: #93c5fd; }
+html.dark .sec-violet { background: rgba(124, 58, 237, 0.25); color: #c4b5fd; }
+html.dark .sec-amber { background: rgba(217, 119, 6, 0.25); color: #fcd34d; }
+html.dark .sec-green { background: rgba(22, 163, 74, 0.25); color: #86efac; }
+
 /* ---------- Profile page ---------- */
 #avatar-dropzone.dz-active { border-color: #1d4ed8; background: #eff4ff; }
 html.dark #avatar-dropzone.dz-active { background: #374151; }
