@@ -15,10 +15,10 @@
                 <p class="font-bold text-white truncate">{{ $user->name }}</p>
                 <p class="text-xs text-blue-100/90 truncate">{{ $user->email }}</p>
             </div>
-            <span class="ml-auto shrink-0 text-[11px] font-bold uppercase tracking-wide bg-white text-[#1669d9] rounded-full px-2.5 py-1">Team Member</span>
+            <span class="ml-auto shrink-0 text-[11px] font-extrabold uppercase tracking-wider bg-white text-[#1669d9] rounded-full px-3.5 py-1.5 shadow-sm whitespace-nowrap">Team Member</span>
         </div>
 
-        <div class="rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 dark:bg-amber-500/10 dark:border-amber-500/25">
+        <div class="rounded-xl bg-amber-50 border-2 border-amber-300 px-4 py-3 dark:bg-amber-500/10 dark:border-amber-500/40 shadow-sm">
             <p class="text-xs leading-relaxed text-amber-800 dark:text-amber-200">
                 Tick the modules this member may manage. Permissions are stored
                 <b>directly on this user</b> — the Team Member role itself stays permission-free.
@@ -35,9 +35,9 @@
         </div>
 
         @foreach ($groups as $group => $perms)
-            <div class="rounded-2xl border-2 border-slate-200 dark:border-white/15 overflow-hidden bg-white dark:bg-white/[0.03] shadow-sm" data-perm-group>
+            <div class="rounded-2xl border-2 border-slate-300 dark:border-white/25 overflow-hidden bg-white dark:bg-white/[0.03] shadow-md" data-perm-group>
                 {{-- Group header --}}
-                <div class="flex items-center gap-3 px-4 py-3 bg-slate-100 dark:bg-white/10 border-b-2 border-slate-200 dark:border-white/15">
+                <div class="flex items-center gap-3 px-4 py-3 bg-slate-100 dark:bg-white/10 border-b-2 border-slate-300 dark:border-white/25">
                     <span class="w-9 h-9 rounded-xl bg-[#1669d9] text-white flex items-center justify-center shrink-0 shadow">
                         <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $icons[$group] ?? '' }}"/></svg>
                     </span>
@@ -61,7 +61,7 @@
                                 <span class="block text-sm font-bold text-slate-900 dark:text-white truncate">{{ ucfirst($perm) }}</span>
                                 <span class="block text-[11px] text-slate-500 dark:text-slate-400 truncate">Unlocks sidebar tab</span>
                             </span>
-                            <span class="shrink-0 inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-[#1669d9] bg-blue-50 border border-blue-200 rounded-full px-2.5 py-1 dark:text-blue-300 dark:bg-blue-500/15 dark:border-blue-500/30">
+                            <span class="shrink-0 inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-white bg-[#1669d9] rounded-full px-3 py-1.5 shadow-sm dark:bg-blue-600">
                                 <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
                                 {{ $sidebarMap[$perm] ?? '—' }}
                             </span>
