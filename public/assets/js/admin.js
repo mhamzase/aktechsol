@@ -266,6 +266,11 @@
        Works for AJAX-loaded rows everywhere. Closes other open menus.
     ------------------------------------------------------------------ */
     document.addEventListener('click', (e) => {
+        // Drawer close button (x-admin.drawer-footer Cancel).
+        if (e.target.closest('[data-drawer-close]')) {
+            closeDrawer();
+            return;
+        }
         const toggle = e.target.closest('[data-row-actions-toggle]');
         // Close menus that don't contain the clicked toggle.
         document.querySelectorAll('.row-actions-menu:not(.hidden)').forEach((m) => {
