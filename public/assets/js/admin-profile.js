@@ -301,19 +301,28 @@
             </div>
             <button id="tfa-enable" class="btn btn-primary mt-4">Enable Two-Factor Authentication</button>`;
         document.getElementById('tfa-enable').addEventListener('click', async (e) => {
-            const yes = await pfConfirm({
-                title: 'Enable two-factor authentication?',
-                text: 'You will need an authenticator app (Google Authenticator, Authy…) to get a 6-digit code at every login.',
-                okLabel: 'Enable',
-                danger: false,
-            });
+            const btn = e.currentTarget; // capture BEFORE any await (currentTarget becomes null after await)
+            let yes = false;
+            try {
+                yes = await pfConfirm({
+                    title: 'Enable two-factor authentication?',
+                    text: 'You will need an authenticator app (Google Authenticator, Authy…) to get a 6-digit code at every login.',
+                    okLabel: 'Enable',
+                    danger: false,
+                });
+            } catch (err) { return; }
             if (!yes) return;
-            const btn = e.currentTarget;
             btn.disabled = true;
             btn.innerHTML = '<span class="spin inline-block">◌</span> Generating…';
-            const { res, data } = await api(URLS.tfaEnable);
-            if (res.ok) renderConfirming(data.qr_svg, data.secret);
-            else { notifyErr(data.message); btn.disabled = false; btn.textContent = 'Enable Two-Factor Authentication'; }
+            try {
+                const { res, data } = await api(URLS.tfaEnable);
+                if (res.ok) renderConfirming(data.qr_svg, data.secret);
+                else { notifyErr(data.message); btn.disabled = false; btn.textContent = 'Enable Two-Factor Authentication'; }
+            } catch (err) {
+                notifyErr('Network error. Please try again.');
+                btn.disabled = false;
+                btn.textContent = 'Enable Two-Factor Authentication';
+            }
         });
     }
 
@@ -394,7 +403,17 @@
         tfaBody.innerHTML = `
             ${justEnabled ? `<div class="mb-4 rounded-xl bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
                 <span class="font-semibold">2FA is now active.</span> Save these recovery codes somewhere safe — each works once if you lose your device.
-            </div>` : `<p class="text-sm text-slate-500 mb-1">Your account is protected. Keep your recovery codes safe:</p>`}
+            </div>` : ''}
+            <div class="mb-4 rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-600">
+                <p class="font-semibold text-slate-700 mb-1.5">How to use it</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>At login, open your authenticator app and enter the 6-digit code shown for this account.</li>
+                    <li>Codes refresh every 30 seconds — always use the latest one.</li>
+                    <li>Lost your phone? Use one of the recovery codes below instead of the app code (each works once).</li>
+                    <li>Keep recovery codes somewhere safe (password manager or printed). Regenerate them if exposed.</li>
+                </ul>
+            </div>
+            <p class="text-sm text-slate-500 mb-1 font-semibold">Your recovery codes:</p>
             ${codesGrid(codes)}
             <div class="flex flex-wrap gap-2">
                 <button id="tfa-copy-codes" class="btn btn-secondary">Copy codes</button>
