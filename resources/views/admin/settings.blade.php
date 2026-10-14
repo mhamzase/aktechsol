@@ -397,19 +397,48 @@
 
     {{-- CHATBOT --}}
     <div data-tabpanel="chatbot" class="admin-card p-5 hidden">
-        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'chatbot') }}">
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'chatbot') }}" novalidate>
             @csrf @method('PUT')
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="md:col-span-2">
-                    <label class="flex items-center gap-2 text-sm font-medium text-slate-600">
-                        <input type="checkbox" name="chatbot_enabled" value="1" @checked($s->chatbot_enabled) class="w-4 h-4 accent-[#1d4ed8]">
-                        Enable chatbot widget on website
-                    </label>
+            {{-- Widget --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-blue">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    </span>
+                    Widget
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2">
+                        <div class="toggle-box">
+                            <div class="flex items-center gap-3">
+                                <span class="tb-icon sec-blue">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                </span>
+                                <div>
+                                    <p class="tb-title">Chatbot Widget</p>
+                                    <p class="tb-desc">Show on website</p>
+                                </div>
+                            </div>
+                            <x-ui.toggle name="chatbot_enabled" :checked="$s->chatbot_enabled" />
+                        </div>
+                    </div>
                 </div>
-                <div><label class="form-label">Team Name <span class="text-slate-400 font-normal">(widget header)</span></label><input name="chatbot_team_name" class="form-control" value="{{ $s->chatbot_team_name }}" placeholder="AK Tech Sol Team"></div>
-                <div><label class="form-label">Greeting Message</label><input name="chatbot_greeting" class="form-control" value="{{ $s->chatbot_greeting }}" placeholder="Hi! How can we help you today?"></div>
             </div>
-            <div class="mt-5 flex justify-end"><button class="btn btn-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-7m-5-5h5m0 0v5m0-5L8 16"/></svg> Save Chatbot</button></div>
+
+            {{-- Appearance --}}
+            <div class="mb-2">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-violet">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                    </span>
+                    Appearance
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="chatbot_team_name" label="Team Name" :value="$s->chatbot_team_name" placeholder="AK Tech Sol Team" hint="Shown in the widget header." /></div>
+                    <div class="md:col-span-2"><x-ui.input name="chatbot_greeting" label="Greeting Message" :value="$s->chatbot_greeting" placeholder="Hi! How can we help you today?" /></div>
+                </div>
+            </div>
+            <x-admin.drawer-footer save-label="Save Chatbot" />
         </form>
     </div>
 @endsection
