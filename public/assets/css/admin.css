@@ -221,7 +221,7 @@ table.data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
 
 /* ---------- Drawer (right slide-in panel for AJAX forms) ---------- */
 .drawer-overlay {
-    position: fixed; inset: 0; background: rgba(11, 36, 99, 0.45);
+    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.55);
     z-index: 60; opacity: 0; pointer-events: none; transition: opacity 0.2s;
 }
 .drawer-overlay.open { opacity: 1; pointer-events: auto; }

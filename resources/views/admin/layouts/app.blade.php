@@ -56,7 +56,7 @@
 
     {{-- Delete confirmation modal --}}
     <div id="confirm-delete-modal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-[#0b2463]/50" onclick="closeConfirmDelete()"></div>
+        <div class="absolute inset-0 bg-black/60" onclick="closeConfirmDelete()"></div>
         <div class="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6">
             <h3 class="font-bold text-slate-800 mb-2">Confirm delete</h3>
             <p id="confirm-delete-message" class="text-sm text-slate-500 mb-5"></p>
