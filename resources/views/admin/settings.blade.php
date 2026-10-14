@@ -148,32 +148,57 @@
 
     {{-- EMAIL (SMTP) --}}
     <div data-tabpanel="email" class="admin-card p-5 hidden">
-        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'email') }}">
+        <form data-ajax-form method="POST" action="{{ route('admin.settings.update', 'email') }}" novalidate>
             @csrf @method('PUT')
-            <p class="text-xs text-slate-400 mb-4">Leave host/username empty to keep using the server .env mail config.</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><label class="form-label">SMTP Host</label><input name="mail_host" class="form-control" value="{{ $s->mail_host }}" placeholder="mail.aktechsol.pk"></div>
-                <div><label class="form-label">SMTP Port</label><input name="mail_port" type="number" class="form-control" value="{{ $s->mail_port }}"></div>
-                <div><label class="form-label">SMTP Username</label><input name="mail_username" class="form-control" value="{{ $s->mail_username }}"></div>
-                <div><label class="form-label">SMTP Password</label><input name="mail_password" type="password" class="form-control" placeholder="{{ $s->mail_password ? '•••••• (saved — leave blank to keep)' : '' }}" autocomplete="new-password"></div>
-                <div>
-                    <label class="form-label">Encryption</label>
-                    <select name="mail_encryption" class="form-control">
-                        <option value="tls" @selected($s->mail_encryption === 'tls')>TLS</option>
-                        <option value="ssl" @selected($s->mail_encryption === 'ssl')>SSL</option>
-                        <option value="none" @selected($s->mail_encryption === 'none')>None</option>
-                    </select>
-                </div>
-                <div><label class="form-label">From Name</label><input name="mail_from_name" class="form-control" value="{{ $s->mail_from_name }}"></div>
-                <div class="md:col-span-2"><label class="form-label">From Address</label><input name="mail_from_address" type="email" class="form-control" value="{{ $s->mail_from_address }}"></div>
-            </div>
-            <div class="mt-5 flex flex-wrap items-center gap-3">
-                <button class="btn btn-primary"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-7m-5-5h5m0 0v5m0-5L8 16"/></svg> Save Email Settings</button>
-                <div class="flex items-center gap-2">
-                    <input id="test-email-to" type="email" placeholder="Test recipient email" class="form-control !w-64">
-                    <button type="button" class="btn btn-secondary" onclick="sendTestEmail()">Send Test Email</button>
+            {{-- SMTP Configuration --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-blue">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </span>
+                    SMTP Configuration
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">Leave host/username empty to keep using the server .env mail config.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <x-ui.input name="mail_host" label="SMTP Host" :value="$s->mail_host" placeholder="mail.aktechsol.pk" />
+                    <x-ui.input name="mail_port" type="number" label="SMTP Port" :value="$s->mail_port" placeholder="587" />
+                    <x-ui.input name="mail_username" label="SMTP Username" :value="$s->mail_username" />
+                    <x-ui.password name="mail_password" label="SMTP Password" placeholder="{{ $s->mail_password ? '•••••• (saved — blank keeps)' : '' }}" autocomplete="new-password" />
+                    <x-ui.select name="mail_encryption" label="Encryption" :value="$s->mail_encryption ?? 'tls'" :options="['tls' => 'TLS', 'ssl' => 'SSL', 'none' => 'None']" />
                 </div>
             </div>
+
+            {{-- Sender --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-violet">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    </span>
+                    Sender
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="md:col-span-2"><x-ui.input name="mail_from_name" label="From Name" :value="$s->mail_from_name" placeholder="AK Tech Sol" /></div>
+                    <div class="md:col-span-2"><x-ui.input name="mail_from_address" type="email" label="From Address" :value="$s->mail_from_address" placeholder="info@aktechsol.com" /></div>
+                </div>
+            </div>
+
+            {{-- Test Email --}}
+            <div class="mb-2">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-green">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </span>
+                    Test Email
+                </h3>
+                <div class="flex flex-wrap items-end gap-3">
+                    <div class="w-72"><x-ui.input id="test-email-to" type="email" label="Recipient" placeholder="test@example.com" /></div>
+                    <button type="button" class="btn btn-secondary mb-[2px]" onclick="sendTestEmail(this)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                        Send Test Email
+                    </button>
+                </div>
+            </div>
+            <x-admin.drawer-footer save-label="Save Email Settings" />
         </form>
     </div>
 
@@ -303,18 +328,32 @@ function addPaymentRow() {
     wrap.appendChild(div);
 }
 
-async function sendTestEmail() {
-    const to = document.getElementById('test-email-to').value.trim();
-    if (!to) return window.notify.error('Enter a recipient email first.');
+async function sendTestEmail(btn) {
+    const input = document.getElementById('test-email-to');
+    const to = (input?.value || '').trim();
+    if (!to) {
+        window.notify.error('Enter a recipient email first.');
+        input?.focus();
+        return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+        window.notify.error('Please enter a valid email address.');
+        input?.focus();
+        return;
+    }
+    btn = btn || document.querySelector('[onclick^="sendTestEmail"]');
+    const original = btn ? btn.innerHTML : '';
+    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin inline-block">◌</span> Sending…'; }
     try {
         const res = await fetch(@json(route('admin.settings.test-email')), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, Accept: 'application/json' },
             body: JSON.stringify({ email: to }),
         });
-        const data = await res.json();
-        res.ok ? window.notify.success(data.message) : window.notify.error(data.message);
-    } catch (e) { window.notify.error('Request failed.'); }
+        const data = await res.json().catch(() => ({}));
+        res.ok ? window.notify.success(data.message || 'Test email sent.') : window.notify.error(data.message || `Failed (HTTP ${res.status}).`);
+    } catch (e) { window.notify.error('Request failed. Check your connection.'); }
+    finally { if (btn) { btn.disabled = false; btn.innerHTML = original; } }
 }
 </script>
 @endpush
