@@ -74,6 +74,14 @@ class ServiceController extends Controller
             ->with('success', 'Service created successfully.');
     }
 
+    /** Drawer: view service details. */
+    public function show(Service $service)
+    {
+        $service->load('category');
+
+        return view('admin.services.show', compact('service'));
+    }
+
       public function edit(Service $service)
     {
         return view('admin.services._form', [
