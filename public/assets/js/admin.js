@@ -587,3 +587,31 @@
         }
     };
 })();
+
+// Bell polling — refresh unread count every 30s without a page reload.
+(function () {
+    async function poll() {
+        try {
+            const res = await fetch('/admin/notifications/unread-count', { headers: { 'Accept': 'application/json' } });
+            if (!res.ok) return;
+            const { count } = await res.json();
+            const el = document.querySelector('.bell-dot');
+            if (count > 0) {
+                if (el) {
+                    el.textContent = count > 9 ? '9+' : count;
+                } else {
+                    const btn = document.querySelector('[aria-label="Notifications"]');
+                    if (btn) {
+                        const span = document.createElement('span');
+                        span.className = 'bell-dot absolute -top-1.5 -right-1.5 min-w-[1.25rem] h-5 px-1 rounded-full bg-red-500 text-white text-[0.65rem] font-bold flex items-center justify-center border-2 border-white';
+                        span.textContent = count > 9 ? '9+' : count;
+                        btn.appendChild(span);
+                    }
+                }
+            } else if (el) {
+                el.remove();
+            }
+        } catch (e) { /* silent */ }
+    }
+    setInterval(poll, 30000);
+})();

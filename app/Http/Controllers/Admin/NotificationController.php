@@ -44,4 +44,12 @@ class NotificationController extends Controller
 
         return back();
     }
+
+    /** Unread count for bell polling. */
+    public function unreadCount()
+    {
+        return response()->json([
+            'count' => auth()->user()->unreadNotifications()->count(),
+        ]);
+    }
 }
