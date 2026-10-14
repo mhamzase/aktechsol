@@ -5,10 +5,16 @@
 @section('content')
     <x-admin.page-header title="Notifications" subtitle="Platform events that need your attention">
         <x-slot name="actions">
-            <button class="btn btn-primary" onclick="confirmMarkAllRead()">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                Mark all as read
-            </button>
+            <div class="flex gap-2">
+                <button class="btn btn-secondary !text-red-600 dark:!text-red-400" onclick="confirmDeleteAll()">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    Delete all
+                </button>
+                <button class="btn btn-primary" onclick="confirmMarkAllRead()">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    Mark all as read
+                </button>
+            </div>
         </x-slot>
     </x-admin.page-header>
 
@@ -39,6 +45,10 @@
         <div class="relative bg-white dark:bg-slate-800 rounded-2xl shadow-xl max-w-sm w-full p-6">
             <h3 class="font-bold text-slate-800 dark:text-slate-100" id="notif-confirm-title">Are you sure?</h3>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-2" id="notif-confirm-message"></p>
+            <div id="notif-confirm-input-wrap" class="hidden mt-3">
+                <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Type <span class="font-mono font-bold text-red-600">DELETE</span> to confirm</label>
+                <input type="text" id="notif-confirm-input" class="ui-control mt-1" placeholder="DELETE" autocomplete="off">
+            </div>
             <div class="flex justify-end gap-2 mt-5">
                 <button class="btn btn-secondary" onclick="closeNotifConfirm()">Cancel</button>
                 <button class="btn btn-primary" id="notif-confirm-btn" onclick="doNotifConfirm()">Confirm</button>
@@ -50,18 +60,37 @@
 @push('scripts')
 <script>
 let notifConfirmAction = null;
+let notifConfirmNeedsTyping = false;
 
-function openNotifConfirm(title, message, action) {
+function openNotifConfirm(title, message, action, needsTyping = false) {
     document.getElementById('notif-confirm-title').textContent = title;
     document.getElementById('notif-confirm-message').textContent = message;
     notifConfirmAction = action;
+    notifConfirmNeedsTyping = needsTyping;
+    const wrap = document.getElementById('notif-confirm-input-wrap');
+    const input = document.getElementById('notif-confirm-input');
+    if (needsTyping) {
+        wrap.classList.remove('hidden');
+        input.value = '';
+        setTimeout(() => input.focus(), 100);
+    } else {
+        wrap.classList.add('hidden');
+    }
     document.getElementById('notif-confirm-modal').classList.remove('hidden');
 }
 function closeNotifConfirm() {
     document.getElementById('notif-confirm-modal').classList.add('hidden');
     notifConfirmAction = null;
+    notifConfirmNeedsTyping = false;
 }
 function doNotifConfirm() {
+    if (notifConfirmNeedsTyping) {
+        const val = document.getElementById('notif-confirm-input').value.trim();
+        if (val !== 'DELETE') {
+            window.notify?.error('Please type DELETE to confirm.');
+            return;
+        }
+    }
     const action = notifConfirmAction;
     closeNotifConfirm();
     if (action) action();
@@ -138,6 +167,33 @@ function loadMoreNotifications(btn) {
             btn.disabled = false;
             btn.textContent = 'Load more';
         });
+}
+
+function confirmDeleteAll() {
+    // Step 1: normal confirmation.
+    openNotifConfirm('Delete all notifications?', 'This will permanently delete every notification. This cannot be undone.', () => {
+        // Step 2: type DELETE to confirm.
+        openNotifConfirm(
+            'Final confirmation',
+            'To be extra sure, please type DELETE below.',
+            () => {
+                fetch(`{{ route('admin.notifications.destroy-all') }}`, {
+                    method: 'DELETE',
+                    headers: { 'X-CSRF-TOKEN': notifCsrf, 'Accept': 'application/json' },
+                }).then(() => {
+                    document.getElementById('notifications-list').innerHTML = `
+                        <div class="px-5 py-16 text-center">
+                            <p class="mt-3 text-sm text-slate-500 dark:text-slate-400 font-medium">No notifications yet</p>
+                            <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">You're all caught up.</p>
+                        </div>`;
+                    document.getElementById('load-more-wrap')?.remove();
+                    updateBellCount(0, true);
+                    window.notify?.success('All notifications deleted.');
+                });
+            },
+            true // needsTyping
+        );
+    });
 }
 
 function updateBellCount(delta, absolute = false) {

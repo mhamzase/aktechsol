@@ -73,4 +73,16 @@ class NotificationController extends Controller
 
         return back()->with('success', 'Notification deleted.');
     }
+
+    /** Delete every notification. */
+    public function destroyAll(Request $request)
+    {
+        auth()->user()->notifications()->delete();
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json(['message' => 'All notifications deleted.']);
+        }
+
+        return back()->with('success', 'All notifications deleted.');
+    }
 }
