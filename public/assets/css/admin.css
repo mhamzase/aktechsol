@@ -73,9 +73,10 @@ body.admin-body { font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; }
 /* ---------- Topbar (sticky glass) ---------- */
 .admin-topbar {
     position: sticky; top: 0; z-index: 30;
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.9);
     -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-    border-bottom: 1px solid rgba(229, 237, 251, 0.9);
+    border-bottom: 3px solid #1d4ed8;
+    box-shadow: 0 1px 4px rgba(18, 48, 126, 0.08);
 }
 .admin-topbar .crumb { font-size: 0.82rem; color: #64748b; display: inline-flex; align-items: center; gap: 0.4rem; }
 .admin-topbar .crumb a:hover { color: #1d4ed8; }
@@ -304,9 +305,9 @@ html.dark .bg-\[\#f4f7fe\] { background-color: #0b1226 !important; }
 
 /* ---- Topbar ---- */
 html.dark .admin-topbar {
-    background: rgba(13, 20, 38, 0.88);
-    border-bottom-color: rgba(148, 163, 184, 0.12);
-    box-shadow: 0 1px 0 rgba(148, 163, 184, 0.08);
+    background: rgba(13, 20, 38, 0.92);
+    border-bottom: 3px solid #1d4ed8;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 html.dark .crumb { color: #94a3b8; }
 html.dark .crumb:hover { color: #93c5fd; }
