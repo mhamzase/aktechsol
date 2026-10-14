@@ -73,6 +73,16 @@ class DashboardController extends Controller
                 'demos'    => DemoBooking::where('status', 'new')->latest()->take(5)->get(),
                 'jobs'     => JobApplication::where('status', 'new')->latest()->take(5)->get(),
             ];
+
+            // Trends for the stat cards.
+            $revenueLastMonth = InvoicePayment::where('status', 'verified')
+                ->whereMonth('created_at', now()->subMonth()->month)
+                ->whereYear('created_at', now()->subMonth()->year)
+                ->sum('amount');
+            $trends = [
+                'quotes_week'        => QuoteRequest::where('created_at', '>=', now()->startOfWeek())->count(),
+                'revenue_last_month' => (float) $revenueLastMonth,
+            ];
         } catch (\Throwable $e) {
             $stats = array_fill_keys(
                 ['quotes_new', 'projects_active', 'revenue_month', 'chats_unanswered'], 0
@@ -81,10 +91,11 @@ class DashboardController extends Controller
             $revenueByMonth = collect();
             $projectPipeline = collect();
             $attention = ['quotes' => collect(), 'chats' => collect(), 'invoices' => collect(), 'demos' => collect(), 'jobs' => collect()];
+            $trends = ['quotes_week' => 0, 'revenue_last_month' => 0];
         }
 
         return view('admin.dashboard', compact(
-            'stats', 'quotesByMonth', 'revenueByMonth', 'projectPipeline', 'attention'
+            'stats', 'quotesByMonth', 'revenueByMonth', 'projectPipeline', 'attention', 'trends'
         ));
     }
 }

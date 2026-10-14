@@ -66,7 +66,14 @@
                 bar: { borderRadius: 4, columnWidth: '52%' },
             },
             dataLabels: { enabled: false },
-            tooltip: { shared: true, intersect: false, theme: 'light' },
+            tooltip: {
+                shared: true, intersect: false, theme: 'light',
+                y: {
+                    formatter: (v, { seriesIndex }) =>
+                        seriesIndex === 1 ? 'PKR ' + Number(v).toLocaleString() : v,
+                },
+            },
+            markers: { size: [0, 4], colors: ['#f59e0b'], strokeColors: '#fff', strokeWidth: 2, hover: { size: 6 } },
             legend: { position: 'top', horizontalAlign: 'right', fontFamily: FONT },
             grid: { borderColor: '#eef2fb', strokeDasharray: 0 },
             xaxis: {
@@ -77,7 +84,11 @@
             yaxis: [
                 {
                     title: { text: 'Quotes', style: { fontFamily: FONT, color: '#64748b' } },
-                    labels: { style: { fontFamily: FONT, colors: '#64748b' } },
+                    labels: {
+                        style: { fontFamily: FONT, colors: '#64748b' },
+                        formatter: (v) => Math.round(v),
+                    },
+                    min: 0, forceNiceScale: true,
                 },
                 {
                     opposite: true,
