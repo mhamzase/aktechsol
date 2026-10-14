@@ -21,3 +21,24 @@
         </x-slot:filters>
     </x-admin.data-table>
 @endsection
+
+@push('scripts')
+<script>
+// Auto-open message drawer when landing via notification (?view=id).
+(function () {
+    const viewId = new URLSearchParams(location.search).get('view');
+    if (viewId && window.openDrawer) {
+        // Wait for drawer system to init.
+        const tryOpen = () => {
+            if (window.openDrawer) {
+                window.openDrawer(`/admin/contact-messages/${viewId}`, 'Message Details');
+                history.replaceState(null, '', location.pathname);
+            } else {
+                setTimeout(tryOpen, 100);
+            }
+        };
+        tryOpen();
+    }
+})();
+</script>
+@endpush
