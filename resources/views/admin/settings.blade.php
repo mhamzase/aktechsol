@@ -56,6 +56,7 @@
                     <x-ui.input name="site_phone" label="Phone" :value="$s->site_phone" placeholder="+92 300 0000000" />
                     <x-ui.input name="copyright_text" label="Copyright Text" :value="$s->copyright_text" />
                     <div class="sm:col-span-2 md:col-span-2"><x-ui.input name="site_address" label="Address" :value="$s->site_address" /></div>
+                    <div class="sm:col-span-2 md:col-span-4"><x-ui.input name="google_map_embed_url" label="Google Map Embed URL" :value="$s->google_map_embed_url" placeholder="https://www.google.com/maps/embed?pb=..." hint="Google Maps kholen → address search karen → Share → Embed a map → <iframe> wala code copy karen → sirf src= ke andar wala URL yahan paste karen." /></div>
                     <div class="sm:col-span-2 md:col-span-2"><x-ui.textarea name="footer_text" label="Footer Text" rows="1" :value="$s->footer_text" /></div>
                 </div>
             </div>

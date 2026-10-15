@@ -38,6 +38,7 @@ class SettingsController extends Controller
                 'site_email' => 'nullable|email|max:255',
                 'site_phone' => 'nullable|string|max:50',
                 'site_address' => 'nullable|string|max:500',
+                'google_map_embed_url' => 'nullable|url|max:2000',
                 'footer_text' => 'nullable|string',
                 'copyright_text' => 'nullable|string|max:255',
                 'facebook_url' => 'nullable|url|max:500',

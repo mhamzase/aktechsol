@@ -61,6 +61,13 @@
                             <span>Available across all timezones — we reply within 24 hours.</span>
                         </div>
                     </div>
+
+                    {{-- Google Map --}}
+                    @if($siteSettings->google_map_embed_url ?? null)
+                    <div class="mt-6 rounded-2xl overflow-hidden border border-white/15 shadow-lg">
+                        <iframe src="{{ $siteSettings->google_map_embed_url }}" class="w-full h-56" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Our Location"></iframe>
+                    </div>
+                    @endif
                 </div>
 
                 {{-- Contact Form --}}
