@@ -9,6 +9,7 @@ use App\Support\NotifyAdmins;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class ClientProposalController extends Controller
 {
@@ -85,6 +86,6 @@ class ClientProposalController extends Controller
     {
         $proposal = Proposal::where('token', $token)->firstOrFail();
         $pdf = Pdf::loadView('proposals.pdf', compact('proposal'));
-        return $pdf->download('proposal-' . $proposal->id . '.pdf');
+        return $pdf->download(Str::slug($proposal->title) . '.pdf');
     }
 }
