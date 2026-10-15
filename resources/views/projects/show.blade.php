@@ -155,10 +155,10 @@
     <div id="lightbox" class="fixed inset-0 z-[100] bg-black/90 hidden items-center justify-center p-4" onclick="closeLightbox()">
         <div class="relative" onclick="event.stopPropagation()">
             <img id="lightbox-img" src="" class="max-h-[70vh] max-w-3xl w-auto rounded-xl shadow-2xl">
-            <button class="absolute -left-5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/15 hover:bg-white/30 backdrop-blur text-white hidden sm:flex items-center justify-center transition shadow-lg" onclick="lightboxNav(-1)">
+            <button class="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur text-white hidden sm:flex items-center justify-center transition shadow-lg" onclick="lightboxNav(-1)">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             </button>
-            <button class="absolute -right-5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/15 hover:bg-white/30 backdrop-blur text-white hidden sm:flex items-center justify-center transition shadow-lg" onclick="lightboxNav(1)">
+            <button class="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur text-white hidden sm:flex items-center justify-center transition shadow-lg" onclick="lightboxNav(1)">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
         </div>
