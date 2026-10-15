@@ -630,8 +630,13 @@ html.dark .form-hint, html.dark .ui-hint { color: #9ca3af; }
 html.dark .ui-check .ui-box { background: #374151; border-color: #4b5563; }
 html.dark .ui-check .ui-check-label { color: #cbd5e1; }
 /* (Select arrow styling is handled by the "Per-page + filter selects" rule above.) */
-html.dark select.form-control, html.dark select.ui-control { color-scheme: dark; }
-select.form-control::-ms-expand, select.ui-control::-ms-expand { display: block; }
+html.dark select.form-control, html.dark select.ui-control {
+    color-scheme: dark;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+select.form-control::-ms-expand, select.ui-control::-ms-expand { display: none; }
 
 /* ---- Table search input: theme-aware ---- */
 .table-search { background: #f8fafc; }
