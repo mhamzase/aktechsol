@@ -204,9 +204,9 @@
                                     <p class="text-blue-50/90 italic line-clamp-4 flex-1">"{{ $testimonial->content }}"</p>
                                     <div class="mt-5 pt-4 border-t border-white/15 flex items-center gap-3">
                                         @if ($testimonial->getPhotoUrl())
-                                            <img src="{{ $testimonial->getPhotoUrl() }}" class="w-11 h-11 rounded-full object-cover ring-2 ring-white/20">
+                                            <img src="{{ $testimonial->getPhotoUrl() }}" class="w-11 h-11 rounded-full object-cover ring-2 ring-white/20 shrink-0">
                                         @else
-                                            <span class="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center font-bold">{{ strtoupper(substr($testimonial->client_name, 0, 1)) }}</span>
+                                            <span class="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center font-bold shrink-0">{{ strtoupper(substr($testimonial->client_name, 0, 1)) }}</span>
                                         @endif
                                         <div class="min-w-0">
                                             <p class="font-semibold truncate">{{ $testimonial->client_name }}</p>
