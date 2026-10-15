@@ -6,90 +6,82 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap');
         * { box-sizing: border-box; }
-        body { font-family: 'Sora', Arial, sans-serif; color: #0f172a; margin: 0; padding: 0; font-size: 13px; line-height: 1.6; background: #fff; }
+        body { font-family: 'Sora', Arial, sans-serif; color: #0f172a; margin: 0; padding: 32px; font-size: 13px; line-height: 1.6; background: #fff; }
 
-        .hero { background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 60%, #2f6fed 100%); color: #fff; padding: 36px 40px; }
-        .hero .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px; }
-        .hero h1 { margin: 0 0 6px; font-size: 26px; font-weight: 800; }
-        .hero .client { font-size: 13px; opacity: 0.8; }
-        .hero-stats { margin-top: 20px; }
-        .stat { display: inline-block; background: rgba(255,255,255,0.12); border-radius: 10px; padding: 10px 18px; margin-right: 10px; }
-        .stat .s-label { font-size: 10px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat .s-value { font-size: 16px; font-weight: 800; margin-top: 2px; }
+        /* Hero card — matches client page */
+        .hero { background: linear-gradient(135deg, #1d4ed8 0%, #12307e 100%); border-radius: 20px; padding: 36px; color: #fff; margin-bottom: 20px; }
+        .hero .label { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: rgba(191,219,254,0.7); margin-bottom: 8px; }
+        .hero h1 { margin: 0 0 6px; font-size: 24px; font-weight: 800; }
+        .hero .prepared { font-size: 13px; color: rgba(191,219,254,0.8); }
+        .hero-stats { margin-top: 18px; }
+        .hstat { display: inline-block; background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px; margin-right: 10px; margin-bottom: 8px; }
+        .hstat .l { font-size: 10px; color: rgba(191,219,254,0.7); }
+        .hstat .v { font-size: 15px; font-weight: 800; margin-top: 2px; }
 
-        .body { padding: 32px 40px; }
-        .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 24px; margin-bottom: 20px; }
-        .card h2 { margin: 0 0 14px; font-size: 16px; font-weight: 800; color: #0f172a; }
-        .card .scope { color: #475569; font-size: 13px; }
-        .card .scope ul { padding-left: 20px; }
-        .card .scope li { margin-bottom: 4px; }
+        /* Content cards — matches client page */
+        .card { background: #fff; border: 1px solid #f1f5f9; border-radius: 20px; padding: 28px; margin-bottom: 20px; }
+        .card h2 { margin: 0 0 14px; font-size: 16px; font-weight: 800; }
+        .card .text { color: #475569; font-size: 13px; }
+        .card .text ul { padding-left: 18px; margin: 10px 0 0; }
+        .card .text li { margin-bottom: 5px; color: #475569; }
 
-        .milestone { background: #f8fafc; border-radius: 10px; padding: 12px 18px; margin-bottom: 8px; }
-        .milestone .m-num { display: inline-block; width: 28px; height: 28px; background: rgba(29,78,216,0.1); color: #1d4ed8; font-weight: 700; font-size: 12px; text-align: center; line-height: 28px; border-radius: 8px; margin-right: 10px; }
-        .milestone .m-title { font-weight: 600; color: #1e293b; }
-        .milestone .m-amount { float: right; font-weight: 800; color: #0f172a; }
+        /* Milestones — matches client page */
+        .ms { background: #f8fafc; border-radius: 14px; padding: 14px 18px; margin-bottom: 10px; }
+        .ms .num { display: inline-block; width: 28px; height: 28px; background: rgba(29,78,216,0.1); color: #1d4ed8; font-weight: 700; font-size: 12px; text-align: center; line-height: 28px; border-radius: 8px; margin-right: 10px; }
+        .ms .t { font-weight: 700; font-size: 13px; color: #1e293b; }
+        .ms .a { float: right; font-weight: 800; font-size: 14px; }
 
-        .footer { padding: 24px 40px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 11px; color: #94a3b8; }
-        .status-badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .status-sent { background: #dbeafe; color: #1d4ed8; }
-        .status-accepted { background: #dcfce7; color: #15803d; }
-        .status-draft { background: #f1f5f9; color: #64748b; }
+        .foot { text-align: center; font-size: 11px; color: #94a3b8; margin-top: 24px; padding-top: 16px; border-top: 1px solid #f1f5f9; }
     </style>
 </head>
 <body>
+    {{-- Hero --}}
     <div class="hero">
-        <div class="label">Proposal</div>
+        <div class="label">PROPOSAL</div>
         <h1>{{ $proposal->title }}</h1>
-        <div class="client">Prepared for {{ $proposal->client_name }} · {{ $proposal->client_email }}</div>
+        <div class="prepared">Prepared for {{ $proposal->client_name }}</div>
         <div class="hero-stats">
-            <div class="stat">
-                <div class="s-label">Total Investment</div>
-                <div class="s-value">${{ number_format($proposal->amount, 2) }}</div>
+            <div class="hstat">
+                <div class="l">Total Investment</div>
+                <div class="v">${{ number_format($proposal->amount, 2) }}</div>
             </div>
             @if($proposal->timeline)
-            <div class="stat">
-                <div class="s-label">Timeline</div>
-                <div class="s-value">{{ $proposal->timeline }}</div>
+            <div class="hstat">
+                <div class="l">Timeline</div>
+                <div class="v">{{ $proposal->timeline }}</div>
             </div>
             @endif
             @if($proposal->valid_until)
-            <div class="stat">
-                <div class="s-label">Valid Until</div>
-                <div class="s-value">{{ $proposal->valid_until->format('M d, Y') }}</div>
+            <div class="hstat">
+                <div class="l">Valid Until</div>
+                <div class="v">{{ $proposal->valid_until->format('M d, Y') }}</div>
             </div>
             @endif
         </div>
     </div>
 
-    <div class="body">
-        <div class="card">
-            <h2>Project Scope</h2>
-            <div class="scope">{!! $proposal->scope !!}</div>
-        </div>
-
-        @if($proposal->milestones && count($proposal->milestones))
-        <div class="card">
-            <h2>Payment Milestones</h2>
-            @foreach($proposal->milestones as $i => $m)
-            <div class="milestone">
-                <span class="m-num">{{ $i + 1 }}</span>
-                <span class="m-title">{{ $m['title'] }}</span>
-                <span class="m-amount">${{ number_format($m['amount'], 2) }}</span>
-            </div>
-            @endforeach
-        </div>
-        @endif
-
-        <div class="card">
-            <h2>Proposal Status</h2>
-            <span class="status-badge status-{{ $proposal->status }}">{{ str_replace('_', ' ', $proposal->status) }}</span>
-            <span style="margin-left: 12px; font-size: 12px; color: #64748b;">Generated on {{ date('M d, Y') }}</span>
-        </div>
+    {{-- Scope --}}
+    <div class="card">
+        <h2>Project Scope</h2>
+        <div class="text">{!! $proposal->scope !!}</div>
     </div>
 
-    <div class="footer">
-        <p style="margin:0;"><strong>AK Tech SOL</strong> · Digital Services Agency</p>
-        <p style="margin:4px 0 0;">This is a system-generated proposal document.</p>
+    {{-- Milestones --}}
+    @if($proposal->milestones && count($proposal->milestones))
+    <div class="card">
+        <h2>Payment Milestones</h2>
+        @foreach($proposal->milestones as $i => $m)
+        <div class="ms">
+            <span class="num">{{ $i + 1 }}</span>
+            <span class="t">{{ $m['title'] }}</span>
+            <span class="a">${{ number_format($m['amount'], 2) }}</span>
+        </div>
+        @endforeach
+    </div>
+    @endif
+
+    <div class="foot">
+        <strong>AK Tech SOL</strong> · Generated on {{ date('M d, Y') }}
     </div>
 </body>
 </html>
