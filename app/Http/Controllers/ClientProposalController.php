@@ -39,7 +39,7 @@ class ClientProposalController extends Controller
 
         $validated = $request->validate([
             'action'      => 'required|in:accepted,rejected,changes_requested',
-            'client_note' => 'nullable|string|max:2000',
+            'client_note' => 'required|string|min:10|max:2000',
         ]);
 
         $proposal->update([

@@ -74,9 +74,10 @@
                 <form id="proposal-respond-form" method="POST" action="{{ route('proposals.respond', $proposal->token) }}" class="space-y-4">
                     @csrf
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Note (optional)</label>
-                        <textarea name="client_note" rows="3" placeholder="Any comments or questions…"
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Your Message <span class="text-red-500">*</span></label>
+                        <textarea name="client_note" rows="3" required placeholder="Please share your thoughts…"
                                   class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#1d4ed8]/20 focus:outline-none"></textarea>
+                        <p class="text-xs text-slate-400 mt-1.5">Minimum 10 characters.</p>
                     </div>
                     <div class="flex flex-wrap gap-3">
                         <button type="button" data-respond="accepted"
@@ -113,6 +114,15 @@
                         try {
                             const formData = new FormData(form);
                             formData.set('action', action);
+                            // Frontend check: message required
+                            const note = (formData.get('client_note') || '').toString().trim();
+                            if (note.length < 10) {
+                                window.notify.error('Please write your message (minimum 10 characters).');
+                                form.querySelector('[name="client_note"]').focus();
+                                buttons.forEach(b => b.disabled = false);
+                                btn.textContent = originalText;
+                                return;
+                            }
                             const res = await fetch(form.action, {
                                 method: 'POST',
                                 body: formData,
