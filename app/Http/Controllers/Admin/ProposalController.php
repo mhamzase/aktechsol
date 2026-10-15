@@ -15,6 +15,12 @@ class ProposalController extends Controller
 {
     public function index(Request $request)
     {
+        // Auto-expire stale proposals (no cron dependency for the listing).
+        Proposal::whereNotIn('status', ['accepted', 'rejected', 'expired'])
+            ->whereNotNull('valid_until')
+            ->whereDate('valid_until', '<', today())
+            ->update(['status' => 'expired']);
+
         $query = Proposal::query()->latest();
 
         if ($search = $request->query('search')) {
