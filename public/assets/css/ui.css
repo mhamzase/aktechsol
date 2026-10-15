@@ -182,7 +182,19 @@ html.dark .ui-file-drop p strong { color: #60a5fa; }
 }
 .milestone-row .milestone-title { flex: 1 1 0%; min-width: 0; }
 .milestone-row .milestone-amount { flex: 0 0 9rem; width: 9rem; }
-.milestone-row .milestone-remove { flex-shrink: 0; padding-left: 0.75rem; padding-right: 0.75rem; }
+.milestone-row .milestone-remove {
+    flex-shrink: 0;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    color: #dc2626;
+    border-color: #fecaca;
+    background: #fef2f2;
+}
+.milestone-row .milestone-remove:hover {
+    color: #fff;
+    border-color: #dc2626;
+    background: #dc2626;
+}
 @media (max-width: 480px) {
     .milestone-row { flex-wrap: wrap; }
     .milestone-row .milestone-title { flex: 1 1 100%; }
