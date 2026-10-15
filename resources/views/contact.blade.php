@@ -16,7 +16,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
                 {{-- Contact Details --}}
                 <div class="lg:col-span-2">
-                    <div class="bg-gradient-to-br from-[#0a1f44] to-[#1d4ed8] rounded-3xl p-8 text-white h-full">
+                    <div class="bg-gradient-to-br from-[#0a1f44] to-[#1d4ed8] rounded-3xl p-8 text-white">
                         <h2 class="text-2xl font-extrabold">Get in Touch</h2>
                         <p class="text-blue-100/70 text-sm mt-2">We work with clients worldwide — fill out the form and our team will get back to you within 24 hours, wherever you are.</p>
 
@@ -64,8 +64,8 @@
 
                     {{-- Google Map --}}
                     @if($siteSettings->google_map_embed_url ?? null)
-                    <div class="mt-6 rounded-2xl overflow-hidden border border-white/15 shadow-lg">
-                        <iframe src="{{ $siteSettings->google_map_embed_url }}" class="w-full h-56" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Our Location"></iframe>
+                    <div class="mt-6 rounded-3xl overflow-hidden border border-slate-200 shadow-sm">
+                        <iframe src="{{ $siteSettings->google_map_embed_url }}" class="w-full h-64 block" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Our Location"></iframe>
                     </div>
                     @endif
                 </div>
