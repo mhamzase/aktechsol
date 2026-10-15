@@ -99,6 +99,12 @@ class TestimonialController extends Controller
                          ->with('success', 'Testimonial updated successfully.');
     }
 
+    /** Drawer: view testimonial details. */
+    public function show(Testimonial $testimonial)
+    {
+        return view('admin.testimonials.show', compact('testimonial'));
+    }
+
     public function destroy(Testimonial $testimonial)
     {
         $testimonial->delete();
@@ -109,5 +115,16 @@ class TestimonialController extends Controller
 
         return redirect()->route('admin.testimonials.index')
                          ->with('success', 'Testimonial deleted successfully.');
+    }
+
+    /** Toggle active/inactive status via AJAX. */
+    public function toggleStatus(Testimonial $testimonial)
+    {
+        $testimonial->update(['status' => ! $testimonial->status]);
+
+        return response()->json([
+            'message' => $testimonial->status ? 'Testimonial activated.' : 'Testimonial deactivated.',
+            'status' => (bool) $testimonial->status,
+        ]);
     }
 }
