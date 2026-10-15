@@ -11,6 +11,14 @@ class SiteSettings extends Settings
     public ?string $site_phone     = null;
     public ?string $site_address   = null;
     public ?string $google_map_embed_url = null;
+
+    // Homepage Stats
+    public ?string $stat1_value = null;
+    public ?string $stat1_label = null;
+    public ?string $stat2_value = null;
+    public ?string $stat2_label = null;
+    public ?string $stat3_value = null;
+    public ?string $stat3_label = null;
     public ?string $footer_text    = null;
     public ?string $copyright_text = null;
     public ?string $facebook_url   = null;

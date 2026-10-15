@@ -54,16 +54,16 @@
                 {{-- Stats --}}
                 <div class="mt-10 grid grid-cols-3 gap-4 sm:gap-6 max-w-lg">
                     <div>
-                        <p class="text-2xl sm:text-3xl font-extrabold">50+</p>
-                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">Projects Done</p>
+                        <p class="text-2xl sm:text-3xl font-extrabold">{{ $siteSettings->stat1_value ?? '50+' }}</p>
+                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">{{ $siteSettings->stat1_label ?? 'Projects Done' }}</p>
                     </div>
                     <div>
-                        <p class="text-2xl sm:text-3xl font-extrabold">15+</p>
-                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">Countries Served</p>
+                        <p class="text-2xl sm:text-3xl font-extrabold">{{ $siteSettings->stat2_value ?? '15+' }}</p>
+                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">{{ $siteSettings->stat2_label ?? 'Countries Served' }}</p>
                     </div>
                     <div>
-                        <p class="text-2xl sm:text-3xl font-extrabold">5★</p>
-                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">Avg. Rating</p>
+                        <p class="text-2xl sm:text-3xl font-extrabold">{{ $siteSettings->stat3_value ?? '5★' }}</p>
+                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">{{ $siteSettings->stat3_label ?? 'Avg. Rating' }}</p>
                     </div>
                 </div>
             </div>
