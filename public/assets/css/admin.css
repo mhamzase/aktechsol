@@ -248,7 +248,7 @@ table.data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
 .form-control:focus { outline: none; border-color: #1d4ed8; box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12); }
 /* Per-page + filter selects: consistent sizing and arrow spacing. */
 select.form-control {
-    padding-right: 2rem;
+    padding-right: 2.5rem;
     line-height: 1.5;
 }
 .form-error { font-size: 0.72rem; color: #b91c1c; margin-top: 0.2rem; }
