@@ -16,7 +16,7 @@
     <div class="flex items-center justify-between px-5 h-16 border-b border-white/10">
         <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5">
             @if (!empty($logoUrl))
-                <img src="{{ $logoUrl }}" alt="Logo" class="h-9 w-9 rounded-lg object-contain bg-white/10 p-1">
+                <img src="{{ $logoUrl }}" alt="Logo" class="h-10 w-10 rounded-xl object-cover bg-white p-0.5 shadow">
             @else
                 <span class="h-9 w-9 rounded-lg bg-white text-[#12307e] font-extrabold flex items-center justify-center text-lg">A</span>
             @endif
