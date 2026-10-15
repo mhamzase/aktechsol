@@ -83,7 +83,7 @@
                             </div>
                             <div>
                                 <label for="phone" class="block text-sm font-semibold text-slate-700 mb-1.5">Phone</label>
-                                <input type="text" name="phone" id="phone" value="{{ old('phone') }}" placeholder="+92 ..."
+                                <input type="text" name="phone" id="phone" value="{{ old('phone') }}" placeholder="Your phone number"
                                        class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#1d4ed8]/20 focus:outline-none transition">
                             </div>
                             <div>
