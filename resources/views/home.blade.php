@@ -273,49 +273,63 @@
     const slider = document.getElementById('testimonial-slider');
     const track = document.getElementById('testimonial-track');
     if (!slider || !track) return;
-    const slides = track.querySelectorAll('.testimonial-slide');
+    let slides = Array.from(track.querySelectorAll('.testimonial-slide'));
     if (!slides.length) return;
 
-    let idx = 0, autoTimer = null;
+    // Duplicate slides for seamless infinite loop (need at least 2x perView)
     const perView = () => window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
-    const maxIdx = () => Math.max(0, slides.length - perView());
+    while (track.querySelectorAll('.testimonial-slide').length < perView() * 2 + 1) {
+        slides.forEach(s => track.appendChild(s.cloneNode(true)));
+    }
+    slides = Array.from(track.querySelectorAll('.testimonial-slide'));
 
-    const go = (i) => {
-        idx = Math.min(Math.max(0, i), maxIdx());
-        track.style.transition = 'transform 0.4s ease';
-        track.style.transform = `translateX(-${idx * (100 / perView())}%)`;
+    let idx = 0, autoTimer = null;
+    const stepPct = 100 / perView();
+
+    const go = (i, animate = true) => {
+        idx = i;
+        track.style.transition = animate ? 'transform 0.5s ease' : 'none';
+        track.style.transform = `translateX(-${idx * stepPct}%)`;
     };
-    const next = () => go(idx >= maxIdx() ? 0 : idx + 1);
-    const prev = () => go(idx <= 0 ? maxIdx() : idx - 1);
+    // Seamless wrap: when reaching the clones, jump back silently
+    const normalize = () => {
+        const total = slides.length;
+        if (idx >= total - perView()) {
+            const overflow = idx - (total - perView());
+            go(overflow, false);
+        }
+    };
+    const next = () => { go(idx + 1); setTimeout(normalize, 520); };
+    const prev = () => {
+        if (idx <= 0) { go(slides.length - perView(), false); idx = slides.length - perView(); }
+        go(idx - 1);
+    };
 
     document.getElementById('testimonial-prev')?.addEventListener('click', () => { prev(); restartAuto(); });
     document.getElementById('testimonial-next')?.addEventListener('click', () => { next(); restartAuto(); });
 
-    // Auto-play every 5 seconds
-    const startAuto = () => { stopAuto(); autoTimer = setInterval(next, 5000); };
+    // Auto-play every 4 seconds (pauses on hover)
+    const startAuto = () => { stopAuto(); autoTimer = setInterval(next, 4000); };
     const stopAuto = () => { if (autoTimer) clearInterval(autoTimer); autoTimer = null; };
-    const restartAuto = () => { startAuto(); };
+    const restartAuto = () => startAuto();
     slider.addEventListener('mouseenter', stopAuto);
     slider.addEventListener('mouseleave', startAuto);
     startAuto();
 
     // Drag / swipe (mouse + touch)
     let startX = 0, currentX = 0, dragging = false;
-    const baseTransform = () => -(idx * (100 / perView()));
-
     slider.addEventListener('pointerdown', (e) => {
         dragging = true;
-        startX = e.clientX;
-        currentX = startX;
+        startX = e.clientX; currentX = startX;
         track.style.transition = 'none';
-        slider.setPointerCapture(e.pointerId);
+        try { slider.setPointerCapture(e.pointerId); } catch (_) {}
         stopAuto();
     });
     slider.addEventListener('pointermove', (e) => {
         if (!dragging) return;
         currentX = e.clientX;
         const dxPct = ((currentX - startX) / slider.offsetWidth) * 100;
-        track.style.transform = `translateX(${baseTransform() + dxPct}%)`;
+        track.style.transform = `translateX(${-(idx * stepPct) + dxPct}%)`;
     });
     const endDrag = () => {
         if (!dragging) return;
