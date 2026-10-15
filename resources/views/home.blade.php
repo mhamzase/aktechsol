@@ -4,6 +4,10 @@
 @section('meta_description', 'AK Tech SOL is a full-service digital agency offering web development, mobile app development, UI/UX design, and cloud solutions. 50+ projects delivered with 5-star client ratings. Get a free quote today.')
 
 @push('seo')
+<meta property="og:title" content="{{ ($siteSettings->site_name ?? 'AK Tech SOL') . ' — Web Development, Mobile Apps & Digital Services Agency' }}">
+<meta property="og:description" content="AK Tech SOL is a full-service digital agency offering web development, mobile app development, UI/UX design, and cloud solutions. Trusted by clients worldwide.">
+<meta property="og:url" content="{{ url('/') }}">
+<meta property="og:type" content="website">
 <script type="application/ld+json">
 {
     "@@context": "https://schema.org",
