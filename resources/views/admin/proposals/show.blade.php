@@ -71,9 +71,14 @@
 
         <div class="flex flex-wrap gap-3 pt-2">
             @if($proposal->status === 'draft')
-            <form data-ajax-form data-reload-table="proposals-table" method="POST" action="{{ route('admin.proposals.send', $proposal) }}">
+            <form data-ajax-form data-reload-table="proposals-table" method="POST" action="{{ route('admin.proposals.send', $proposal) }}" class="w-full">
                 @csrf
-                <button type="submit" class="btn btn-primary">Mark as Sent</button>
+                <button type="submit"
+                        class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 text-base font-extrabold text-white rounded-2xl transition shadow-lg"
+                        style="background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%); box-shadow: 0 8px 24px rgba(29,78,216,0.35);">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                    Mark as Sent & Email Client
+                </button>
             </form>
             @endif
         <div class="flex flex-wrap gap-2.5 pt-1">
