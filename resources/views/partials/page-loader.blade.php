@@ -90,10 +90,8 @@
         inset: 0;
         width: 100%;
         height: 100%;
-        object-fit: contain;
-        border-radius: 1.1rem;
-        background: #fff;
-        padding: 0.6rem;
+        object-fit: cover;
+        border-radius: 50%;
         box-shadow: 0 10px 26px rgba(22, 105, 217, 0.35);
         animation: pl-pulse 1.6s ease-in-out infinite;
     }
