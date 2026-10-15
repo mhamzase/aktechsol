@@ -631,7 +631,6 @@ html.dark .ui-check .ui-box { background: #374151; border-color: #4b5563; }
 html.dark .ui-check .ui-check-label { color: #cbd5e1; }
 /* (Select arrow styling is handled by the "Per-page + filter selects" rule above.) */
 html.dark select.form-control, html.dark select.ui-control {
-    color-scheme: dark;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
