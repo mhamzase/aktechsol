@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\UserPermissionController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\FaqController as PublicFaqController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewsletterController;
@@ -53,6 +54,9 @@ Route::get('/faqs', [PublicFaqController::class, 'index'])->name('faqs.index');
 
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+
+Route::get('/get-a-quote', [QuoteController::class, 'create'])->name('quote.create');
+Route::post('/get-a-quote', [QuoteController::class, 'store'])->name('quote.store');
 
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
@@ -180,6 +184,11 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::put('contact-messages/{contactMessage}/status', [ContactMessageController::class, 'updateStatus'])->name('contact-messages.update-status');
     Route::delete('contact-messages/{contactMessage}', [ContactMessageController::class, 'destroy'])->name('contact-messages.destroy');
 
+    Route::get('quotes', [\App\Http\Controllers\Admin\QuoteController::class, 'index'])->name('quotes.index');
+    Route::get('quotes/{quote}', [\App\Http\Controllers\Admin\QuoteController::class, 'show'])->name('quotes.show');
+    Route::put('quotes/{quote}/status', [\App\Http\Controllers\Admin\QuoteController::class, 'updateStatus'])->name('quotes.update-status');
+    Route::delete('quotes/{quote}', [\App\Http\Controllers\Admin\QuoteController::class, 'destroy'])->name('quotes.destroy');
+
     Route::get('newsletter-subscribers', [NewsletterSubscriberController::class, 'index'])->name('newsletter-subscribers.index');
     Route::delete('newsletter-subscribers/{newsletterSubscriber}', [NewsletterSubscriberController::class, 'destroy'])->name('newsletter-subscribers.destroy');
     Route::get('media', [MediaController::class, 'index'])->name('media.index');
@@ -196,7 +205,6 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
         Route::get($uri, fn () => app(ComingSoonController::class)->show($title, $phase))
             ->middleware("can:{$can}")->name($name);
     };
-    $soon('quotes', 'Quote Requests', 'Phase 2', 'quotes.index', 'manage quotes');
     $soon('proposals', 'Proposals', 'Phase 2', 'proposals.index', 'manage proposals');
     $soon('client-projects', 'Client Projects', 'Phase 3', 'client-projects.index', 'manage projects');
     $soon('invoices', 'Invoices', 'Phase 4', 'invoices.index', 'manage invoices');

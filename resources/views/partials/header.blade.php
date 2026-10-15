@@ -60,7 +60,7 @@
             </nav>
 
             <div class="flex items-center gap-3">
-                <a href="{{ url('/contact') }}" class="hidden sm:inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-[#1d4ed8] to-[#2f6fed] text-white text-sm font-bold hover:shadow-xl hover:shadow-blue-600/30 hover:-translate-y-0.5 transition-all">
+                <a href="{{ route('quote.create') }}" class="hidden sm:inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-[#1d4ed8] to-[#2f6fed] text-white text-sm font-bold hover:shadow-xl hover:shadow-blue-600/30 hover:-translate-y-0.5 transition-all">
                     Get a Quote
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </a>
@@ -89,7 +89,7 @@
                 @endif
             </a>
         @endforeach
-        <a href="{{ url('/contact') }}" class="block px-4 py-3.5 rounded-2xl bg-gradient-to-r from-[#1d4ed8] to-[#2f6fed] text-white text-center font-bold mt-2">Get a Quote</a>
+        <a href="{{ route('quote.create') }}" class="block px-4 py-3.5 rounded-2xl bg-gradient-to-r from-[#1d4ed8] to-[#2f6fed] text-white text-center font-bold mt-2">Get a Quote</a>
     </div>
 </header>
 
