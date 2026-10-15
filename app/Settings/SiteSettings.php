@@ -21,7 +21,6 @@ class SiteSettings extends Settings
     public ?string $stat3_label = null;
 
     // Popup & WhatsApp
-    public ?string $whatsapp_number = null;
     public bool $popup_enabled = false;
     public ?string $popup_link_url = null;
     public ?string $popup_version = null;
