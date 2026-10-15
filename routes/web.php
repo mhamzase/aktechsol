@@ -181,6 +181,7 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::get('newsletter-subscribers', [NewsletterSubscriberController::class, 'index'])->name('newsletter-subscribers.index');
     Route::delete('newsletter-subscribers/{newsletterSubscriber}', [NewsletterSubscriberController::class, 'destroy'])->name('newsletter-subscribers.destroy');
     Route::get('media', [MediaController::class, 'index'])->name('media.index');
+    Route::get('media/{media}', [MediaController::class, 'show'])->name('media.show');
     Route::delete('media/{media}', [MediaController::class, 'destroy'])->name('media.destroy');
 
     /*

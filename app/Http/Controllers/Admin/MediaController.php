@@ -33,6 +33,14 @@ class MediaController extends Controller
         return view('admin.media.index', compact('mediaItems'));
     }
 
+    /** Drawer: view media details. */
+    public function show(Media $media)
+    {
+        $media->load('model');
+
+        return view('admin.media.show', compact('media'));
+    }
+
     public function destroy(Media $media)
     {
         $media->delete();
