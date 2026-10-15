@@ -6,8 +6,8 @@
 @push('seo')
 <script type="application/ld+json">
 {
-    "@context": "https://schema.org",
-    "@type": "Organization",
+    "@@context": "https://schema.org",
+    "@@type": "Organization",
     "name": "{{ $siteSettings->site_name ?? 'AK Tech SOL' }}",
     "url": "{{ url('/') }}",
     "description": "Full-service digital agency offering web development, mobile apps, UI/UX design and cloud solutions.",

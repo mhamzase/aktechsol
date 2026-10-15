@@ -6,13 +6,13 @@
 @push('seo')
 <script type="application/ld+json">
 {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
+    "@@context": "https://schema.org",
+    "@@type": "ItemList",
     "name": "Our Services",
     "itemListElement": [
         @foreach($services as $i => $service)
         {
-            "@type": "ListItem",
+            "@@type": "ListItem",
             "position": {{ $i + 1 }},
             "name": "{{ $service->title }}",
             "url": "{{ route('services.show', $service->slug) }}"

@@ -7,13 +7,13 @@
 @push('seo')
 <script type="application/ld+json">
 {
-    "@context": "https://schema.org",
-    "@type": "Service",
+    "@@context": "https://schema.org",
+    "@@type": "Service",
     "name": "{{ $service->title }}",
     "description": "{{ \Illuminate\Support\Str::limit(strip_tags($service->short_description ?? ''), 200) }}",
     "url": "{{ url()->current() }}",
     "provider": {
-        "@type": "Organization",
+        "@@type": "Organization",
         "name": "{{ $siteSettings->site_name ?? 'AK Tech SOL' }}",
         "url": "{{ url('/') }}"
     }
@@ -26,12 +26,12 @@
 {{-- Breadcrumb schema --}}
 <script type="application/ld+json">
 {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
+    "@@context": "https://schema.org",
+    "@@type": "BreadcrumbList",
     "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "{{ url('/') }}" },
-        { "@type": "ListItem", "position": 2, "name": "Services", "item": "{{ route('services.index') }}" },
-        { "@type": "ListItem", "position": 3, "name": "{{ $service->title }}", "item": "{{ url()->current() }}" }
+        { "@@type": "ListItem", "position": 1, "name": "Home", "item": "{{ url('/') }}" },
+        { "@@type": "ListItem", "position": 2, "name": "Services", "item": "{{ route('services.index') }}" },
+        { "@@type": "ListItem", "position": 3, "name": "{{ $service->title }}", "item": "{{ url()->current() }}" }
     ]
 }
 </script>
