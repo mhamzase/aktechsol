@@ -22,6 +22,7 @@
             <x-admin.row-actions
                 :viewUrl="route('admin.proposals.show', $proposal)"
                 :editUrl="route('admin.proposals.edit', $proposal)"
+                :editWide="true"
                 :deleteUrl="route('admin.proposals.destroy', $proposal)"
                 tableId="proposals-table" />
         </td>
