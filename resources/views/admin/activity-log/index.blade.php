@@ -7,7 +7,7 @@
 
     <x-admin.data-table id="activity-table"
         :ajax-url="route('admin.activity-log.index')"
-        :columns="['When', 'User', 'Action', 'Details', 'IP']"
+        :columns="['When', 'User', 'Action', 'Details', 'IP', 'Actions']"
         :per-page="15"
         search-placeholder="Search action or details…" />
 @endsection

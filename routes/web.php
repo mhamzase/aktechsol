@@ -156,6 +156,8 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     // Activity log
     Route::get('activity-log', [ActivityLogController::class, 'index'])
         ->middleware('can:view activity log')->name('activity-log.index');
+    Route::get('activity-log/{log}', [ActivityLogController::class, 'show'])
+        ->middleware('can:view activity log')->name('activity-log.show');
 
     // Existing content modules
     Route::resource('services', ServiceController::class);
