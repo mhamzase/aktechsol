@@ -89,10 +89,11 @@
     height: 600px;
     max-height: calc(100dvh - 7rem);
     background: #fff;
-    border-radius: 1rem;
+    border-radius: 1.25rem;
     box-shadow: 0 24px 70px rgba(11, 20, 26, 0.28), 0 4px 16px rgba(11, 20, 26, 0.12);
     display: flex;
     flex-direction: column;
+    overflow: hidden;
     overflow: hidden;
     transform-origin: bottom right;
     transform: scale(0.6) translateY(16px);
@@ -116,6 +117,7 @@
     gap: 0.7rem;
     padding: 0.7rem 0.8rem;
     flex-shrink: 0;
+    border-radius: 1.25rem 1.25rem 0 0;
 }
 
 .akcb-avatar {

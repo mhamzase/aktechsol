@@ -23,7 +23,11 @@
     <div class="akcb-panel" role="dialog" aria-label="Chat with {{ $teamName }}" aria-hidden="true">
         <div class="akcb-header">
             <div class="akcb-avatar">
-                <span class="akcb-avatar__letter">{{ strtoupper(substr($teamName, 0, 1)) }}</span>
+                @if(!empty($logoUrl))
+                    <img src="{{ $logoUrl }}" alt="{{ $teamName }} logo">
+                @else
+                    <span class="akcb-avatar__letter">{{ strtoupper(substr($teamName, 0, 1)) }}</span>
+                @endif
                 <span class="akcb-avatar__status" aria-hidden="true"></span>
             </div>
             <div class="akcb-header__info">
