@@ -86,14 +86,13 @@
             padding: 12px 16px;
             vertical-align: middle;
         }
-        .ms-row td:first-child { border-radius: 8px 0 0 8px; width: 44px; }
+        .ms-row td:first-child { border-radius: 8px 0 0 8px; width: 40px; padding-right: 0; }
         .ms-row td:last-child { border-radius: 0 8px 8px 0; text-align: right; }
         .ms-num {
-            display: inline-block;
-            width: 28px; height: 28px; line-height: 28px;
             background-color: #dbeafe; color: #1d4ed8;
             font-weight: bold; font-size: 12px; text-align: center;
-            border-radius: 8px;
+            border-radius: 6px;
+            padding: 6px 10px;
         }
         .ms-title { font-weight: bold; font-size: 12px; color: #1e293b; }
         .ms-amount { font-weight: bold; font-size: 13px; color: #0f172a; }
