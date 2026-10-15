@@ -270,28 +270,65 @@
 @push('scripts')
 <script>
 (function () {
+    const slider = document.getElementById('testimonial-slider');
     const track = document.getElementById('testimonial-track');
-    if (!track) return;
+    if (!slider || !track) return;
     const slides = track.querySelectorAll('.testimonial-slide');
     if (!slides.length) return;
-    let idx = 0;
+
+    let idx = 0, autoTimer = null;
     const perView = () => window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
     const maxIdx = () => Math.max(0, slides.length - perView());
+
     const go = (i) => {
         idx = Math.min(Math.max(0, i), maxIdx());
+        track.style.transition = 'transform 0.4s ease';
         track.style.transform = `translateX(-${idx * (100 / perView())}%)`;
     };
-    document.getElementById('testimonial-prev')?.addEventListener('click', () => go(idx - 1));
-    document.getElementById('testimonial-next')?.addEventListener('click', () => go(idx + 1));
-    setInterval(() => go(idx >= maxIdx() ? 0 : idx + 1), 6000);
-    // Swipe
-    let sx = 0;
-    const slider = document.getElementById('testimonial-slider');
-    slider.addEventListener('pointerdown', e => sx = e.clientX);
-    slider.addEventListener('pointerup', e => {
-        const dx = e.clientX - sx;
-        if (Math.abs(dx) > 40) go(idx + (dx < 0 ? 1 : -1));
+    const next = () => go(idx >= maxIdx() ? 0 : idx + 1);
+    const prev = () => go(idx <= 0 ? maxIdx() : idx - 1);
+
+    document.getElementById('testimonial-prev')?.addEventListener('click', () => { prev(); restartAuto(); });
+    document.getElementById('testimonial-next')?.addEventListener('click', () => { next(); restartAuto(); });
+
+    // Auto-play every 5 seconds
+    const startAuto = () => { stopAuto(); autoTimer = setInterval(next, 5000); };
+    const stopAuto = () => { if (autoTimer) clearInterval(autoTimer); autoTimer = null; };
+    const restartAuto = () => { startAuto(); };
+    slider.addEventListener('mouseenter', stopAuto);
+    slider.addEventListener('mouseleave', startAuto);
+    startAuto();
+
+    // Drag / swipe (mouse + touch)
+    let startX = 0, currentX = 0, dragging = false;
+    const baseTransform = () => -(idx * (100 / perView()));
+
+    slider.addEventListener('pointerdown', (e) => {
+        dragging = true;
+        startX = e.clientX;
+        currentX = startX;
+        track.style.transition = 'none';
+        slider.setPointerCapture(e.pointerId);
+        stopAuto();
     });
+    slider.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        currentX = e.clientX;
+        const dxPct = ((currentX - startX) / slider.offsetWidth) * 100;
+        track.style.transform = `translateX(${baseTransform() + dxPct}%)`;
+    });
+    const endDrag = () => {
+        if (!dragging) return;
+        dragging = false;
+        const dx = currentX - startX;
+        if (dx < -50) next();
+        else if (dx > 50) prev();
+        else go(idx);
+        startAuto();
+    };
+    slider.addEventListener('pointerup', endDrag);
+    slider.addEventListener('pointercancel', endDrag);
+
     window.addEventListener('resize', () => go(idx));
 })();
 </script>
