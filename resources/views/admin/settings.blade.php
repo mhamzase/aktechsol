@@ -56,7 +56,28 @@
                     <x-ui.input name="site_phone" label="Phone" :value="$s->site_phone" placeholder="+92 300 0000000" />
                     <x-ui.input name="copyright_text" label="Copyright Text" :value="$s->copyright_text" />
                     <div class="sm:col-span-2 md:col-span-2"><x-ui.input name="site_address" label="Address" :value="$s->site_address" /></div>
+                    <div class="sm:col-span-2 md:col-span-4"><x-ui.input name="google_map_embed_url" label="Google Map Embed URL" :value="$s->google_map_embed_url" placeholder="https://www.google.com/maps/embed?pb=..." hint="Google Maps kholen → address search karen → Share → Embed a map → <iframe> wala code copy karen → sirf src= ke andar wala URL yahan paste karen." /></div>
                     <div class="sm:col-span-2 md:col-span-2"><x-ui.textarea name="footer_text" label="Footer Text" rows="1" :value="$s->footer_text" /></div>
+                </div>
+            </div>
+
+            {{-- Homepage Stats --}}
+            <div class="mb-5">
+                <h3 class="section-heading">
+                    <span class="sec-icon sec-amber">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    </span>
+                    Homepage Stats
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    <x-ui.input name="stat1_label" label="Stat 1 — Label" :value="$s->stat1_label" placeholder="Projects Done" />
+                    <x-ui.input name="stat1_value" label="Stat 1 — Value" :value="$s->stat1_value" placeholder="50+" />
+                    <div class="hidden md:block"></div>
+                    <x-ui.input name="stat2_label" label="Stat 2 — Label" :value="$s->stat2_label" placeholder="Countries Served" />
+                    <x-ui.input name="stat2_value" label="Stat 2 — Value" :value="$s->stat2_value" placeholder="20+" />
+                    <div class="hidden md:block"></div>
+                    <x-ui.input name="stat3_label" label="Stat 3 — Label" :value="$s->stat3_label" placeholder="Happy Clients" />
+                    <x-ui.input name="stat3_value" label="Stat 3 — Value" :value="$s->stat3_value" placeholder="100+" />
                 </div>
             </div>
 

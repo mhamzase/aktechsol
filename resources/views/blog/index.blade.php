@@ -1,44 +1,71 @@
 @extends('layouts.app')
 
-@section('title', 'Blog')
-@section('meta_description', 'Latest insights and updates from AK Tech SOL.')
+@section('title', 'Blog — Insights, Tutorials & Updates | ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
+@section('meta_description', 'Read the latest insights, tutorials and updates from ' . ($siteSettings->site_name ?? 'AK Tech SOL') . ' on web development, mobile apps, design and digital growth.')
+
+@push('seo')
+<meta property="og:title" content="Blog — Insights, Tutorials & Updates | {{ $siteSettings->site_name ?? 'AK Tech SOL' }}">
+<meta property="og:description" content="Latest insights, tutorials and updates on web development, mobile apps, design and digital growth.">
+<meta property="og:url" content="{{ url()->current() }}">
+<meta property="og:type" content="website">
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "Blog",
+    "name": "Blog | {{ $siteSettings->site_name ?? 'AK Tech SOL' }}",
+    "url": "{{ url()->current() }}",
+    "blogPost": [
+        @foreach($posts as $i => $p)
+        {
+            "@@type": "BlogPosting",
+            "headline": "{{ $p->title }}",
+            "url": "{{ route('blog.show', $p->slug) }}",
+            "datePublished": "{{ $p->published_at?->toIso8601String() }}"
+        }{{ !$loop->last ? ',' : '' }}
+        @endforeach
+    ]
+}
+</script>
+@endpush
 
 @section('content')
     <x-frontend.page-banner
         title="Our Blog"
-        subtitle="Insights, tutorials, and updates."
+        subtitle="Insights, tutorials, and updates from our team."
     />
 
-    <section class="py-20 bg-gray-50">
+    <section class="py-12 sm:py-16 bg-slate-50/60">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <form id="blog-filter" class="mt-10 mb-8 flex flex-col sm:flex-row gap-3">
-                <div class="relative flex-1 sm:flex-none sm:w-72">
-                    <input type="text" name="search" id="blog-search" value="{{ request('search') }}" placeholder="Search blog posts..." class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 pr-10 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <button type="button" class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-gray-600" onclick="clearSearchInput('blog-search')">
+            {{-- Filters --}}
+            <form id="blog-filter" class="mb-8 space-y-4">
+                <div class="relative max-w-xl">
+                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input type="text" name="search" id="blog-search" value="{{ request('search') }}" placeholder="Search articles..."
+                           class="w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-10 py-3 text-sm focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#1d4ed8]/20 focus:outline-none transition shadow-sm">
+                    <button type="button" id="blog-search-clear" class="absolute inset-y-0 right-0 px-3.5 text-slate-400 hover:text-slate-600 {{ request('search') ? '' : 'hidden' }}">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
-                <select name="category" id="blog-category" class="block rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <option value="">All Categories</option>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" data-cat="" class="cat-pill px-4 py-2 rounded-full text-sm font-semibold transition {{ !request('category') ? 'bg-[#1d4ed8] text-white shadow-lg shadow-blue-600/25' : 'bg-white text-slate-600 border border-slate-200 hover:border-[#1d4ed8] hover:text-[#1d4ed8]' }}">All</button>
                     @foreach($categories as $cat)
-                        <option value="{{ $cat->slug }}" {{ request('category') === $cat->slug ? 'selected' : '' }}>{{ $cat->name }}</option>
+                        <button type="button" data-cat="{{ $cat->slug }}" class="cat-pill px-4 py-2 rounded-full text-sm font-semibold transition {{ request('category') === $cat->slug ? 'bg-[#1d4ed8] text-white shadow-lg shadow-blue-600/25' : 'bg-white text-slate-600 border border-slate-200 hover:border-[#1d4ed8] hover:text-[#1d4ed8]' }}">{{ $cat->name }}</button>
                     @endforeach
-                </select>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">Filter</button>
-                <button type="button" id="clear-blog-filter" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition">Clear</button>
+                </div>
+                <input type="hidden" name="category" id="blog-category" value="{{ request('category') }}">
             </form>
 
             <div class="relative">
-                <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div id="blog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @include('blog._cards', ['posts' => $posts])
                 </div>
-                <div id="blog-loading" class="absolute inset-0 bg-white flex items-center justify-center hidden rounded-xl z-10">
-                    <svg class="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                <div id="blog-loading" class="absolute inset-0 bg-white/70 backdrop-blur-sm hidden items-center justify-center rounded-2xl z-10">
+                    <svg class="animate-spin h-10 w-10 text-[#1d4ed8]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 </div>
             </div>
 
-            <div id="load-more-wrapper" class="text-center mt-10">
-                <button id="load-more-blog" class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed" data-next-url="{{ $posts->nextPageUrl() }}">Load More</button>
+            <div id="load-more-wrapper" class="text-center mt-10 {{ $posts->hasMorePages() ? '' : 'hidden' }}">
+                <button id="load-more-blog" class="px-8 py-3.5 bg-white border-2 border-[#1d4ed8] text-[#1d4ed8] font-bold rounded-2xl hover:bg-[#1d4ed8] hover:text-white transition disabled:opacity-50" data-next-url="{{ $posts->nextPageUrl() }}">Load More Articles</button>
             </div>
         </div>
     </section>
@@ -46,8 +73,6 @@
 
 @push('scripts')
 <script>
-    function clearSearchInput(id) { const el = document.getElementById(id); if (el) el.value = ''; }
-
     (function() {
         const grid = document.getElementById('blog-grid');
         const filterForm = document.getElementById('blog-filter');
@@ -55,16 +80,17 @@
         const loadMoreWrapper = document.getElementById('load-more-wrapper');
         const loadingOverlay = document.getElementById('blog-loading');
         const searchInput = document.getElementById('blog-search');
-        const categorySelect = document.getElementById('blog-category');
-        const clearFilterBtn = document.getElementById('clear-blog-filter');
+        const searchClear = document.getElementById('blog-search-clear');
+        const categoryInput = document.getElementById('blog-category');
+        const catPills = document.querySelectorAll('.cat-pill');
+        let searchTimer = null;
 
-        function showLoading() { loadingOverlay.classList.remove('hidden'); }
-        function hideLoading() { loadingOverlay.classList.add('hidden'); }
+        function showLoading() { loadingOverlay.classList.remove('hidden'); loadingOverlay.classList.add('flex'); }
+        function hideLoading() { loadingOverlay.classList.add('hidden'); loadingOverlay.classList.remove('flex'); }
 
         function updateLoadMoreButton(nextUrl) {
             if (nextUrl) {
                 loadMoreBtn.setAttribute('data-next-url', nextUrl);
-                loadMoreBtn.textContent = 'Load More';
                 loadMoreBtn.disabled = false;
                 loadMoreWrapper.classList.remove('hidden');
             } else {
@@ -72,55 +98,55 @@
             }
         }
 
-        async function fetchPosts(url) {
-            const params = new URLSearchParams(new FormData(filterForm)).toString();
-            const separator = url.includes('?') ? '&' : '?';
-            const fetchUrl = `${url}${separator}${params}`;
-            const response = await fetch(fetchUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-            return await response.json();
+        function setActivePill() {
+            catPills.forEach(p => {
+                const active = p.dataset.cat === categoryInput.value;
+                p.className = 'cat-pill px-4 py-2 rounded-full text-sm font-semibold transition ' +
+                    (active ? 'bg-[#1d4ed8] text-white shadow-lg shadow-blue-600/25' : 'bg-white text-slate-600 border border-slate-200 hover:border-[#1d4ed8] hover:text-[#1d4ed8]');
+            });
         }
 
-        filterForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            loadMoreBtn.disabled = true;
-            loadMoreBtn.textContent = 'Loading...';
-            showLoading();
-            try {
-                const data = await fetchPosts("{{ route('blog.index') }}");
-                grid.innerHTML = data.items;
-                updateLoadMoreButton(data.next_page_url);
-            } catch (error) {
-                console.error('Filter error:', error);
-            } finally {
-                loadMoreBtn.textContent = 'Load More';
-                loadMoreBtn.disabled = false;
-                hideLoading();
-            }
-        });
+        async function fetchPosts(url, append = false) {
+            const params = new URLSearchParams(new FormData(filterForm)).toString();
+            const separator = url.includes('?') ? '&' : '?';
+            const response = await fetch(`${url}${separator}${params}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            const data = await response.json();
+            if (append) grid.insertAdjacentHTML('beforeend', data.items);
+            else grid.innerHTML = data.items;
+            updateLoadMoreButton(data.next_page_url);
+        }
 
-        clearFilterBtn.addEventListener('click', function() {
-            searchInput.value = '';
-            categorySelect.value = '';
-            filterForm.dispatchEvent(new Event('submit'));
+        async function applyFilters() {
+            showLoading();
+            try { await fetchPosts("{{ route('blog.index') }}"); }
+            catch (e) { console.error('Filter error:', e); }
+            finally { hideLoading(); }
+        }
+
+        searchInput.addEventListener('input', () => {
+            searchClear.classList.toggle('hidden', !searchInput.value);
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(applyFilters, 400);
         });
+        searchClear.addEventListener('click', () => {
+            searchInput.value = '';
+            searchClear.classList.add('hidden');
+            applyFilters();
+        });
+        catPills.forEach(p => p.addEventListener('click', () => {
+            categoryInput.value = p.dataset.cat;
+            setActivePill();
+            applyFilters();
+        }));
 
         loadMoreBtn.addEventListener('click', async function() {
             const nextUrl = loadMoreBtn.getAttribute('data-next-url');
             if (!nextUrl) return;
             loadMoreBtn.disabled = true;
             loadMoreBtn.textContent = 'Loading...';
-            showLoading();
-            try {
-                const data = await fetchPosts(nextUrl);
-                grid.insertAdjacentHTML('beforeend', data.items);
-                updateLoadMoreButton(data.next_page_url);
-            } catch (error) {
-                console.error('Load more error:', error);
-            } finally {
-                loadMoreBtn.textContent = 'Load More';
-                loadMoreBtn.disabled = false;
-                hideLoading();
-            }
+            try { await fetchPosts(nextUrl, true); }
+            catch (e) { console.error('Load more error:', e); }
+            finally { loadMoreBtn.textContent = 'Load More Articles'; loadMoreBtn.disabled = false; }
         });
     })();
 </script>

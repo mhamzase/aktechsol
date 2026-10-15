@@ -58,11 +58,9 @@
                 <p class="text-sm text-slate-400 mb-4">Subscribe for tips and updates.</p>
                 <form id="newsletter-form" action="{{ route('newsletter.subscribe') }}" method="POST">
                     @csrf
-                    <div class="flex gap-2">
-                        <input type="email" name="email" id="newsletter-email" placeholder="Your email" required
-                            class="flex-1 min-w-0 rounded-xl border border-white/15 bg-white/10 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-[#2f6fed] focus:outline-none">
-                        <button type="submit" class="px-4 py-2.5 bg-[#1d4ed8] text-white text-sm font-bold rounded-xl hover:bg-[#1669d9] transition whitespace-nowrap">Join</button>
-                    </div>
+                    <input type="email" name="email" id="newsletter-email" placeholder="Your email address" required
+                        class="w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-[#2f6fed] focus:outline-none">
+                    <button type="submit" class="mt-2.5 w-full px-4 py-3 bg-[#1d4ed8] text-white text-sm font-bold rounded-xl hover:bg-[#1669d9] transition">Subscribe</button>
                     <p id="newsletter-message" class="mt-2 text-sm hidden"></p>
                 </form>
                 @if ($siteSettings->site_email)

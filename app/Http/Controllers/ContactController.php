@@ -24,6 +24,10 @@ class ContactController extends Controller
             route('admin.contact-messages.show', $message),
         );
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json(['message' => 'Your message has been sent successfully. We\'ll get back to you soon.']);
+        }
+
         return back()->with('success', 'Your message has been sent successfully.');
     }
 }

@@ -4,6 +4,10 @@
 @section('meta_description', 'AK Tech SOL is a full-service digital agency offering web development, mobile app development, UI/UX design, and cloud solutions. 50+ projects delivered with 5-star client ratings. Get a free quote today.')
 
 @push('seo')
+<meta property="og:title" content="{{ ($siteSettings->site_name ?? 'AK Tech SOL') . ' — Web Development, Mobile Apps & Digital Services Agency' }}">
+<meta property="og:description" content="AK Tech SOL is a full-service digital agency offering web development, mobile app development, UI/UX design, and cloud solutions. Trusted by clients worldwide.">
+<meta property="og:url" content="{{ url('/') }}">
+<meta property="og:type" content="website">
 <script type="application/ld+json">
 {
     "@@context": "https://schema.org",
@@ -33,13 +37,13 @@
             <div class="max-w-3xl">
                 <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-sm font-medium text-blue-100 mb-6">
                     <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                    Accepting new projects
+                    Trusted by clients in 15+ countries
                 </span>
                 <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
                     We Build <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-300">Digital Products</span> That Matter
                 </h1>
                 <p class="mt-6 text-lg sm:text-xl text-blue-100/80 max-w-2xl leading-relaxed">
-                    AK Tech SOL is a full-service software agency helping startups and businesses design, develop, and launch exceptional web and mobile experiences.
+                    AK Tech SOL is a full-service software agency helping startups and businesses <strong class="text-white">worldwide</strong> design, develop, and launch exceptional web and mobile experiences.
                 </p>
                 <div class="mt-8 flex flex-wrap gap-4">
                     <a href="{{ url('/services') }}" class="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-[#12307e] font-bold hover:bg-blue-50 transition shadow-xl shadow-blue-900/30">
@@ -54,16 +58,16 @@
                 {{-- Stats --}}
                 <div class="mt-10 grid grid-cols-3 gap-4 sm:gap-6 max-w-lg">
                     <div>
-                        <p class="text-2xl sm:text-3xl font-extrabold">50+</p>
-                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">Projects Done</p>
+                        <p class="text-2xl sm:text-3xl font-extrabold">{{ $siteSettings->stat1_value ?? '50+' }}</p>
+                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">{{ $siteSettings->stat1_label ?? 'Projects Done' }}</p>
                     </div>
                     <div>
-                        <p class="text-2xl sm:text-3xl font-extrabold">30+</p>
-                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">Happy Clients</p>
+                        <p class="text-2xl sm:text-3xl font-extrabold">{{ $siteSettings->stat2_value ?? '15+' }}</p>
+                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">{{ $siteSettings->stat2_label ?? 'Countries Served' }}</p>
                     </div>
                     <div>
-                        <p class="text-2xl sm:text-3xl font-extrabold">5★</p>
-                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">Avg. Rating</p>
+                        <p class="text-2xl sm:text-3xl font-extrabold">{{ $siteSettings->stat3_value ?? '5★' }}</p>
+                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">{{ $siteSettings->stat3_label ?? 'Avg. Rating' }}</p>
                     </div>
                 </div>
             </div>
@@ -120,10 +124,10 @@
                     <p class="mt-4 text-slate-500 leading-relaxed">We treat your project like our own. Transparent process, regular updates, and code you'll be proud of.</p>
                     <div class="mt-8 space-y-5">
                         @foreach([
+                            ['Global clientele', 'We serve clients in 15+ countries, working smoothly across all timezones.'],
                             ['Dedicated team', 'You work directly with the people building your product.'],
                             ['Transparent pricing', 'Clear quotes, no hidden costs, milestone-based payments.'],
                             ['On-time delivery', 'Realistic timelines we actually meet.'],
-                            ['Post-launch support', 'We stay with you after go-live.'],
                         ] as [$title, $desc])
                             <div class="flex gap-4">
                                 <span class="w-10 h-10 rounded-xl bg-green-100 text-green-600 flex items-center justify-center shrink-0">
