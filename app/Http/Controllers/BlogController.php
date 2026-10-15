@@ -51,7 +51,17 @@ class BlogController extends Controller
             ->where('id', '!=', $post->id)
             ->where('category_id', $post->category_id)
             ->latest('published_at')
+            ->take(3)
             ->get();
+
+        // Fallback: latest posts if no same-category related
+        if ($related->isEmpty()) {
+            $related = BlogPost::published()
+                ->where('id', '!=', $post->id)
+                ->latest('published_at')
+                ->take(3)
+                ->get();
+        }
 
         return view('blog.show', compact('post', 'related'));
     }

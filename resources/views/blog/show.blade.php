@@ -12,8 +12,7 @@
 <meta property="article:published_time" content="{{ $post->published_at?->toIso8601String() }}">
 @if($post->getFeaturedImageUrl())
 <meta property="og:image" content="{{ $post->getFeaturedImageUrl() }}">
-@endif
-<script type="application/ld+json">
+@endif<script type="application/ld+json">
 {
     "@@context": "https://schema.org",
     "@@type": "BlogPosting",
@@ -48,6 +47,25 @@
     ]
 }
 </script>
+@if($related->count() > 0)
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "ItemList",
+    "name": "Related Articles",
+    "itemListElement": [
+        @foreach($related as $i => $rp)
+        {
+            "@@type": "ListItem",
+            "position": {{ $i + 1 }},
+            "url": "{{ route('blog.show', $rp->slug) }}",
+            "name": "{{ $rp->title }}"
+        }{{ !$loop->last ? ',' : '' }}
+        @endforeach
+    ]
+}
+</script>
+@endif
 @endpush
 
 @php
@@ -120,6 +138,10 @@
             <div class="text-center mb-10">
                 <span class="text-sm font-bold text-[#1d4ed8] uppercase tracking-widest">Keep reading</span>
                 <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">Related Articles</h2>
+                <a href="{{ route('blog.index') }}" class="inline-flex items-center gap-1.5 mt-3 text-sm font-bold text-[#1d4ed8] hover:gap-2.5 transition-all">
+                    View all articles
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($related->take(3) as $relatedPost)
