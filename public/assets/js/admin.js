@@ -558,6 +558,29 @@
         }
     });
 
+    /* ---------------- Proposal milestones (delegated, drawer-safe) ---------------- */
+    document.addEventListener('click', (e) => {
+        const addBtn = e.target.closest('[data-add-milestone]');
+        if (addBtn) {
+            const list = document.getElementById('milestones-list');
+            if (!list) return;
+            let idx = parseInt(list.dataset.milestoneIndex || '0', 10);
+            const div = document.createElement('div');
+            div.className = 'flex gap-2 milestone-row';
+            div.innerHTML =
+                '<input type="text" name="milestones[' + idx + '][title]" placeholder="Milestone title" class="form-control flex-1">' +
+                '<input type="number" name="milestones[' + idx + '][amount]" placeholder="$" step="0.01" min="0" class="form-control w-32">' +
+                '<button type="button" data-remove-milestone class="btn btn-secondary !px-3">×</button>';
+            list.appendChild(div);
+            list.dataset.milestoneIndex = String(idx + 1);
+            return;
+        }
+        const removeBtn = e.target.closest('[data-remove-milestone]');
+        if (removeBtn) {
+            removeBtn.closest('.milestone-row')?.remove();
+        }
+    });
+
     /* ---------------- Delete confirmation ---------------- */
     let pendingDelete = null;
     window.confirmDelete = function (url, tableId, message) {

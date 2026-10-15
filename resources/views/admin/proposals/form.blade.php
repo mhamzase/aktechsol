@@ -24,48 +24,32 @@
                 <x-ui.input name="amount" type="number" step="0.01" min="0" label="Amount ($)" :value="$proposal->amount" required placeholder="5000" />
             </div>
             <div class="md:col-span-3">
-                <x-ui.input name="valid_until" type="date" label="Valid Until" :value="$proposal->valid_until?->format('Y-m-d')" hint="Expiry date" />
+                <x-ui.date name="valid_until" label="Valid Until" :value="$proposal->valid_until?->format('Y-m-d')" hint="Expiry date" />
             </div>
             <div class="md:col-span-12">
                 <x-ui.input name="timeline" label="Timeline" :value="$proposal->timeline" placeholder="4-6 weeks" />
             </div>
             <div class="md:col-span-12">
-                <x-ui.textarea name="scope" label="Project Scope" rows="6" :value="$proposal->scope" required
-                               placeholder="Detailed scope of work…" hint="HTML allowed." />
+                <x-ui.rich-text name="scope" label="Project Scope" :value="$proposal->scope" required
+                                placeholder="Detailed scope of work…" />
             </div>
         </div>
 
         {{-- Milestones --}}
         <div>
             <p class="text-sm font-semibold text-slate-700 mb-2">Payment Milestones (optional)</p>
-            <div id="milestones-list" class="space-y-2">
+            <div id="milestones-list" class="space-y-2" data-milestone-index="{{ count($proposal->milestones ?? []) }}">
                 @foreach(($proposal->milestones ?? []) as $i => $m)
                 <div class="flex gap-2 milestone-row">
                     <input type="text" name="milestones[{{ $i }}][title]" value="{{ $m['title'] ?? '' }}" placeholder="Milestone title" class="form-control flex-1">
                     <input type="number" name="milestones[{{ $i }}][amount]" value="{{ $m['amount'] ?? '' }}" placeholder="$" step="0.01" min="0" class="form-control w-32">
-                    <button type="button" onclick="this.closest('.milestone-row').remove()" class="btn btn-secondary !px-3">×</button>
+                    <button type="button" data-remove-milestone class="btn btn-secondary !px-3">×</button>
                 </div>
                 @endforeach
             </div>
-            <button type="button" onclick="addMilestone()" class="btn btn-secondary mt-2 text-sm">+ Add Milestone</button>
+            <button type="button" data-add-milestone class="btn btn-secondary mt-2 text-sm">+ Add Milestone</button>
         </div>
 
         <x-admin.drawer-footer :save-label="$proposal->exists ? 'Update Proposal' : 'Create Proposal'" />
     </form>
 </div>
-
-<script>
-let milestoneIndex = {{ count($proposal->milestones ?? []) }};
-function addMilestone() {
-    const list = document.getElementById('milestones-list');
-    const div = document.createElement('div');
-    div.className = 'flex gap-2 milestone-row';
-    div.innerHTML = `
-        <input type="text" name="milestones[${milestoneIndex}][title]" placeholder="Milestone title" class="form-control flex-1">
-        <input type="number" name="milestones[${milestoneIndex}][amount]" placeholder="$" step="0.01" min="0" class="form-control w-32">
-        <button type="button" onclick="this.closest('.milestone-row').remove()" class="btn btn-secondary !px-3">×</button>
-    `;
-    list.appendChild(div);
-    milestoneIndex++;
-}
-</script>
