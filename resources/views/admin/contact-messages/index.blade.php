@@ -12,7 +12,7 @@
                         :columns="['Name', 'Email', 'Subject', 'Status', 'Received', 'Actions']"
                         search-placeholder="Search messages…">
         <x-slot:filters>
-            <select data-table-filter="status" class="form-control !w-auto !py-1.5 text-sm">
+            <select data-table-filter="status" class="form-control table-select !w-auto !py-1.5 text-sm">
                 <option value="">All Statuses</option>
                 <option value="new">New</option>
                 <option value="read">Read</option>
