@@ -8,22 +8,22 @@
     </x-admin.page-header>
 
     {{-- Stats --}}
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="quote-stats">
         <div class="bg-white rounded-2xl p-5 border border-slate-100">
             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">New</p>
-            <p class="text-2xl font-extrabold text-amber-600 mt-1">{{ $stats['new'] }}</p>
+            <p class="text-2xl font-extrabold text-amber-600 mt-1" data-stat="new">{{ $stats['new'] }}</p>
         </div>
         <div class="bg-white rounded-2xl p-5 border border-slate-100">
             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Reviewed</p>
-            <p class="text-2xl font-extrabold text-blue-600 mt-1">{{ $stats['reviewed'] }}</p>
+            <p class="text-2xl font-extrabold text-blue-600 mt-1" data-stat="reviewed">{{ $stats['reviewed'] }}</p>
         </div>
         <div class="bg-white rounded-2xl p-5 border border-slate-100">
             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Quoted</p>
-            <p class="text-2xl font-extrabold text-green-600 mt-1">{{ $stats['quoted'] }}</p>
+            <p class="text-2xl font-extrabold text-green-600 mt-1" data-stat="quoted">{{ $stats['quoted'] }}</p>
         </div>
         <div class="bg-white rounded-2xl p-5 border border-slate-100">
             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total</p>
-            <p class="text-2xl font-extrabold text-slate-800 mt-1">{{ $stats['total'] }}</p>
+            <p class="text-2xl font-extrabold text-slate-800 mt-1" data-stat="total">{{ $stats['total'] }}</p>
         </div>
     </div>
 
@@ -60,5 +60,15 @@
         tryOpen();
     }
 })();
+
+// Update stats cards when quote status changes (no page refresh).
+document.addEventListener('ajaxFormSuccess', function(e) {
+    const stats = e.detail?.stats;
+    if (!stats) return;
+    Object.entries(stats).forEach(([key, val]) => {
+        const el = document.querySelector(`#quote-stats [data-stat="${key}"]`);
+        if (el) el.textContent = val;
+    });
+});
 </script>
 @endpush

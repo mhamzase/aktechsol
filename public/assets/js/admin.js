@@ -549,6 +549,7 @@
             }
             window.closeDrawer();
             if (form.dataset.reloadTable) window.reloadAdminTable(form.dataset.reloadTable);
+            document.dispatchEvent(new CustomEvent('ajaxFormSuccess', { detail: data }));
             if (data.redirect) window.location.href = data.redirect;
         } catch (err) {
             window.notify.error('Network error. Please try again.');

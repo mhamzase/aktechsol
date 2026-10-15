@@ -67,8 +67,15 @@ class QuoteController extends Controller
         $quote->update(['status' => $validated['status']]);
         LogActivity::record('quote_status_updated', $quote, "Quote #{$quote->id} status → {$validated['status']}");
 
+        $stats = [
+            'new'      => QuoteRequest::where('status', 'new')->count(),
+            'reviewed' => QuoteRequest::where('status', 'reviewed')->count(),
+            'quoted'   => QuoteRequest::where('status', 'quoted')->count(),
+            'total'    => QuoteRequest::count(),
+        ];
+
         if ($request->expectsJson() || $request->ajax()) {
-            return response()->json(['message' => 'Quote status updated.', 'status' => $quote->status]);
+            return response()->json(['message' => 'Quote status updated.', 'status' => $quote->status, 'stats' => $stats]);
         }
 
         return back()->with('success', 'Quote status updated.');
