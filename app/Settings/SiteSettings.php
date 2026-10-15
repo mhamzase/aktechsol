@@ -19,6 +19,10 @@ class SiteSettings extends Settings
     public ?string $stat2_label = null;
     public ?string $stat3_value = null;
     public ?string $stat3_label = null;
+
+    // Popup & WhatsApp
+    public ?string $popup_link_url = null;
+    public ?string $popup_version = null;
     public ?string $footer_text    = null;
     public ?string $copyright_text = null;
     public ?string $facebook_url   = null;

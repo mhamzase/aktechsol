@@ -100,7 +100,7 @@
                         <div class="bg-gradient-to-br from-[#0a1f44] to-[#1d4ed8] rounded-2xl p-6 text-white">
                             <h3 class="font-extrabold text-lg">Need this service?</h3>
                             <p class="text-sm text-blue-100/80 mt-2">Get a free quote for your project today.</p>
-                            <a href="{{ url('/contact') }}" class="mt-4 block text-center px-5 py-3 rounded-xl bg-white text-[#12307e] font-bold hover:bg-blue-50 transition">Get a Free Quote</a>
+                            <a href="{{ route('quote.create') }}" class="mt-4 block text-center px-5 py-3 rounded-xl bg-white text-[#12307e] font-bold hover:bg-blue-50 transition">Get a Free Quote</a>
                         </div>
 
                         {{-- Back link --}}

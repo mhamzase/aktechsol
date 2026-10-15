@@ -165,15 +165,16 @@
                 });
                 const data = await res.json();
                 if (res.ok) {
+                    window.notify.success(data.message || 'Message sent successfully!');
                     successBox.textContent = data.message || 'Message sent! We\'ll get back to you soon.';
                     successBox.classList.remove('hidden');
                     form.reset();
                     successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 } else {
-                    alert(data.message || 'Something went wrong. Please try again.');
+                    window.notify.error(data.message || 'Something went wrong. Please try again.');
                 }
             } catch (err) {
-                alert('Network error. Please try again.');
+                window.notify.error('Network error. Please check your connection and try again.');
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'Send Message';

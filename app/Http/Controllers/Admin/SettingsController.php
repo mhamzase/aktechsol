@@ -45,6 +45,11 @@ class SettingsController extends Controller
                 'stat2_label' => 'nullable|string|max:50',
                 'stat3_value' => 'nullable|string|max:20',
                 'stat3_label' => 'nullable|string|max:50',
+                'whatsapp_number' => 'nullable|string|max:20',
+                'popup_enabled' => 'nullable|boolean',
+                'popup_link_url' => 'nullable|url|max:500',
+                'popup_version' => 'nullable|string|max:50',
+                'popup_image' => 'nullable|image|max:2048',
                 'footer_text' => 'nullable|string',
                 'copyright_text' => 'nullable|string|max:255',
                 'facebook_url' => 'nullable|url|max:500',
@@ -81,10 +86,7 @@ class SettingsController extends Controller
             ],
             'popup' => [
                 'popup_enabled' => 'nullable|boolean',
-                'popup_title' => 'nullable|string|max:255',
-                'popup_message' => 'nullable|string',
-                'popup_btn_text' => 'nullable|string|max:100',
-                'popup_btn_url' => 'nullable|string|max:500',
+                'popup_link_url' => 'nullable|url|max:500',
                 'popup_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             ],
             'homepage' => [
@@ -190,6 +192,12 @@ class SettingsController extends Controller
             if ($request->hasFile('popup_image')) {
                 $siteAsset->clearMediaCollection('popup_image');
                 $siteAsset->addMediaFromRequest('popup_image')->toMediaCollection('popup_image');
+                // Bump version so "don't show again" resets for everyone.
+                $version = (string) time();
+                DB::table('settings')->updateOrInsert(
+                    ['group' => SiteSettings::group(), 'name' => 'popup_version'],
+                    ['payload' => json_encode($version), 'updated_at' => now(), 'created_at' => now()],
+                );
             }
         }
 
