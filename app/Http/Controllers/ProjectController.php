@@ -36,6 +36,13 @@ class ProjectController extends Controller
     {
         $project = Project::where('slug', $slug)->active()->firstOrFail();
         $gallery = $project->getGalleryImages();
-        return view('projects.show', compact('project', 'gallery'));
+
+        $related = Project::active()
+            ->where('id', '!=', $project->id)
+            ->orderBy('sort_order')
+            ->take(3)
+            ->get();
+
+        return view('projects.show', compact('project', 'gallery', 'related'));
     }
 }
