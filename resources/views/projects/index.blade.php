@@ -112,3 +112,28 @@
     })();
 </script>
 @endpush
+
+@push('seo')
+<meta property="og:title" content="Our Portfolio — Recent Projects & Case Studies | {{ $siteSettings->site_name ?? 'AK Tech SOL' }}">
+<meta property="og:description" content="Browse {{ $siteSettings->site_name ?? 'AK Tech SOL' }} portfolio: real projects, case studies and client work across web development, mobile apps, UI/UX design and more.">
+<meta property="og:url" content="{{ url()->current() }}">
+<meta property="og:type" content="website">
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "ItemList",
+    "name": "Our Portfolio",
+    "url": "{{ url()->current() }}",
+    "itemListElement": [
+        @foreach($projects as $i => $p)
+        {
+            "@@type": "ListItem",
+            "position": {{ $i + 1 }},
+            "url": "{{ route('portfolio.show', $p->slug) }}",
+            "name": "{{ $p->title }}"
+        }{{ !$loop->last ? ',' : '' }}
+        @endforeach
+    ]
+}
+</script>
+@endpush
