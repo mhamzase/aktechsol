@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ProposalSentMail;
 use App\Models\Proposal;
 use App\Models\QuoteRequest;
 use App\Support\LogActivity;
 use App\Support\NotifyAdmins;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ProposalController extends Controller
 {
@@ -71,6 +73,13 @@ class ProposalController extends Controller
 
         $proposal = Proposal::create($validated);
         LogActivity::record('proposal_created', $proposal, "Created proposal: {$proposal->title}");
+
+        // Email the proposal to the client (queued).
+        try {
+            Mail::to($proposal->client_email)->queue(new ProposalSentMail($proposal));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json(['message' => 'Proposal created.', 'id' => $proposal->id]);

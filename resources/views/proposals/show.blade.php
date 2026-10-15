@@ -71,7 +71,7 @@
             <div class="bg-white rounded-3xl p-8 border border-slate-100">
                 <h2 class="text-lg font-extrabold text-slate-900 mb-2">Your Response</h2>
                 <p class="text-sm text-slate-500 mb-6">Please review the proposal above and let us know your decision.</p>
-                <form method="POST" action="{{ route('proposals.respond', $proposal->token) }}" class="space-y-4">
+                <form id="proposal-respond-form" method="POST" action="{{ route('proposals.respond', $proposal->token) }}" class="space-y-4">
                     @csrf
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1.5">Note (optional)</label>
@@ -79,22 +79,67 @@
                                   class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#1d4ed8]/20 focus:outline-none"></textarea>
                     </div>
                     <div class="flex flex-wrap gap-3">
-                        <button type="submit" name="action" value="accepted"
-                                class="px-8 py-3.5 bg-green-600 text-white font-bold rounded-2xl hover:bg-green-700 transition">
+                        <button type="button" data-respond="accepted"
+                                class="respond-btn px-8 py-3.5 bg-green-600 text-white font-bold rounded-2xl hover:bg-green-700 transition disabled:opacity-60">
                             Accept Proposal
                         </button>
-                        <button type="submit" name="action" value="changes_requested"
-                                class="px-8 py-3.5 bg-amber-500 text-white font-bold rounded-2xl hover:bg-amber-600 transition">
+                        <button type="button" data-respond="changes_requested"
+                                class="respond-btn px-8 py-3.5 bg-amber-500 text-white font-bold rounded-2xl hover:bg-amber-600 transition disabled:opacity-60">
                             Request Changes
                         </button>
-                        <button type="submit" name="action" value="rejected"
-                                onclick="return confirm('Are you sure you want to decline this proposal?')"
-                                class="px-8 py-3.5 bg-slate-200 text-slate-700 font-bold rounded-2xl hover:bg-slate-300 transition">
+                        <button type="button" data-respond="rejected"
+                                class="respond-btn px-8 py-3.5 bg-slate-200 text-slate-700 font-bold rounded-2xl hover:bg-slate-300 transition disabled:opacity-60">
                             Decline
                         </button>
                     </div>
                 </form>
             </div>
+            @push('scripts')
+            <script>
+            (function() {
+                const form = document.getElementById('proposal-respond-form');
+                if (!form) return;
+                const buttons = form.querySelectorAll('.respond-btn');
+
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        const action = btn.dataset.respond;
+                        if (action === 'rejected' && !confirm('Are you sure you want to decline this proposal?')) return;
+
+                        buttons.forEach(b => b.disabled = true);
+                        const originalText = btn.textContent;
+                        btn.textContent = 'Sending...';
+
+                        try {
+                            const formData = new FormData(form);
+                            formData.set('action', action);
+                            const res = await fetch(form.action, {
+                                method: 'POST',
+                                body: formData,
+                                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+                            });
+                            let data = {};
+                            try { data = await res.json(); } catch (e) {}
+                            if (res.ok) {
+                                window.notify.success(data.message || 'Response recorded!');
+                                setTimeout(() => location.reload(), 1500);
+                            } else if (res.status === 422 && data.errors) {
+                                const firstError = Object.values(data.errors)[0]?.[0];
+                                window.notify.error(firstError || 'Please check your input.');
+                            } else {
+                                window.notify.error(data.message || 'Something went wrong. Please try again.');
+                            }
+                        } catch (err) {
+                            window.notify.error('Network error. Please check your connection.');
+                        } finally {
+                            buttons.forEach(b => b.disabled = false);
+                            btn.textContent = originalText;
+                        }
+                    });
+                });
+            })();
+            </script>
+            @endpush
             @else
             <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
                 @php
