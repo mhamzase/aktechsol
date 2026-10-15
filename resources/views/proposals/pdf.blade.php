@@ -4,7 +4,16 @@
     <meta charset="UTF-8">
     <title>Proposal - {{ $proposal->title }}</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap');
+        @font-face {
+            font-family: 'Sora';
+            src: url('{{ public_path('assets/fonts/sora-pdf/Sora.ttf') }}') format('truetype');
+            font-weight: normal;
+        }
+        @font-face {
+            font-family: 'Sora';
+            src: url('{{ public_path('assets/fonts/sora-pdf/Sora.ttf') }}') format('truetype');
+            font-weight: bold;
+        }
         * { box-sizing: border-box; }
         body { font-family: 'Sora', Arial, sans-serif; color: #0f172a; margin: 0; padding: 32px; font-size: 13px; line-height: 1.6; background: #fff; }
 
