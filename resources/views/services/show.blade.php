@@ -1,7 +1,41 @@
 @extends('layouts.app')
 
-@section('title', $service->seo_title ?? $service->title)
-@section('meta_description', $service->meta_description)
+@section('title', ($service->seo_title ?: $service->title . ' | ' . ($siteSettings->site_name ?? 'AK Tech SOL')))
+@section('meta_description', $service->meta_description ?: \Illuminate\Support\Str::limit(strip_tags($service->short_description), 160))
+@section('og_type', 'article')
+
+@push('seo')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "{{ $service->title }}",
+    "description": "{{ \Illuminate\Support\Str::limit(strip_tags($service->short_description ?? ''), 200) }}",
+    "url": "{{ url()->current() }}",
+    "provider": {
+        "@type": "Organization",
+        "name": "{{ $siteSettings->site_name ?? 'AK Tech SOL' }}",
+        "url": "{{ url('/') }}"
+    }
+    @if($service->category)
+    ,
+    "serviceType": "{{ $service->category->name }}"
+    @endif
+}
+</script>
+{{-- Breadcrumb schema --}}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "{{ url('/') }}" },
+        { "@type": "ListItem", "position": 2, "name": "Services", "item": "{{ route('services.index') }}" },
+        { "@type": "ListItem", "position": 3, "name": "{{ $service->title }}", "item": "{{ url()->current() }}" }
+    ]
+}
+</script>
+@endpush
 
 @php
     $shareUrl = urlencode(url()->current());

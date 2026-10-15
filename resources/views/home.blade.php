@@ -1,7 +1,26 @@
 @extends('layouts.app')
 
-@section('title', 'Home - ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
-@section('meta_description', 'AK Tech SOL is a professional software and freelancing agency delivering top-notch digital solutions.')
+@section('title', ($siteSettings->site_name ?? 'AK Tech SOL') . ' — Web Development, Mobile Apps & Digital Services Agency')
+@section('meta_description', 'AK Tech SOL is a full-service digital agency offering web development, mobile app development, UI/UX design, and cloud solutions. 50+ projects delivered with 5-star client ratings. Get a free quote today.')
+
+@push('seo')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "{{ $siteSettings->site_name ?? 'AK Tech SOL' }}",
+    "url": "{{ url('/') }}",
+    "description": "Full-service digital agency offering web development, mobile apps, UI/UX design and cloud solutions.",
+    @if($logoUrl)"logo": "{{ $logoUrl }}",@endif
+    "sameAs": [
+        @if($siteSettings->facebook_url ?? null)"{{ $siteSettings->facebook_url }}",@endif
+        @if($siteSettings->linkedin_url ?? null)"{{ $siteSettings->linkedin_url }}",@endif
+        @if($siteSettings->instagram_url ?? null)"{{ $siteSettings->instagram_url }}",@endif
+        @if($siteSettings->twitter_url ?? null)"{{ $siteSettings->twitter_url }}"@endif
+    ]
+}
+</script>
+@endpush
 
 @section('content')
     {{-- ============ HERO ============ --}}

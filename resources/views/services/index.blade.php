@@ -1,7 +1,27 @@
 @extends('layouts.app')
 
-@section('title', 'Our Services')
-@section('meta_description', 'Explore our professional services.')
+@section('title', 'Our Services — Web Development, Mobile Apps, UI/UX Design | ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
+@section('meta_description', 'Explore AK Tech SOL services: web development, mobile app development, UI/UX design, cloud solutions and more. Professional digital services tailored for your business growth.')
+
+@push('seo')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Our Services",
+    "itemListElement": [
+        @foreach($services as $i => $service)
+        {
+            "@type": "ListItem",
+            "position": {{ $i + 1 }},
+            "name": "{{ $service->title }}",
+            "url": "{{ route('services.show', $service->slug) }}"
+        }{{ !$loop->last ? ',' : '' }}
+        @endforeach
+    ]
+}
+</script>
+@endpush
 
 @section('content')
     <x-frontend.page-banner
