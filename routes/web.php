@@ -221,6 +221,8 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::resource('proposals', \App\Http\Controllers\Admin\ProposalController::class)->middleware('can:manage proposals');
     Route::post('proposals/{proposal}/send', [\App\Http\Controllers\Admin\ProposalController::class, 'send'])->middleware('can:manage proposals')->name('proposals.send');
     Route::get('proposals/{proposal}/pdf', [\App\Http\Controllers\Admin\ProposalController::class, 'pdf'])->middleware('can:manage proposals')->name('proposals.pdf');
+    Route::post('proposals/{proposal}/resend', [\App\Http\Controllers\Admin\ProposalController::class, 'resend'])->middleware('can:manage proposals')->name('proposals.resend');
+    Route::post('proposals/{proposal}/duplicate', [\App\Http\Controllers\Admin\ProposalController::class, 'duplicate'])->middleware('can:manage proposals')->name('proposals.duplicate');
     $soon('client-projects', 'Client Projects', 'Phase 3', 'client-projects.index', 'manage projects');
     $soon('invoices', 'Invoices', 'Phase 4', 'invoices.index', 'manage invoices');
     $soon('reviews', 'Reviews', 'Phase 3', 'reviews.index', 'manage reviews');

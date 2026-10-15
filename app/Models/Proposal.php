@@ -23,13 +23,14 @@ class Proposal extends Model
     protected $fillable = [
         'quote_request_id', 'title', 'client_name', 'client_email',
         'scope', 'timeline', 'amount', 'milestones', 'valid_until',
-        'status', 'token', 'sent_at', 'responded_at', 'client_note',
+        'status', 'token', 'sent_at', 'viewed_at', 'responded_at', 'client_note',
     ];
 
     protected $casts = [
         'milestones'   => 'array',
         'valid_until'  => 'date',
         'sent_at'      => 'datetime',
+        'viewed_at'    => 'datetime',
         'responded_at' => 'datetime',
         'amount'       => 'decimal:2',
     ];

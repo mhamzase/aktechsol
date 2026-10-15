@@ -37,6 +37,10 @@
                 <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-wider">Sent</p>
                 <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 mt-1">{{ $proposal->sent_at?->format('M d, Y') ?? 'Not sent' }}</p>
             </div>
+            <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3.5">
+                <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-wider">Viewed</p>
+                <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 mt-1">{{ $proposal->viewed_at?->format('M d, Y h:i A') ?? 'Not viewed' }}</p>
+            </div>
         </div>
 
         <div>
@@ -72,6 +76,10 @@
                 <button type="submit" class="btn btn-primary">Mark as Sent</button>
             </form>
             @endif
+            <button type="button" data-resend-proposal data-url="{{ route('admin.proposals.resend', $proposal) }}"
+                    class="btn btn-secondary">Resend Email</button>
+            <button type="button" data-duplicate-proposal data-url="{{ route('admin.proposals.duplicate', $proposal) }}"
+                    class="btn btn-secondary">Duplicate</button>
             <button type="button" onclick="navigator.clipboard.writeText('{{ $proposal->publicUrl() }}'); window.notify.success('Client link copied!')"
                     class="btn btn-secondary">Copy Client Link</button>
             <a href="{{ $proposal->publicUrl() }}" target="_blank" class="btn btn-secondary">Preview</a>

@@ -81,6 +81,7 @@ return new class extends Migration {
             $table->string('status')->default('draft')->index();
             $table->string('token', 64)->unique()->comment('Secure public link token');
             $table->timestamp('sent_at')->nullable();
+            $table->timestamp('viewed_at')->nullable()->comment('First time client opened the link');
             $table->timestamp('responded_at')->nullable();
             $table->text('client_note')->nullable()->comment('Note left by client on respond');
             $table->timestamps();

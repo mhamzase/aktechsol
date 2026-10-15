@@ -51,6 +51,38 @@
 
 @push('scripts')
 <script>
+// Resend / Duplicate proposal (delegated, drawer-safe).
+document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-resend-proposal], [data-duplicate-proposal]');
+    if (!btn) return;
+
+    const url = btn.dataset.url;
+    btn.disabled = true;
+    const originalText = btn.textContent;
+    btn.textContent = 'Working...';
+
+    try {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok) {
+            window.notify.success(data.message || 'Done!');
+            if (data.redirect) {
+                setTimeout(() => { window.location.href = data.redirect; }, 800);
+            }
+        } else {
+            window.notify.error(data.message || 'Something went wrong.');
+        }
+    } catch (err) {
+        window.notify.error('Network error.');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
+    }
+});
+
 // Auto-open proposal drawer when landing via notification (?view=id).
 (function () {
     const viewId = new URLSearchParams(location.search).get('view');

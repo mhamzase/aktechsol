@@ -171,4 +171,43 @@ class ProposalController extends Controller
         $pdf = Pdf::loadView('proposals.pdf', compact('proposal'));
         return $pdf->download(Str::slug($proposal->title) . '.pdf');
     }
+
+    /** Resend the proposal email to the client. */
+    public function resend(Proposal $proposal)
+    {
+        if (! $proposal->client_email) {
+            return response()->json(['message' => 'No client email on this proposal.'], 422);
+        }
+
+        try {
+            Mail::to($proposal->client_email)->queue(new ProposalSentMail($proposal));
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json(['message' => 'Failed to queue email.'], 500);
+        }
+
+        LogActivity::record('proposal_resent', $proposal, "Resent proposal email: {$proposal->title}");
+
+        return response()->json(['message' => 'Proposal email queued for resend.']);
+    }
+
+    /** Duplicate a proposal as a new draft. */
+    public function duplicate(Proposal $proposal)
+    {
+        $copy = $proposal->replicate();
+        $copy->title = $proposal->title . ' (Copy)';
+        $copy->status = 'draft';
+        $copy->token = \Illuminate\Support\Str::random(40);
+        $copy->responded_at = null;
+        $copy->client_note = null;
+        $copy->viewed_at = null;
+        $copy->save();
+
+        LogActivity::record('proposal_duplicated', $copy, "Duplicated proposal: {$proposal->title}");
+
+        return response()->json([
+            'message' => 'Proposal duplicated as draft.',
+            'redirect' => route('admin.proposals.edit', $copy),
+        ]);
+    }
 }

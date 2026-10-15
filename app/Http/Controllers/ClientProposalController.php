@@ -18,6 +18,11 @@ class ClientProposalController extends Controller
     {
         $proposal = Proposal::where('token', $token)->firstOrFail();
 
+        // Track first view.
+        if (! $proposal->viewed_at) {
+            $proposal->update(['viewed_at' => now()]);
+        }
+
         // Auto-expire if past valid_until.
         if ($proposal->isExpired() && $proposal->status !== 'expired') {
             $proposal->update(['status' => 'expired']);
