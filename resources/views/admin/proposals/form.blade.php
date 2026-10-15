@@ -40,10 +40,16 @@
             <p class="text-sm font-semibold text-slate-700 mb-2">Payment Milestones (optional)</p>
             <div id="milestones-list" class="space-y-2" data-milestone-index="{{ count($proposal->milestones ?? []) }}">
                 @foreach(($proposal->milestones ?? []) as $i => $m)
-                <div class="flex gap-2 milestone-row">
-                    <input type="text" name="milestones[{{ $i }}][title]" value="{{ $m['title'] ?? '' }}" placeholder="Milestone title" class="form-control flex-1">
-                    <input type="number" name="milestones[{{ $i }}][amount]" value="{{ $m['amount'] ?? '' }}" placeholder="$" step="0.01" min="0" class="form-control w-32">
-                    <button type="button" data-remove-milestone class="btn btn-secondary !px-3">×</button>
+                <div class="grid grid-cols-12 gap-2 milestone-row items-center">
+                    <div class="col-span-7">
+                        <input type="text" name="milestones[{{ $i }}][title]" value="{{ $m['title'] ?? '' }}" placeholder="Milestone title" class="ui-control w-full">
+                    </div>
+                    <div class="col-span-4">
+                        <input type="number" name="milestones[{{ $i }}][amount]" value="{{ $m['amount'] ?? '' }}" placeholder="$ Amount" step="0.01" min="0" class="ui-control w-full">
+                    </div>
+                    <div class="col-span-1 flex justify-end">
+                        <button type="button" data-remove-milestone class="btn btn-secondary !px-3" title="Remove">×</button>
+                    </div>
                 </div>
                 @endforeach
             </div>

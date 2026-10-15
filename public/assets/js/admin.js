@@ -566,11 +566,11 @@
             if (!list) return;
             let idx = parseInt(list.dataset.milestoneIndex || '0', 10);
             const div = document.createElement('div');
-            div.className = 'flex gap-2 milestone-row';
+            div.className = 'grid grid-cols-12 gap-2 milestone-row items-center';
             div.innerHTML =
-                '<input type="text" name="milestones[' + idx + '][title]" placeholder="Milestone title" class="form-control flex-1">' +
-                '<input type="number" name="milestones[' + idx + '][amount]" placeholder="$" step="0.01" min="0" class="form-control w-32">' +
-                '<button type="button" data-remove-milestone class="btn btn-secondary !px-3">×</button>';
+                '<div class="col-span-7"><input type="text" name="milestones[' + idx + '][title]" placeholder="Milestone title" class="ui-control w-full"></div>' +
+                '<div class="col-span-4"><input type="number" name="milestones[' + idx + '][amount]" placeholder="$ Amount" step="0.01" min="0" class="ui-control w-full"></div>' +
+                '<div class="col-span-1 flex justify-end"><button type="button" data-remove-milestone class="btn btn-secondary !px-3" title="Remove">×</button></div>';
             list.appendChild(div);
             list.dataset.milestoneIndex = String(idx + 1);
             return;

@@ -115,7 +115,7 @@ textarea.ui-control { resize: vertical; min-height: 5.5rem; }
 .ui-date { position: relative; }
 .ui-date-display { cursor: pointer; background: #fff; }
 .ui-cal {
-    position: absolute; left: 0; top: calc(100% + 0.35rem); z-index: 60; width: 17rem;
+    position: absolute; right: 0; top: calc(100% + 0.35rem); z-index: 60; width: 17rem;
     background: #fff; border: 1px solid #e5edfb; border-radius: 0.75rem;
     box-shadow: 0 16px 36px rgba(15, 42, 92, 0.16); padding: 0.8rem;
 }
