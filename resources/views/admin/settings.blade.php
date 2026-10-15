@@ -70,14 +70,14 @@
                     Homepage Stats
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                    <x-ui.input name="stat1_value" label="Stat 1 — Value" :value="$s->stat1_value" placeholder="50+" />
                     <x-ui.input name="stat1_label" label="Stat 1 — Label" :value="$s->stat1_label" placeholder="Projects Done" />
+                    <x-ui.input name="stat1_value" label="Stat 1 — Value" :value="$s->stat1_value" placeholder="50+" />
                     <div class="hidden md:block"></div>
-                    <x-ui.input name="stat2_value" label="Stat 2 — Value" :value="$s->stat2_value" placeholder="20+" />
                     <x-ui.input name="stat2_label" label="Stat 2 — Label" :value="$s->stat2_label" placeholder="Countries Served" />
+                    <x-ui.input name="stat2_value" label="Stat 2 — Value" :value="$s->stat2_value" placeholder="20+" />
                     <div class="hidden md:block"></div>
-                    <x-ui.input name="stat3_value" label="Stat 3 — Value" :value="$s->stat3_value" placeholder="100+" />
                     <x-ui.input name="stat3_label" label="Stat 3 — Label" :value="$s->stat3_label" placeholder="Happy Clients" />
+                    <x-ui.input name="stat3_value" label="Stat 3 — Value" :value="$s->stat3_value" placeholder="100+" />
                 </div>
             </div>
 
