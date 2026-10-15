@@ -40,6 +40,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/notyf/notyf.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/popup-whatsapp.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/chatbot-widget.css') }}">
     <style>
         @font-face { font-family: 'Sora'; src: url('{{ asset('assets/fonts/sora/Sora-Regular.woff2') }}') format('woff2'); font-weight: 400; font-display: swap; }
         @font-face { font-family: 'Sora'; src: url('{{ asset('assets/fonts/sora/Sora-SemiBold.woff2') }}') format('woff2'); font-weight: 600; font-display: swap; }
@@ -62,9 +63,11 @@
     @include('partials.footer')
 
     @include('partials.popup-whatsapp')
+    @include('partials.chatbot-widget')
 
     <script src="{{ asset('assets/vendor/notyf/notyf.min.js') }}"></script>
     <script src="{{ asset('assets/js/popup-whatsapp.js') }}"></script>
+    <script src="{{ asset('assets/js/chatbot-widget.js') }}"></script>
     <script>
         // Frontend toast notifications (bottom-right, same as admin).
         window.notify = (() => {

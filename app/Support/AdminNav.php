@@ -39,7 +39,7 @@ class AdminNav
             $zero['proposals']    = Proposal::where('status', 'sent')->count();
             $zero['projects']     = ClientProject::whereIn('status', ['received', 'in_progress', 'review', 'revision'])->count();
             $zero['invoices']     = Invoice::whereIn('status', ['unpaid', 'partially_paid', 'overdue'])->count();
-            $zero['chatbot']      = ChatbotQuery::where('is_answered', false)->count();
+            $zero['chatbot']      = ChatbotQuery::whereNull('answer')->count();
             $zero['demos']        = DemoBooking::where('status', 'new')->count();
             $zero['contact']      = ContactMessage::where('status', 'new')->count();
             $zero['jobs']         = JobApplication::where('status', 'new')->count();
