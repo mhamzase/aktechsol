@@ -104,6 +104,14 @@ class BlogPostController extends Controller
             ->with('success', 'Blog post updated successfully.');
     }
 
+    /** Drawer: view post details. */
+    public function show(BlogPost $blogPost)
+    {
+        $blogPost->load('category');
+
+        return view('admin.blog-posts.show', ['post' => $blogPost]);
+    }
+
     public function destroy(BlogPost $blogPost)
     {
         $blogPost->delete();
@@ -114,5 +122,16 @@ class BlogPostController extends Controller
 
         return redirect()->route('admin.blog-posts.index')
             ->with('success', 'Blog post deleted successfully.');
+    }
+
+    /** Toggle active/inactive status via AJAX. */
+    public function toggleStatus(BlogPost $blogPost)
+    {
+        $blogPost->update(['status' => ! $blogPost->status]);
+
+        return response()->json([
+            'message' => $blogPost->status ? 'Post activated.' : 'Post deactivated.',
+            'status' => (bool) $blogPost->status,
+        ]);
     }
 }
