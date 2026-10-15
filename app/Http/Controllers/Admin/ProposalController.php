@@ -207,7 +207,7 @@ class ProposalController extends Controller
 
         return response()->json([
             'message' => 'Proposal duplicated as draft.',
-            'redirect' => route('admin.proposals.edit', $copy),
+            'drawer_url' => route('admin.proposals.edit', $copy),
         ]);
     }
 }

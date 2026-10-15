@@ -69,7 +69,11 @@ document.addEventListener('click', async (e) => {
         const data = await res.json().catch(() => ({}));
         if (res.ok) {
             window.notify.success(data.message || 'Done!');
-            if (data.redirect) {
+            if (data.drawer_url && window.openDrawer) {
+                // Close current drawer then open the duplicate in a drawer.
+                if (window.closeDrawer) window.closeDrawer();
+                setTimeout(() => window.openDrawer(data.drawer_url, 'Edit Proposal'), 300);
+            } else if (data.redirect) {
                 setTimeout(() => { window.location.href = data.redirect; }, 800);
             }
         } else {
