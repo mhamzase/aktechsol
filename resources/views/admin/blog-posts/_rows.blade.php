@@ -3,7 +3,7 @@
     <tr>
         <td data-label="Image">
             @if ($post->getFeaturedImageUrl())
-                <img src="{{ $post->getFeaturedImageUrl() }}" alt="" class="h-10 w-16 object-cover rounded-lg">
+                <img src="{{ $post->getFeaturedImageUrl() }}?v={{ $post->updated_at->timestamp }}" alt="" class="h-10 w-16 object-cover rounded-lg">
             @else
                 <span class="inline-flex h-10 w-16 bg-slate-100 dark:bg-slate-700 rounded-lg items-center justify-center text-slate-400 dark:text-slate-500 text-xs">No img</span>
             @endif

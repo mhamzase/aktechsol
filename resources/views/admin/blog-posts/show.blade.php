@@ -2,8 +2,8 @@
 <div class="drawer-content">
     {{-- Featured image --}}
     @if ($post->getFeaturedImageUrl())
-        <div class="h-44 -mx-6 -mt-2 mb-5 overflow-hidden">
-            <img src="{{ $post->getFeaturedImageUrl() }}" alt="" class="w-full h-full object-cover">
+        <div class="px-6 pt-4 mb-5">
+            <img src="{{ $post->getFeaturedImageUrl() }}?v={{ $post->updated_at->timestamp }}" alt="" class="w-full h-48 object-cover rounded-xl">
         </div>
     @endif
 
