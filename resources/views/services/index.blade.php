@@ -18,7 +18,7 @@
                         <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                         <input type="text" name="search" id="services-search" value="{{ request('search') }}" placeholder="Search services..."
                                class="w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-10 py-3 text-sm shadow-sm focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#1d4ed8]/20 focus:outline-none transition">
-                        <button type="button" class="absolute inset-y-0 right-0 px-3.5 text-slate-300 hover:text-slate-500 transition" onclick="document.getElementById('services-search').value='';document.getElementById('services-filter').dispatchEvent(new Event('submit'))" aria-label="Clear search">
+                        <button type="button" id="services-search-clear" class="absolute inset-y-0 right-0 px-3.5 text-slate-300 hover:text-slate-500 transition hidden" aria-label="Clear search">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                         </button>
                     </div>
@@ -111,9 +111,18 @@
 
         // Debounced live search
         let searchTimer = null;
+        const clearBtn = document.getElementById('services-search-clear');
+        const toggleClear = () => clearBtn.classList.toggle('hidden', !searchInput.value.trim());
+        toggleClear();
         searchInput.addEventListener('input', () => {
+            toggleClear();
             clearTimeout(searchTimer);
             searchTimer = setTimeout(applyFilter, 400);
+        });
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            toggleClear();
+            applyFilter();
         });
 
         filterForm.addEventListener('submit', function(e) {
