@@ -1,172 +1,241 @@
 @extends('layouts.app')
 
-@section('title', 'Home - ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
-@section('meta_description',
-    'AK Tech SOL is a professional software and freelancing agency delivering top-notch digital
-    solutions.')
+@section('title', ($siteSettings->site_name ?? 'AK Tech SOL') . ' — Web Development, Mobile Apps & Digital Services Agency')
+@section('meta_description', 'AK Tech SOL is a full-service digital agency offering web development, mobile app development, UI/UX design, and cloud solutions. 50+ projects delivered with 5-star client ratings. Get a free quote today.')
+
+@push('seo')
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "Organization",
+    "name": "{{ $siteSettings->site_name ?? 'AK Tech SOL' }}",
+    "url": "{{ url('/') }}",
+    "description": "Full-service digital agency offering web development, mobile apps, UI/UX design and cloud solutions.",
+    @if($logoUrl ?? null)"logo": "{{ $logoUrl }}",@endif
+    "sameAs": [
+        @if($siteSettings->facebook_url ?? null)"{{ $siteSettings->facebook_url }}",@endif
+        @if($siteSettings->linkedin_url ?? null)"{{ $siteSettings->linkedin_url }}",@endif
+        @if($siteSettings->instagram_url ?? null)"{{ $siteSettings->instagram_url }}",@endif
+        @if($siteSettings->twitter_url ?? null)"{{ $siteSettings->twitter_url }}"@endif
+    ]
+}
+</script>
+@endpush
 
 @section('content')
-    {{-- Hero --}}
-    <section class="bg-gradient-to-br from-blue-950 via-blue-900 to-blue-800 text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+    {{-- ============ HERO ============ --}}
+    <section class="relative overflow-hidden bg-gradient-to-br from-[#0a1f44] via-[#12307e] to-[#1d4ed8] text-white">
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(rgba(255,255,255,0.4) 1px, transparent 1px); background-size: 28px 28px;"></div>
+        <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-blue-500/20 blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-indigo-500/20 blur-3xl"></div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
             <div class="max-w-3xl">
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight">
-                    We Build <span class="text-blue-400">Digital Products</span> That Matter
+                <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-sm font-medium text-blue-100 mb-6">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    Accepting new projects
+                </span>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+                    We Build <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-300">Digital Products</span> That Matter
                 </h1>
-                <p class="mt-6 text-lg sm:text-xl text-blue-100/80 max-w-2xl">
-                    AK Tech SOL is a full-service software agency helping startups and businesses design, develop, and
-                    launch exceptional web and mobile experiences.
+                <p class="mt-6 text-lg sm:text-xl text-blue-100/80 max-w-2xl leading-relaxed">
+                    AK Tech SOL is a full-service software agency helping startups and businesses design, develop, and launch exceptional web and mobile experiences.
                 </p>
                 <div class="mt-8 flex flex-wrap gap-4">
-                    <a href="{{ url('/services') }}"
-                        class="inline-flex items-center px-6 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-lg">Our
-                        Services</a>
-                    <a href="{{ url('/contact') }}"
-                        class="inline-flex items-center px-6 py-3 rounded-lg border border-blue-400 text-blue-100 font-semibold hover:bg-white/10 transition">Get
-                        in Touch</a>
+                    <a href="{{ url('/services') }}" class="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-[#12307e] font-bold hover:bg-blue-50 transition shadow-xl shadow-blue-900/30">
+                        Our Services
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                    <a href="{{ url('/contact') }}" class="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl border-2 border-white/30 text-white font-bold hover:bg-white/10 transition">
+                        Get in Touch
+                    </a>
+                </div>
+
+                {{-- Stats --}}
+                <div class="mt-10 grid grid-cols-3 gap-4 sm:gap-6 max-w-lg">
+                    <div>
+                        <p class="text-2xl sm:text-3xl font-extrabold">50+</p>
+                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">Projects Done</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl sm:text-3xl font-extrabold">30+</p>
+                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">Happy Clients</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl sm:text-3xl font-extrabold">5★</p>
+                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">Avg. Rating</p>
+                    </div>
                 </div>
             </div>
         </div>
+
+        {{-- Wave divider --}}
+        <svg class="block w-full text-white -mb-px" viewBox="0 0 1440 60" fill="currentColor" preserveAspectRatio="none"><path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z"/></svg>
     </section>
 
-    {{-- Services placeholder --}}
+    {{-- ============ SERVICES ============ --}}
     <section class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-900">What We Do</h2>
-                <p class="mt-4 text-gray-500 max-w-2xl mx-auto">We offer a wide range of digital services to help your
-                    business grow.</p>
+                <span class="text-sm font-bold text-[#1d4ed8] uppercase tracking-widest">What we do</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">Services Built for Growth</h2>
+                <p class="mt-4 text-slate-500 max-w-2xl mx-auto">From idea to launch — we handle every part of your digital journey.</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse($services as $service)
-                    <a href="{{ route('services.show', $service->slug) }}"
-                        class="block bg-gray-50 rounded-xl p-6 border border-gray-100 hover:shadow-md transition">
-                        @if ($service->getThumbnailUrl())
-                            <img src="{{ $service->getThumbnailUrl() }}" alt="{{ $service->title }}"
-                                class="h-32 w-full object-cover rounded-lg mb-4">
-                        @endif
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600">{{ $service->title }}</h3>
-                        <p class="text-sm text-gray-500">{{ $service->short_description }}</p>
+                    <a href="{{ route('services.show', $service->slug) }}" class="group bg-slate-50 hover:bg-white rounded-2xl p-6 border border-slate-100 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-100/50 transition-all duration-300">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1d4ed8] to-[#12307e] text-white flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            @if($service->icon)
+                                <i class="{{ $service->icon }} text-xl"></i>
+                            @else
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            @endif
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-900 group-hover:text-[#1d4ed8] transition-colors">{{ $service->title }}</h3>
+                        <p class="text-sm text-slate-500 mt-2 line-clamp-2">{{ $service->short_description }}</p>
+                        <span class="inline-flex items-center gap-1 text-sm font-semibold text-[#1d4ed8] mt-4">
+                            Learn more
+                            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </span>
                     </a>
                 @empty
-                    <div class="col-span-full text-center text-gray-500">No services available yet.</div>
+                    <p class="col-span-full text-center text-slate-400">Services coming soon.</p>
                 @endforelse
             </div>
             <div class="text-center mt-10">
-                <a href="{{ route('services.index') }}"
-                    class="inline-flex items-center px-6 py-3 border border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition">
+                <a href="{{ url('/services') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-[#1d4ed8] text-[#1d4ed8] font-bold hover:bg-[#1d4ed8] hover:text-white transition">
                     View All Services
                 </a>
             </div>
         </div>
     </section>
 
-    {{-- Portfolio placeholder --}}
-    <section class="py-20 bg-gray-50">
+    {{-- ============ WHY US ============ --}}
+    <section class="py-20 bg-slate-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-900">Our Work</h2>
-                <p class="mt-4 text-gray-500 max-w-2xl mx-auto">Take a look at some of our recent projects.</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                @forelse($projects as $project)
-                    <a href="{{ route('projects.show', $project->slug) }}"
-                        class="block bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition">
-                        @if ($project->getFeaturedImageUrl())
-                            <img src="{{ $project->getFeaturedImageUrl() }}" alt="{{ $project->title }}"
-                                class="h-48 w-full object-cover">
-                        @endif
-                        <div class="p-4">
-                            <h3 class="font-semibold text-gray-900 hover:text-blue-600">{{ $project->title }}</h3>
-                            <p class="text-sm text-gray-500 mt-2">{{ $project->short_description }}</p>
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <span class="text-sm font-bold text-[#1d4ed8] uppercase tracking-widest">Why choose us</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">A Partner, Not Just a Vendor</h2>
+                    <p class="mt-4 text-slate-500 leading-relaxed">We treat your project like our own. Transparent process, regular updates, and code you'll be proud of.</p>
+                    <div class="mt-8 space-y-5">
+                        @foreach([
+                            ['Dedicated team', 'You work directly with the people building your product.'],
+                            ['Transparent pricing', 'Clear quotes, no hidden costs, milestone-based payments.'],
+                            ['On-time delivery', 'Realistic timelines we actually meet.'],
+                            ['Post-launch support', 'We stay with you after go-live.'],
+                        ] as [$title, $desc])
+                            <div class="flex gap-4">
+                                <span class="w-10 h-10 rounded-xl bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                </span>
+                                <div>
+                                    <p class="font-bold text-slate-900">{{ $title }}</p>
+                                    <p class="text-sm text-slate-500 mt-0.5">{{ $desc }}</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="absolute -inset-4 bg-gradient-to-br from-[#1d4ed8]/10 to-transparent rounded-3xl blur-2xl"></div>
+                    <div class="relative bg-white rounded-3xl shadow-2xl p-8 border border-slate-100">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#1d4ed8] to-[#12307e] text-white flex items-center justify-center font-extrabold text-xl">A</span>
+                            <div>
+                                <p class="font-bold text-slate-900">Project Dashboard</p>
+                                <p class="text-xs text-slate-400">Track everything live</p>
+                            </div>
                         </div>
-                    </a>
-                @empty
-                    <div class="col-span-full text-center text-gray-500">No projects available yet.</div>
-                @endforelse
-            </div>
-            <div class="text-center mt-10">
-                <a href="{{ route('projects.index') }}"
-                    class="inline-flex items-center px-6 py-3 border border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition">
-                    View All Projects
-                </a>
+                        @foreach([['Planning', 100], ['Design', 85], ['Development', 60], ['Testing', 30]] as [$label, $pct])
+                            <div class="mb-4">
+                                <div class="flex justify-between text-sm mb-1.5">
+                                    <span class="font-medium text-slate-700">{{ $label }}</span>
+                                    <span class="text-slate-400">{{ $pct }}%</span>
+                                </div>
+                                <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
+                                    <div class="h-full rounded-full bg-gradient-to-r from-[#1d4ed8] to-cyan-400" style="width: {{ $pct }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    {{-- Testimonials --}}
+    {{-- ============ PORTFOLIO ============ --}}
     <section class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-900">What Our Clients Say</h2>
+                <span class="text-sm font-bold text-[#1d4ed8] uppercase tracking-widest">Our work</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">Recent Projects</h2>
             </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @forelse($projects as $project)
+                    <a href="{{ route('projects.show', $project->slug) }}" class="group rounded-2xl overflow-hidden border border-slate-100 hover:shadow-xl transition-all duration-300">
+                        <div class="h-48 overflow-hidden bg-slate-100">
+                            @if($project->getFeaturedImageUrl())
+                                <img src="{{ $project->getFeaturedImageUrl() }}" alt="{{ $project->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-slate-300">
+                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="p-5">
+                            <h3 class="font-bold text-slate-900 group-hover:text-[#1d4ed8] transition-colors">{{ $project->title }}</h3>
+                            <p class="text-sm text-slate-500 mt-1 line-clamp-2">{{ $project->short_description }}</p>
+                        </div>
+                    </a>
+                @empty
+                    <p class="col-span-full text-center text-slate-400">Projects coming soon.</p>
+                @endforelse
+            </div>
+        </div>
+    </section>
 
-            <div class="relative px-2 md:px-4">
-                {{-- Arrows --}}
-                <button id="testimonial-prev"
-                    class="absolute -left-2 top-1/2 -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-lg hover:bg-blue-50 transition border border-gray-200">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
+    {{-- ============ TESTIMONIALS ============ --}}
+    <section class="py-20 bg-gradient-to-br from-[#0a1f44] to-[#12307e] text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(rgba(255,255,255,0.6) 1px, transparent 1px); background-size: 24px 24px;"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-sm font-bold text-blue-300 uppercase tracking-widest">Testimonials</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold mt-2">What Our Clients Say</h2>
+            </div>
+            <div class="relative px-0 sm:px-2 md:px-12">
+                <button id="testimonial-prev" class="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 backdrop-blur p-2.5 rounded-full transition border border-white/20 items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </button>
-                <button id="testimonial-next"
-                    class="absolute -right-2 top-1/2 -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-lg hover:bg-blue-50 transition border border-gray-200">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
+                <button id="testimonial-next" class="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 backdrop-blur p-2.5 rounded-full transition border border-white/20 items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </button>
-
-                {{-- Slider container --}}
                 <div id="testimonial-slider" class="overflow-hidden cursor-grab active:cursor-grabbing">
                     <div id="testimonial-track" class="flex transition-transform duration-300">
                         @forelse($testimonials as $testimonial)
-                            <div class="testimonial-slide w-full md:w-1/2 lg:w-1/3 flex-shrink-0 px-2 md:px-3">
-                                <div class="bg-gray-50 rounded-xl border border-gray-100 h-full flex flex-col p-6">
-                                    {{-- Stars --}}
-                                    <div class="flex items-center gap-1 text-yellow-400 mb-3">
+                            <div class="testimonial-slide w-full md:w-1/2 lg:w-1/3 flex-shrink-0 px-3">
+                                <div class="bg-white/10 backdrop-blur rounded-2xl border border-white/15 h-full flex flex-col p-6">
+                                    <div class="flex items-center gap-1 text-amber-400 mb-4">
                                         @for ($i = 1; $i <= 5; $i++)
-                                            @if ($i <= $testimonial->rating)
-                                                <span>★</span>
-                                            @else
-                                                <span class="text-gray-300">★</span>
-                                            @endif
+                                            <span class="{{ $i <= $testimonial->rating ? '' : 'opacity-30' }}">★</span>
                                         @endfor
                                     </div>
-
-                                    {{-- Message (fixed height + ellipsis) --}}
-                                    <div class="message-box flex-1 overflow-hidden">
-                                        <p class="text-gray-600 italic line-clamp-4 md:line-clamp-5">
-                                            "{{ $testimonial->content }}"
-                                        </p>
-                                    </div>
-
-                                    {{-- Client info (fixed at bottom) --}}
-                                    <div class="mt-4 pt-4 border-t border-gray-200 flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-full bg-blue-200 overflow-hidden flex-shrink-0">
-                                            @if ($testimonial->getPhotoUrl())
-                                                <img src="{{ $testimonial->getPhotoUrl() }}"
-                                                    class="w-full h-full object-cover">
-                                            @else
-                                                <div
-                                                    class="w-full h-full flex items-center justify-center text-blue-600 font-semibold">
-                                                    {{ strtoupper(substr($testimonial->client_name, 0, 1)) }}
-                                                </div>
-                                            @endif
-                                        </div>
+                                    <p class="text-blue-50/90 italic line-clamp-4 flex-1">"{{ $testimonial->content }}"</p>
+                                    <div class="mt-5 pt-4 border-t border-white/15 flex items-center gap-3">
+                                        @if ($testimonial->getPhotoUrl())
+                                            <img src="{{ $testimonial->getPhotoUrl() }}" class="w-11 h-11 rounded-full object-cover ring-2 ring-white/20 shrink-0">
+                                        @else
+                                            <span class="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center font-bold shrink-0">{{ strtoupper(substr($testimonial->client_name, 0, 1)) }}</span>
+                                        @endif
                                         <div class="min-w-0">
-                                            <p class="font-medium text-gray-900 truncate">{{ $testimonial->client_name }}
-                                            </p>
-                                            <p class="text-sm text-gray-500 truncate">
-                                                {{ $testimonial->client_position }} @if ($testimonial->company)
-                                                    , {{ $testimonial->company }}
-                                                @endif
-                                            </p>
+                                            <p class="font-semibold truncate">{{ $testimonial->client_name }}</p>
+                                            <p class="text-xs text-blue-200/60 truncate">{{ $testimonial->client_position }}{{ $testimonial->company ? ', '.$testimonial->company : '' }}</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         @empty
-                            <p class="text-center text-gray-500 w-full">No testimonials available yet.</p>
+                            <p class="text-center text-blue-200/60 w-full">No testimonials yet.</p>
                         @endforelse
                     </div>
                 </div>
@@ -174,189 +243,126 @@
         </div>
     </section>
 
-    {{-- Blog preview placeholder --}}
-    <section class="py-20 bg-gray-50">
+    {{-- ============ BLOG ============ --}}
+    <section class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-900">Latest from the Blog</h2>
+                <span class="text-sm font-bold text-[#1d4ed8] uppercase tracking-widest">Insights</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">Latest from the Blog</h2>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse($posts as $post)
-                    <a href="{{ route('blog.show', $post->slug) }}"
-                        class="block bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition">
-                        @if ($post->getFeaturedImageUrl())
-                            <img src="{{ $post->getFeaturedImageUrl() }}" alt="{{ $post->title }}"
-                                class="h-40 w-full object-cover">
-                        @else
-                            <div class="h-40 bg-gray-200"></div>
-                        @endif
-                        <div class="p-4">
-                            <p class="text-xs text-blue-600 font-semibold">{{ $post->category?->name ?? 'General' }}</p>
-                            <h3 class="font-semibold text-gray-900 mt-1">{{ $post->title }}</h3>
-                            <p class="text-sm text-gray-500 mt-2 line-clamp-2">{{ $post->excerpt }}</p>
+                    <a href="{{ route('blog.show', $post->slug) }}" class="group bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div class="h-44 overflow-hidden bg-slate-100">
+                            @if ($post->getFeaturedImageUrl())
+                                <img src="{{ $post->getFeaturedImageUrl() }}" alt="{{ $post->title }}" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            @endif
+                        </div>
+                        <div class="p-5">
+                            <p class="text-xs font-bold text-[#1d4ed8] uppercase tracking-wide">{{ $post->category?->name ?? 'General' }}</p>
+                            <h3 class="font-bold text-slate-900 mt-1.5 group-hover:text-[#1d4ed8] transition-colors line-clamp-2">{{ $post->title }}</h3>
+                            <p class="text-sm text-slate-500 mt-2 line-clamp-2">{{ $post->excerpt }}</p>
+                            <p class="text-xs text-slate-400 mt-3">{{ $post->published_at?->format('M d, Y') }}</p>
                         </div>
                     </a>
                 @empty
-                    <div class="col-span-full text-center text-gray-500">No blog posts available yet.</div>
+                    <p class="col-span-full text-center text-slate-400">No posts yet.</p>
                 @endforelse
-            </div>
-            <div class="text-center mt-10">
-                <a href="{{ route('blog.index') }}"
-                    class="inline-flex items-center px-6 py-3 border border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition">
-                    View All Posts
-                </a>
             </div>
         </div>
     </section>
 
-    {{-- CTA --}}
-    <section class="bg-white text-gray-900 py-16">
-        <div class="max-w-4xl mx-auto text-center px-4">
-            <h2 class="text-3xl font-bold ">Ready to Start Your Project?</h2>
-            <p class="mt-4">Let's discuss your ideas and turn them into reality.</p>
-            <a href="{{ url('/contact') }}"
-                class="mt-6 inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">Contact
-                Us</a>
+    {{-- ============ CTA ============ --}}
+    <section class="relative py-20 bg-gradient-to-r from-[#1d4ed8] to-[#12307e] text-white overflow-hidden">
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1px); background-size: 26px 26px;"></div>
+        <div class="relative max-w-4xl mx-auto text-center px-4">
+            <h2 class="text-3xl sm:text-4xl font-extrabold">Ready to Start Your Project?</h2>
+            <p class="mt-4 text-blue-100/80 text-lg">Let's discuss your ideas and turn them into reality.</p>
+            <div class="mt-8 flex flex-wrap justify-center gap-4">
+                <a href="{{ url('/contact') }}" class="px-8 py-3.5 rounded-xl bg-white text-[#12307e] font-bold hover:bg-blue-50 transition shadow-xl">Get a Free Quote</a>
+                <a href="{{ url('/portfolio') }}" class="px-8 py-3.5 rounded-xl border-2 border-white/30 font-bold hover:bg-white/10 transition">See Our Work</a>
+            </div>
         </div>
     </section>
 @endsection
 
 @push('scripts')
-    <script>
-        (function() {
-            const track = document.getElementById('testimonial-track');
-            const prevBtn = document.getElementById('testimonial-prev');
-            const nextBtn = document.getElementById('testimonial-next');
-            const slider = document.getElementById('testimonial-slider');
-            const slides = track.querySelectorAll('.testimonial-slide');
-            let currentIndex = 0;
+<script>
+(function () {
+    const slider = document.getElementById('testimonial-slider');
+    const track = document.getElementById('testimonial-track');
+    if (!slider || !track) return;
+    let slides = Array.from(track.querySelectorAll('.testimonial-slide'));
+    if (!slides.length) return;
 
-            function getVisibleCount() {
-                if (window.innerWidth < 768) return 1;
-                if (window.innerWidth < 1024) return 2;
-                return 3;
-            }
+    // Duplicate slides for seamless infinite loop (need at least 2x perView)
+    const perView = () => window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+    while (track.querySelectorAll('.testimonial-slide').length < perView() * 2 + 1) {
+        slides.forEach(s => track.appendChild(s.cloneNode(true)));
+    }
+    slides = Array.from(track.querySelectorAll('.testimonial-slide'));
 
-            function getSlideWidth() {
-                const visible = getVisibleCount();
-                const slide = slides[0];
-                if (!slide) return 0;
-                const gap = 16; // px between slides (adjust if needed)
-                const totalWidth = slider.offsetWidth;
-                return (totalWidth - (visible - 1) * gap) / visible;
-            }
+    let idx = 0, autoTimer = null;
+    const stepPct = 100 / perView();
 
-            function updateSlider(animate = true) {
-                if (!track || !slides.length) return;
-                const visible = getVisibleCount();
-                const slideWidth = getSlideWidth();
-                const maxIndex = Math.max(0, slides.length - visible);
-                if (currentIndex > maxIndex) currentIndex = maxIndex;
-                if (currentIndex < 0) currentIndex = 0;
-                if (!animate) track.style.transition = 'none';
-                track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-                if (!animate) {
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            track.style.transition = 'transform 300ms';
-                        });
-                    });
-                }
-            }
+    const go = (i, animate = true) => {
+        idx = i;
+        track.style.transition = animate ? 'transform 0.5s ease' : 'none';
+        track.style.transform = `translateX(-${idx * stepPct}%)`;
+    };
+    // Seamless wrap: when reaching the clones, jump back silently
+    const normalize = () => {
+        const total = slides.length;
+        if (idx >= total - perView()) {
+            const overflow = idx - (total - perView());
+            go(overflow, false);
+        }
+    };
+    const next = () => { go(idx + 1); setTimeout(normalize, 520); };
+    const prev = () => {
+        if (idx <= 0) { go(slides.length - perView(), false); idx = slides.length - perView(); }
+        go(idx - 1);
+    };
 
-            if (slides.length > 0) {
-                nextBtn.addEventListener('click', function() {
-                    const visible = getVisibleCount();
-                    const maxIndex = Math.max(0, slides.length - visible);
-                    if (currentIndex < maxIndex) {
-                        currentIndex++;
-                    } else {
-                        currentIndex = 0; // loop
-                    }
-                    updateSlider();
-                });
+    document.getElementById('testimonial-prev')?.addEventListener('click', () => { prev(); restartAuto(); });
+    document.getElementById('testimonial-next')?.addEventListener('click', () => { next(); restartAuto(); });
 
-                prevBtn.addEventListener('click', function() {
-                    const visible = getVisibleCount();
-                    const maxIndex = Math.max(0, slides.length - visible);
-                    if (currentIndex > 0) {
-                        currentIndex--;
-                    } else {
-                        currentIndex = maxIndex; // loop
-                    }
-                    updateSlider();
-                });
+    // Auto-play every 4 seconds (pauses on hover)
+    const startAuto = () => { stopAuto(); autoTimer = setInterval(next, 4000); };
+    const stopAuto = () => { if (autoTimer) clearInterval(autoTimer); autoTimer = null; };
+    const restartAuto = () => startAuto();
+    slider.addEventListener('mouseenter', stopAuto);
+    slider.addEventListener('mouseleave', startAuto);
+    startAuto();
 
-                // Drag / touch support
-                let isDragging = false;
-                let startX = 0;
-                let currentTranslate = 0;
+    // Drag / swipe (mouse + touch)
+    let startX = 0, currentX = 0, dragging = false;
+    slider.addEventListener('pointerdown', (e) => {
+        dragging = true;
+        startX = e.clientX; currentX = startX;
+        track.style.transition = 'none';
+        try { slider.setPointerCapture(e.pointerId); } catch (_) {}
+        stopAuto();
+    });
+    slider.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        currentX = e.clientX;
+        const dxPct = ((currentX - startX) / slider.offsetWidth) * 100;
+        track.style.transform = `translateX(${-(idx * stepPct) + dxPct}%)`;
+    });
+    const endDrag = () => {
+        if (!dragging) return;
+        dragging = false;
+        const dx = currentX - startX;
+        if (dx < -50) next();
+        else if (dx > 50) prev();
+        else go(idx);
+        startAuto();
+    };
+    slider.addEventListener('pointerup', endDrag);
+    slider.addEventListener('pointercancel', endDrag);
 
-                function handleDragStart(clientX) {
-                    isDragging = true;
-                    startX = clientX;
-                    currentTranslate = -currentIndex * getSlideWidth();
-                    track.style.transition = 'none';
-                    track.classList.add('cursor-grabbing');
-                }
-
-                function handleDragMove(clientX) {
-                    if (!isDragging) return;
-                    const delta = clientX - startX;
-                    track.style.transform = `translateX(${currentTranslate + delta}px)`;
-                }
-
-                function handleDragEnd() {
-                    if (!isDragging) return;
-                    isDragging = false;
-                    track.classList.remove('cursor-grabbing');
-                    track.style.transition = 'transform 300ms';
-                    const delta = currentTranslate - parseInt(track.style.transform.replace('translateX(', '').replace(
-                        'px)', '')) || 0;
-                    const slideWidth = getSlideWidth();
-                    const threshold = slideWidth / 4;
-                    if (delta > threshold && currentIndex > 0) {
-                        currentIndex--;
-                    } else if (delta < -threshold && currentIndex < slides.length - getVisibleCount()) {
-                        currentIndex++;
-                    }
-                    updateSlider();
-                }
-
-                // Mouse events
-                slider.addEventListener('mousedown', (e) => {
-                    e.preventDefault();
-                    handleDragStart(e.clientX);
-                });
-                window.addEventListener('mousemove', (e) => {
-                    if (isDragging) handleDragMove(e.clientX);
-                });
-                window.addEventListener('mouseup', handleDragEnd);
-
-                // Touch events
-                slider.addEventListener('touchstart', (e) => {
-                    handleDragStart(e.touches[0].clientX);
-                }, {
-                    passive: true
-                });
-                slider.addEventListener('touchmove', (e) => {
-                    if (isDragging) handleDragMove(e.touches[0].clientX);
-                }, {
-                    passive: true
-                });
-                slider.addEventListener('touchend', handleDragEnd);
-
-                window.addEventListener('resize', function() {
-                    currentIndex = 0;
-                    updateSlider(false);
-                });
-
-                window.addEventListener('load', function() {
-                    updateSlider(false);
-                });
-
-                updateSlider(false);
-            }
-        })();
-    </script>
+    window.addEventListener('resize', () => go(idx));
+})();
+</script>
 @endpush
