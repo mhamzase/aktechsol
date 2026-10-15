@@ -41,3 +41,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Frontend global: give select dropdowns breathing room for the arrow */
+select {
+    padding-right: 2.5rem !important;
+}
