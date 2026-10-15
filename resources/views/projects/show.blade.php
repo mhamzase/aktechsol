@@ -153,13 +153,15 @@
 
     {{-- Lightbox --}}
     <div id="lightbox" class="fixed inset-0 z-[100] bg-black/90 hidden items-center justify-center p-4" onclick="closeLightbox()">
-        <button class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white hidden sm:flex items-center justify-center transition" onclick="event.stopPropagation(); lightboxNav(-1)">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-        </button>
-        <img id="lightbox-img" src="" class="max-h-[70vh] max-w-3xl w-auto rounded-xl shadow-2xl" onclick="event.stopPropagation()">
-        <button class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white hidden sm:flex items-center justify-center transition" onclick="event.stopPropagation(); lightboxNav(1)">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        </button>
+        <div class="relative" onclick="event.stopPropagation()">
+            <img id="lightbox-img" src="" class="max-h-[70vh] max-w-3xl w-auto rounded-xl shadow-2xl">
+            <button class="absolute -left-5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/15 hover:bg-white/30 backdrop-blur text-white hidden sm:flex items-center justify-center transition shadow-lg" onclick="lightboxNav(-1)">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button class="absolute -right-5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/15 hover:bg-white/30 backdrop-blur text-white hidden sm:flex items-center justify-center transition shadow-lg" onclick="lightboxNav(1)">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+        </div>
         <button class="absolute top-5 right-5 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition" onclick="closeLightbox()">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
