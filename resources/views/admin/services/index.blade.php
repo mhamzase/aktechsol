@@ -3,6 +3,8 @@
 @section('title', 'Services')
 
 @section('content')
+    @include('admin.services._tabs', ['serviceTab' => 'services'])
+
     <x-admin.page-header title="Services" subtitle="Manage your services and their details"
                         icon="M13 10V3L4 14h7v7l9-11h-7z">
         <x-slot:actions>
