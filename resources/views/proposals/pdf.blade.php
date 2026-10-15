@@ -8,28 +8,28 @@
         * { box-sizing: border-box; }
         body { font-family: 'Sora', Arial, sans-serif; color: #0f172a; margin: 0; padding: 32px; font-size: 13px; line-height: 1.6; background: #fff; }
 
-        /* Hero card — matches client page */
-        .hero { background: linear-gradient(135deg, #1d4ed8 0%, #12307e 100%); border-radius: 20px; padding: 36px; color: #fff; margin-bottom: 20px; }
-        .hero .label { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: rgba(191,219,254,0.7); margin-bottom: 8px; }
-        .hero h1 { margin: 0 0 6px; font-size: 24px; font-weight: 800; }
-        .hero .prepared { font-size: 13px; color: rgba(191,219,254,0.8); }
+        /* Hero card — solid colors for dompdf */
+        .hero { background: #1d4ed8; border-radius: 12px; padding: 32px; color: #ffffff; margin-bottom: 20px; }
+        .hero .label { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: #bfdbfe; margin-bottom: 8px; }
+        .hero h1 { margin: 0 0 6px; font-size: 24px; font-weight: 800; color: #ffffff; }
+        .hero .prepared { font-size: 13px; color: #bfdbfe; }
         .hero-stats { margin-top: 18px; }
-        .hstat { display: inline-block; background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px; margin-right: 10px; margin-bottom: 8px; }
-        .hstat .l { font-size: 10px; color: rgba(191,219,254,0.7); }
-        .hstat .v { font-size: 15px; font-weight: 800; margin-top: 2px; }
+        .hstat { display: inline-block; background: #1e40af; border-radius: 8px; padding: 10px 16px; margin-right: 10px; margin-bottom: 8px; }
+        .hstat .l { font-size: 10px; color: #bfdbfe; }
+        .hstat .v { font-size: 15px; font-weight: 800; margin-top: 2px; color: #ffffff; }
 
-        /* Content cards — matches client page */
-        .card { background: #fff; border: 1px solid #f1f5f9; border-radius: 20px; padding: 28px; margin-bottom: 20px; }
-        .card h2 { margin: 0 0 14px; font-size: 16px; font-weight: 800; }
+        /* Content cards */
+        .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+        .card h2 { margin: 0 0 14px; font-size: 16px; font-weight: 800; color: #0f172a; }
         .card .text { color: #475569; font-size: 13px; }
         .card .text ul { padding-left: 18px; margin: 10px 0 0; }
         .card .text li { margin-bottom: 5px; color: #475569; }
 
-        /* Milestones — matches client page */
-        .ms { background: #f8fafc; border-radius: 14px; padding: 14px 18px; margin-bottom: 10px; }
-        .ms .num { display: inline-block; width: 28px; height: 28px; background: rgba(29,78,216,0.1); color: #1d4ed8; font-weight: 700; font-size: 12px; text-align: center; line-height: 28px; border-radius: 8px; margin-right: 10px; }
+        /* Milestones */
+        .ms { background: #f8fafc; border-radius: 10px; padding: 12px 18px; margin-bottom: 8px; }
+        .ms .num { display: inline-block; width: 28px; height: 28px; background: #dbeafe; color: #1d4ed8; font-weight: 700; font-size: 12px; text-align: center; line-height: 28px; border-radius: 8px; margin-right: 10px; }
         .ms .t { font-weight: 700; font-size: 13px; color: #1e293b; }
-        .ms .a { float: right; font-weight: 800; font-size: 14px; }
+        .ms .a { float: right; font-weight: 800; font-size: 14px; color: #0f172a; }
 
         .foot { text-align: center; font-size: 11px; color: #94a3b8; margin-top: 24px; padding-top: 16px; border-top: 1px solid #f1f5f9; }
     </style>
