@@ -1,9 +1,9 @@
 {{-- Modern frontend header --}}
 @php
     $isActive = fn($pattern) => request()->is($pattern);
-    $navLink = fn($active) => 'relative px-4 py-2.5 text-[0.92rem] transition-colors rounded-lg ' . ($active
-        ? 'text-[#1d4ed8] font-bold'
-        : 'text-slate-600 hover:text-[#1d4ed8] font-medium');
+    $navLink = fn($active) => 'px-4 py-2.5 text-[0.92rem] transition-all rounded-xl ' . ($active
+        ? 'bg-[#1d4ed8] text-white font-bold shadow-md shadow-blue-600/25'
+        : 'text-slate-600 hover:text-[#1d4ed8] hover:bg-blue-50 font-medium');
 @endphp
 
 {{-- Top utility bar --}}
