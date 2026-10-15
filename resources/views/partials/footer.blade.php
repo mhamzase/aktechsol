@@ -4,9 +4,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
             {{-- Brand --}}
             <div>
-                <a href="{{ url('/') }}" class="flex items-center gap-2.5">
+                <a href="{{ url('/') }}" class="inline-block">
                     @if($logoUrl)
-                        <img src="{{ $logoUrl }}" alt="{{ $siteSettings->site_name ?? 'AK Tech SOL' }}" class="h-11 w-auto object-contain brightness-0 invert">
+                        <span class="inline-block bg-white rounded-xl px-3 py-2">
+                            <img src="{{ $logoUrl }}" alt="{{ $siteSettings->site_name ?? 'AK Tech SOL' }}" class="h-10 w-auto object-contain">
+                        </span>
                     @else
                         <span class="h-10 w-10 rounded-xl bg-gradient-to-br from-[#1d4ed8] to-[#2f6fed] text-white font-extrabold flex items-center justify-center text-lg">A</span>
                         <span class="font-extrabold text-lg text-white">AK Tech SOL</span>
