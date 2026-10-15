@@ -129,7 +129,7 @@
         {
             "@@type": "ListItem",
             "position": {{ $i + 1 }},
-            "url": "{{ route('portfolio.show', $p->slug) }}",
+            "url": "{{ route('projects.show', $p->slug) }}",
             "name": "{{ $p->title }}"
         }{{ !$loop->last ? ',' : '' }}
         @endforeach
