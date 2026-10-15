@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Concerns\LogsActivity;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,7 +14,7 @@ use Illuminate\Support\Str;
 
 class Service extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia;
+    use HasFactory, LogsActivity, SoftDeletes, InteractsWithMedia;
 
     protected $fillable = [
         'category_id',

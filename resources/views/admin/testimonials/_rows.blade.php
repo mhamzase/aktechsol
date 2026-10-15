@@ -3,18 +3,29 @@
     <tr>
         <td data-label="Photo">
             @if ($testimonial->getPhotoUrl())
-                <img src="{{ $testimonial->getPhotoUrl() }}" alt="" class="h-10 w-10 rounded-full object-cover">
+                <img src="{{ $testimonial->getPhotoUrl() }}?v={{ $testimonial->updated_at->timestamp }}" alt="" class="h-10 w-10 rounded-full object-cover">
             @else
-                <span class="inline-flex h-10 w-10 rounded-full bg-blue-100 text-[#1d4ed8] font-bold text-xs items-center justify-center">{{ strtoupper(substr($testimonial->client_name, 0, 1)) }}</span>
+                <span class="inline-flex h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-500/20 text-[#1d4ed8] dark:text-blue-400 font-bold text-xs items-center justify-center">{{ strtoupper(substr($testimonial->client_name, 0, 1)) }}</span>
             @endif
         </td>
-        <td data-label="Client" class="font-medium text-slate-800">{{ $testimonial->client_name }}</td>
-        <td data-label="Company" class="text-slate-500">{{ $testimonial->company ?? '—' }}</td>
+        <td data-label="Client" class="font-medium text-slate-800 dark:text-slate-100">{{ $testimonial->client_name }}</td>
+        <td data-label="Company" class="text-slate-500 dark:text-slate-400">{{ $testimonial->company ?? '—' }}</td>
         <td data-label="Rating" class="text-amber-400 text-sm whitespace-nowrap">{{ str_repeat('★', $testimonial->rating) }}{{ str_repeat('☆', 5 - $testimonial->rating) }}</td>
-        <td data-label="Status"><span class="badge {{ $testimonial->status ? 'badge-green' : 'badge-red' }}">{{ $testimonial->status ? 'Active' : 'Inactive' }}</span></td>
+        <td data-label="Status">
+            <button onclick="toggleTestimonialStatus('{{ route('admin.testimonials.toggle-status', $testimonial) }}', this)"
+                    title="Click to {{ $testimonial->status ? 'deactivate' : 'activate' }}"
+                    class="badge {{ $testimonial->status ? 'badge-green' : 'badge-red' }} hover:opacity-80 transition-opacity cursor-pointer">
+                {{ $testimonial->status ? 'Active' : 'Inactive' }}
+            </button>
+        </td>
         <td data-label="Actions" class="no-label whitespace-nowrap">
-            <button type="button" onclick="openDrawer('{{ route('admin.testimonials.edit', $testimonial) }}', 'Edit Testimonial')" class="btn btn-secondary !py-1.5 !px-3 !text-xs">Edit</button>
-            <button class="btn btn-danger !py-1.5 !px-3 !text-xs" onclick="confirmDelete('{{ route('admin.testimonials.destroy', $testimonial) }}', 'testimonials-table', 'Delete this testimonial?')">Delete</button>
+            <x-admin.row-actions
+                :viewUrl="route('admin.testimonials.show', $testimonial)"
+                viewTitle="View Details"
+                :editUrl="route('admin.testimonials.edit', $testimonial)"
+                editTitle="Edit Testimonial"
+                :deleteUrl="route('admin.testimonials.destroy', $testimonial)"
+                tableId="testimonials-table" />
         </td>
     </tr>
 @empty

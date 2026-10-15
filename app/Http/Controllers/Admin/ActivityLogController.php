@@ -34,4 +34,12 @@ class ActivityLogController extends Controller
 
         return view('admin.activity-log.index');
     }
+
+    /** Drawer: view log details. */
+    public function show(ActivityLog $log)
+    {
+        $log->load('user');
+
+        return view('admin.activity-log.show', compact('log'));
+    }
 }

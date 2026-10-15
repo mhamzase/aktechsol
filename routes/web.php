@@ -156,14 +156,18 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     // Activity log
     Route::get('activity-log', [ActivityLogController::class, 'index'])
         ->middleware('can:view activity log')->name('activity-log.index');
+    Route::get('activity-log/{log}', [ActivityLogController::class, 'show'])
+        ->middleware('can:view activity log')->name('activity-log.show');
 
     // Existing content modules
     Route::resource('services', ServiceController::class);
     Route::post('services/{service}/toggle-status', [ServiceController::class, 'toggleStatus'])->name('services.toggle-status');
     Route::resource('service-categories', ServiceCategoryController::class);
     Route::post('service-categories/{serviceCategory}/toggle-status', [ServiceCategoryController::class, 'toggleStatus'])->name('service-categories.toggle-status');
-    Route::resource('projects', ProjectController::class)->except(['show']);
-    Route::resource('testimonials', TestimonialController::class)->except(['show']);
+    Route::resource('projects', ProjectController::class);
+    Route::post('projects/{project}/toggle-status', [ProjectController::class, 'toggleStatus'])->name('projects.toggle-status');
+    Route::resource('testimonials', TestimonialController::class);
+    Route::post('testimonials/{testimonial}/toggle-status', [TestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status');
     Route::resource('blog-categories', BlogCategoryController::class);
     Route::post('blog-categories/{blogCategory}/toggle-status', [BlogCategoryController::class, 'toggleStatus'])->name('blog-categories.toggle-status');
     Route::resource('blog-posts', BlogPostController::class);
@@ -179,6 +183,7 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::get('newsletter-subscribers', [NewsletterSubscriberController::class, 'index'])->name('newsletter-subscribers.index');
     Route::delete('newsletter-subscribers/{newsletterSubscriber}', [NewsletterSubscriberController::class, 'destroy'])->name('newsletter-subscribers.destroy');
     Route::get('media', [MediaController::class, 'index'])->name('media.index');
+    Route::get('media/{media}', [MediaController::class, 'show'])->name('media.show');
     Route::delete('media/{media}', [MediaController::class, 'destroy'])->name('media.destroy');
 
     /*
