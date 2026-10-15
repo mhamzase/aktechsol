@@ -24,10 +24,10 @@
                 <x-ui.input name="amount" type="number" step="0.01" min="0" label="Amount ($)" :value="$proposal->amount" required placeholder="5000" />
             </div>
             <div class="md:col-span-6">
-                <x-ui.date name="valid_until" label="Valid Until" :value="$proposal->valid_until?->format('Y-m-d')" hint="Expiry date" />
-            </div>
-            <div class="md:col-span-12">
                 <x-ui.input name="timeline" label="Timeline" :value="$proposal->timeline" placeholder="4-6 weeks" />
+            </div>
+            <div class="md:col-span-6">
+                <x-ui.date name="valid_until" label="Valid Until" :value="$proposal->valid_until?->format('Y-m-d')" hint="Expiry date" />
             </div>
             <div class="md:col-span-12">
                 <x-ui.rich-text name="scope" label="Project Scope" :value="$proposal->scope" required
