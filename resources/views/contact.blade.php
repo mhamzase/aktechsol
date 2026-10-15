@@ -62,12 +62,6 @@
                         </div>
                     </div>
 
-                    {{-- Google Map --}}
-                    @if($siteSettings->google_map_embed_url ?? null)
-                    <div class="mt-6 rounded-3xl overflow-hidden border border-slate-200 shadow-sm">
-                        <iframe src="{{ $siteSettings->google_map_embed_url }}" class="w-full h-64 block" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Our Location"></iframe>
-                    </div>
-                    @endif
                 </div>
 
                 {{-- Contact Form --}}
@@ -114,6 +108,13 @@
                     </form>
                 </div>
             </div>
+
+            {{-- Google Map — full width below --}}
+            @if($siteSettings->google_map_embed_url ?? null)
+            <div class="mt-8 rounded-3xl overflow-hidden border border-slate-200 shadow-sm">
+                <iframe src="{{ $siteSettings->google_map_embed_url }}" class="w-full h-80 block" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Our Location"></iframe>
+            </div>
+            @endif
         </div>
     </section>
 @endsection
