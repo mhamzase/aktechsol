@@ -37,7 +37,7 @@
                     <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900">{{ $project->title }}</h1>
 
                     <div class="mt-6 text-slate-600 leading-relaxed prose prose-slate max-w-none">
-                        {!! nl2br(e($project->full_description)) !!}
+                        {!! $project->full_description !!}
                     </div>
 
                     {{-- Gallery --}}
@@ -45,8 +45,8 @@
                         <div class="mt-10">
                             <h2 class="text-xl font-extrabold text-slate-900 mb-4">Gallery</h2>
                             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                @foreach ($gallery as $img)
-                                    <button onclick="openLightbox('{{ $img->getUrl() }}')" class="group relative rounded-xl overflow-hidden h-36 sm:h-44">
+                                @foreach ($gallery as $i => $img)
+                                    <button onclick="openLightbox({{ $i }})" class="group relative rounded-xl overflow-hidden h-36 sm:h-44">
                                         <img src="{{ $img->getUrl() }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                         <span class="absolute inset-0 bg-[#0a1f44]/0 group-hover:bg-[#0a1f44]/30 transition flex items-center justify-center">
                                             <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"/></svg>
@@ -153,21 +153,39 @@
 
     {{-- Lightbox --}}
     <div id="lightbox" class="fixed inset-0 z-[100] bg-black/90 hidden items-center justify-center p-4" onclick="closeLightbox()">
-        <img id="lightbox-img" src="" class="max-h-[90vh] max-w-full rounded-xl shadow-2xl" onclick="event.stopPropagation()">
+        <button class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white hidden sm:flex items-center justify-center transition" onclick="event.stopPropagation(); lightboxNav(-1)">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <img id="lightbox-img" src="" class="max-h-[85vh] max-w-full rounded-xl shadow-2xl" onclick="event.stopPropagation()">
+        <button class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white hidden sm:flex items-center justify-center transition" onclick="event.stopPropagation(); lightboxNav(1)">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
         <button class="absolute top-5 right-5 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition" onclick="closeLightbox()">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
+        <p id="lightbox-counter" class="absolute bottom-5 left-1/2 -translate-x-1/2 text-white/70 text-sm font-medium"></p>
     </div>
 @endsection
 
 @push('scripts')
 <script>
-    function openLightbox(src) {
-        document.getElementById('lightbox-img').src = src;
+    const galleryImages = [@foreach($gallery as $img)'{{ $img->getUrl() }}'{{ !$loop->last ? ',' : '' }}@endforeach];
+    let lbIndex = 0;
+    function openLightbox(i) {
+        lbIndex = i;
+        updateLightbox();
         const lb = document.getElementById('lightbox');
         lb.classList.remove('hidden');
         lb.classList.add('flex');
         document.body.style.overflow = 'hidden';
+    }
+    function updateLightbox() {
+        document.getElementById('lightbox-img').src = galleryImages[lbIndex];
+        document.getElementById('lightbox-counter').textContent = (lbIndex + 1) + ' / ' + galleryImages.length;
+    }
+    function lightboxNav(dir) {
+        lbIndex = (lbIndex + dir + galleryImages.length) % galleryImages.length;
+        updateLightbox();
     }
     function closeLightbox() {
         const lb = document.getElementById('lightbox');
@@ -175,6 +193,19 @@
         lb.classList.remove('flex');
         document.body.style.overflow = '';
     }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+    document.addEventListener('keydown', e => {
+        if (document.getElementById('lightbox').classList.contains('hidden')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') lightboxNav(1);
+        if (e.key === 'ArrowLeft') lightboxNav(-1);
+    });
+    // Touch swipe
+    let lbTouchX = 0;
+    const lbEl = document.getElementById('lightbox');
+    lbEl.addEventListener('touchstart', e => lbTouchX = e.touches[0].clientX, {passive: true});
+    lbEl.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - lbTouchX;
+        if (Math.abs(dx) > 50) lightboxNav(dx < 0 ? 1 : -1);
+    }, {passive: true});
 </script>
 @endpush
