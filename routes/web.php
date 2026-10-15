@@ -162,7 +162,8 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::post('services/{service}/toggle-status', [ServiceController::class, 'toggleStatus'])->name('services.toggle-status');
     Route::resource('service-categories', ServiceCategoryController::class);
     Route::post('service-categories/{serviceCategory}/toggle-status', [ServiceCategoryController::class, 'toggleStatus'])->name('service-categories.toggle-status');
-    Route::resource('projects', ProjectController::class)->except(['show']);
+    Route::resource('projects', ProjectController::class);
+    Route::post('projects/{project}/toggle-status', [ProjectController::class, 'toggleStatus'])->name('projects.toggle-status');
     Route::resource('testimonials', TestimonialController::class);
     Route::post('testimonials/{testimonial}/toggle-status', [TestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status');
     Route::resource('blog-categories', BlogCategoryController::class);

@@ -117,6 +117,12 @@ class ProjectController extends Controller
                          ->with('success', 'Project updated successfully.');
     }
 
+    /** Drawer: view project details. */
+    public function show(Project $project)
+    {
+        return view('admin.projects.show', compact('project'));
+    }
+
     public function destroy(Project $project)
     {
         $project->delete();
@@ -127,5 +133,16 @@ class ProjectController extends Controller
 
         return redirect()->route('admin.projects.index')
                          ->with('success', 'Project deleted successfully.');
+    }
+
+    /** Toggle active/inactive status via AJAX. */
+    public function toggleStatus(Project $project)
+    {
+        $project->update(['status' => ! $project->status]);
+
+        return response()->json([
+            'message' => $project->status ? 'Project activated.' : 'Project deactivated.',
+            'status' => (bool) $project->status,
+        ]);
     }
 }
