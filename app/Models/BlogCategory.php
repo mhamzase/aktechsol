@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Concerns\LogsActivity;
+
 use App\Models\BlogPost;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +12,7 @@ use Illuminate\Support\Str;
 
 class BlogCategory extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, LogsActivity, SoftDeletes;
 
     protected $fillable = [
         'name',
