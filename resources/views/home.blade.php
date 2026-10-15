@@ -283,7 +283,7 @@
             <h2 class="text-3xl sm:text-4xl font-extrabold">Ready to Start Your Project?</h2>
             <p class="mt-4 text-blue-100/80 text-lg">Let's discuss your ideas and turn them into reality.</p>
             <div class="mt-8 flex flex-wrap justify-center gap-4">
-                <a href="{{ url('/contact') }}" class="px-8 py-3.5 rounded-xl bg-white text-[#12307e] font-bold hover:bg-blue-50 transition shadow-xl">Get a Free Quote</a>
+                <a href="{{ route('quote.create') }}" class="px-8 py-3.5 rounded-xl bg-white text-[#12307e] font-bold hover:bg-blue-50 transition shadow-xl">Get a Free Quote</a>
                 <a href="{{ url('/portfolio') }}" class="px-8 py-3.5 rounded-xl border-2 border-white/30 font-bold hover:bg-white/10 transition">See Our Work</a>
             </div>
         </div>
