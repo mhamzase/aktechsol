@@ -10,11 +10,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.4",
-<<<<<<< HEAD
-        "barryvdh/laravel-dompdf": "^3.1",
-=======
         "barryvdh/laravel-dompdf": "^3.0",
->>>>>>> 570145755776e45a128befc75355afd1417892bf
         "laravel/fortify": "^1.38",
         "laravel/framework": "^13.8",
         "laravel/tinker": "^3.0",
