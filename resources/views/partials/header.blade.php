@@ -1,125 +1,65 @@
-<header class="bg-white shadow-md sticky top-0 z-50 border-b border-blue-100">
+{{-- Modern frontend header --}}
+@php
+    $navLink = fn($active) => $active
+        ? 'text-[#1d4ed8] font-semibold'
+        : 'text-slate-600 hover:text-[#1d4ed8] font-medium';
+    $isActive = fn($pattern) => request()->is($pattern);
+@endphp
+<header class="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-slate-100 shadow-[0_1px_12px_rgba(29,78,216,0.06)]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
+        <div class="flex items-center justify-between h-[72px]">
             {{-- Logo --}}
-            <a href="{{ url('/') }}" class="flex items-center gap-2 text-blue-700 hover:opacity-80 transition-opacity">
+            <a href="{{ url('/') }}" class="flex items-center gap-2.5 shrink-0">
                 @if($logoUrl)
-                    <img src="{{ $logoUrl }}" alt="{{ $siteSettings->site_name ?? 'AK Tech SOL' }}" class="h-12 w-auto object-contain">
+                    <img src="{{ $logoUrl }}" alt="{{ $siteSettings->site_name ?? 'AK Tech SOL' }}" class="h-11 w-auto object-contain">
+                @else
+                    <span class="h-10 w-10 rounded-xl bg-gradient-to-br from-[#1d4ed8] to-[#12307e] text-white font-extrabold flex items-center justify-center text-lg">A</span>
+                    <span class="font-extrabold text-lg text-slate-900">AK Tech SOL</span>
                 @endif
-                {{-- <span class="text-xl font-bold text-blue-700">{{ $siteSettings->site_name ?? 'AK Tech SOL' }}</span> --}}
             </a>
 
             {{-- Desktop nav --}}
-            <nav class="hidden md:flex items-center space-x-1">
-                <a href="{{ url('/') }}"
-                   class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('/') ? 'bg-blue-600 text-white shadow' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700' }}">
-                    Home
-                </a>
-                <a href="{{ url('/services') }}"
-                   class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('services*') ? 'bg-blue-600 text-white shadow' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700' }}">
-                    Services
-                </a>
-                <a href="{{ url('/portfolio') }}"
-                   class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('portfolio*') ? 'bg-blue-600 text-white shadow' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700' }}">
-                    Portfolio
-                </a>
-                <a href="{{ url('/blog') }}"
-                   class="px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('blog*') ? 'bg-blue-600 text-white shadow' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700' }}">
-                    Blog
-                </a>
-
-                {{-- More Dropdown --}}
-                <div class="relative group">
-                    <button type="button"
-                            class="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors {{ request()->is('about') || request()->is('contact') || request()->is('faqs*') || request()->is('privacy-policy') || request()->is('terms-conditions') ? 'bg-blue-600 text-white shadow' : 'text-gray-600 group-hover:bg-blue-50 group-hover:text-blue-700' }}">
-                        More
-                        <svg class="h-4 w-4 transition-transform duration-200 group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </button>
-                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-blue-100 py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                        <a href="{{ url('/about') }}"
-                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">
-                            About
-                        </a>
-                        <a href="{{ url('/contact') }}"
-                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">
-                            Contact
-                        </a>
-                        <a href="{{ url('/faqs') }}"
-                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">
-                            FAQs
-                        </a>
-                        <div class="border-t border-blue-50 my-1"></div>
-                        <a href="{{ url('/privacy-policy') }}"
-                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">
-                            Privacy Policy
-                        </a>
-                        <a href="{{ url('/terms-conditions') }}"
-                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">
-                            Terms & Conditions
-                        </a>
-                    </div>
-                </div>
+            <nav class="hidden lg:flex items-center gap-1">
+                <a href="{{ url('/') }}" class="px-4 py-2 rounded-lg text-[0.92rem] transition-colors {{ $navLink($isActive('/')) }}">Home</a>
+                <a href="{{ url('/services') }}" class="px-4 py-2 rounded-lg text-[0.92rem] transition-colors {{ $navLink($isActive('services*')) }}">Services</a>
+                <a href="{{ url('/portfolio') }}" class="px-4 py-2 rounded-lg text-[0.92rem] transition-colors {{ $navLink($isActive('portfolio*')) }}">Portfolio</a>
+                <a href="{{ url('/blog') }}" class="px-4 py-2 rounded-lg text-[0.92rem] transition-colors {{ $navLink($isActive('blog*')) }}">Blog</a>
+                <a href="{{ url('/about') }}" class="px-4 py-2 rounded-lg text-[0.92rem] transition-colors {{ $navLink($isActive('about')) }}">About</a>
+                <a href="{{ url('/faqs') }}" class="px-4 py-2 rounded-lg text-[0.92rem] transition-colors {{ $navLink($isActive('faqs*')) }}">FAQs</a>
+                <a href="{{ url('/contact') }}" class="px-4 py-2 rounded-lg text-[0.92rem] transition-colors {{ $navLink($isActive('contact')) }}">Contact</a>
             </nav>
 
-            {{-- Mobile menu button --}}
-            <button id="mobile-menu-toggle" class="md:hidden text-blue-700 hover:text-blue-500 focus:outline-none">
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
-            </button>
+            <div class="flex items-center gap-3">
+                <a href="{{ url('/contact') }}" class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#1d4ed8] text-white text-sm font-bold hover:bg-[#1669d9] transition shadow-lg shadow-blue-600/20">
+                    Get a Quote
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </a>
+                <button id="mobile-menu-toggle" class="lg:hidden w-10 h-10 rounded-xl hover:bg-slate-100 text-slate-700 flex items-center justify-center transition" aria-label="Menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
         </div>
     </div>
 
     {{-- Mobile menu --}}
-    <div id="mobile-menu" class="md:hidden hidden px-4 pb-4 pt-2 space-y-1 bg-white border-t border-blue-100">
-        <a href="{{ url('/') }}"
-           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('/') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700' }}">
-            Home
-        </a>
-        <a href="{{ url('/services') }}"
-           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('services*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700' }}">
-            Services
-        </a>
-        <a href="{{ url('/portfolio') }}"
-           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('portfolio*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700' }}">
-            Portfolio
-        </a>
-        <a href="{{ url('/blog') }}"
-           class="block px-3 py-2 rounded-lg text-base font-medium {{ request()->is('blog*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700' }}">
-            Blog
-        </a>
-
-        {{-- More section --}}
-        <div class="space-y-1 pl-2">
-            <p class="px-3 py-1 text-xs font-semibold uppercase tracking-widest text-blue-400">More</p>
-            <a href="{{ url('/about') }}"
-               class="block px-4 py-2 rounded-lg text-base font-medium {{ request()->is('about') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700' }}">
-                About
-            </a>
-            <a href="{{ url('/contact') }}"
-               class="block px-4 py-2 rounded-lg text-base font-medium {{ request()->is('contact') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700' }}">
-                Contact
-            </a>
-            <a href="{{ url('/faqs') }}"
-               class="block px-4 py-2 rounded-lg text-base font-medium {{ request()->is('faqs*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700' }}">
-                FAQs
-            </a>
-            <a href="{{ url('/privacy-policy') }}"
-               class="block px-4 py-2 rounded-lg text-base font-medium {{ request()->is('privacy-policy') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700' }}">
-                Privacy Policy
-            </a>
-            <a href="{{ url('/terms-conditions') }}"
-               class="block px-4 py-2 rounded-lg text-base font-medium {{ request()->is('terms-conditions') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700' }}">
-                Terms & Conditions
-            </a>
-        </div>
+    <div id="mobile-menu" class="lg:hidden hidden border-t border-slate-100 bg-white px-4 py-4 space-y-1 max-h-[70vh] overflow-y-auto">
+        @foreach([
+            ['/', 'Home', $isActive('/')],
+            ['/services', 'Services', $isActive('services*')],
+            ['/portfolio', 'Portfolio', $isActive('portfolio*')],
+            ['/blog', 'Blog', $isActive('blog*')],
+            ['/about', 'About', $isActive('about')],
+            ['/faqs', 'FAQs', $isActive('faqs*')],
+            ['/contact', 'Contact', $isActive('contact')],
+        ] as [$href, $label, $active])
+            <a href="{{ url($href) }}" class="block px-4 py-2.5 rounded-xl text-[0.95rem] {{ $active ? 'bg-blue-50 text-[#1d4ed8] font-bold' : 'text-slate-600 font-medium hover:bg-slate-50' }}">{{ $label }}</a>
+        @endforeach
+        <a href="{{ url('/contact') }}" class="block px-4 py-3 rounded-xl bg-[#1d4ed8] text-white text-center font-bold mt-2">Get a Quote</a>
     </div>
 </header>
 
 <script>
-    document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
+    document.getElementById('mobile-menu-toggle')?.addEventListener('click', function() {
         document.getElementById('mobile-menu').classList.toggle('hidden');
     });
 </script>
