@@ -13,8 +13,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {{-- Modern filter bar --}}
             <form id="services-filter" class="mb-10">
-                <div class="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
-                    <div class="relative flex-1 max-w-md">
+                <div class="max-w-md mb-4">
+                    <div class="relative">
                         <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                         <input type="text" name="search" id="services-search" value="{{ request('search') }}" placeholder="Search services..."
                                class="w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-10 py-3 text-sm shadow-sm focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#1d4ed8]/20 focus:outline-none transition">
@@ -22,13 +22,13 @@
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                         </button>
                     </div>
-                    <input type="hidden" name="category" id="services-category" value="{{ request('category') }}">
-                    <div class="flex flex-wrap gap-2" id="category-pills">
-                        <button type="button" data-cat="" class="cat-pill px-4 py-2.5 rounded-xl text-sm font-semibold transition {{ !request('category') ? 'bg-[#1d4ed8] text-white shadow-md shadow-blue-600/25' : 'bg-white text-slate-600 border border-slate-200 hover:border-[#1d4ed8] hover:text-[#1d4ed8]' }}">All</button>
-                        @foreach($categories as $cat)
-                            <button type="button" data-cat="{{ $cat->slug }}" class="cat-pill px-4 py-2.5 rounded-xl text-sm font-semibold transition {{ request('category') === $cat->slug ? 'bg-[#1d4ed8] text-white shadow-md shadow-blue-600/25' : 'bg-white text-slate-600 border border-slate-200 hover:border-[#1d4ed8] hover:text-[#1d4ed8]' }}">{{ $cat->name }}</button>
-                        @endforeach
-                    </div>
+                </div>
+                <input type="hidden" name="category" id="services-category" value="{{ request('category') }}">
+                <div class="flex flex-wrap gap-2" id="category-pills">
+                    <button type="button" data-cat="" class="cat-pill px-4 py-2.5 rounded-xl text-sm font-semibold transition {{ !request('category') ? 'bg-[#1d4ed8] text-white shadow-md shadow-blue-600/25' : 'bg-white text-slate-600 border border-slate-200 hover:border-[#1d4ed8] hover:text-[#1d4ed8]' }}">All</button>
+                    @foreach($categories as $cat)
+                        <button type="button" data-cat="{{ $cat->slug }}" class="cat-pill px-4 py-2.5 rounded-xl text-sm font-semibold transition {{ request('category') === $cat->slug ? 'bg-[#1d4ed8] text-white shadow-md shadow-blue-600/25' : 'bg-white text-slate-600 border border-slate-200 hover:border-[#1d4ed8] hover:text-[#1d4ed8]' }}">{{ $cat->name }}</button>
+                    @endforeach
                 </div>
             </form>
 
