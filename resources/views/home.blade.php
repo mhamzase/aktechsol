@@ -33,18 +33,18 @@
                 </div>
 
                 {{-- Stats --}}
-                <div class="mt-12 grid grid-cols-3 gap-6 max-w-lg">
+                <div class="mt-10 grid grid-cols-3 gap-4 sm:gap-6 max-w-lg">
                     <div>
-                        <p class="text-3xl font-extrabold">50+</p>
-                        <p class="text-sm text-blue-200/70 mt-1">Projects Done</p>
+                        <p class="text-2xl sm:text-3xl font-extrabold">50+</p>
+                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">Projects Done</p>
                     </div>
                     <div>
-                        <p class="text-3xl font-extrabold">30+</p>
-                        <p class="text-sm text-blue-200/70 mt-1">Happy Clients</p>
+                        <p class="text-2xl sm:text-3xl font-extrabold">30+</p>
+                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">Happy Clients</p>
                     </div>
                     <div>
-                        <p class="text-3xl font-extrabold">5★</p>
-                        <p class="text-sm text-blue-200/70 mt-1">Avg. Rating</p>
+                        <p class="text-2xl sm:text-3xl font-extrabold">5★</p>
+                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">Avg. Rating</p>
                     </div>
                 </div>
             </div>
@@ -184,11 +184,11 @@
                 <span class="text-sm font-bold text-blue-300 uppercase tracking-widest">Testimonials</span>
                 <h2 class="text-3xl sm:text-4xl font-extrabold mt-2">What Our Clients Say</h2>
             </div>
-            <div class="relative px-2 md:px-12">
-                <button id="testimonial-prev" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 backdrop-blur p-2.5 rounded-full transition border border-white/20">
+            <div class="relative px-0 sm:px-2 md:px-12">
+                <button id="testimonial-prev" class="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 backdrop-blur p-2.5 rounded-full transition border border-white/20 items-center justify-center">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </button>
-                <button id="testimonial-next" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 backdrop-blur p-2.5 rounded-full transition border border-white/20">
+                <button id="testimonial-next" class="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 backdrop-blur p-2.5 rounded-full transition border border-white/20 items-center justify-center">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </button>
                 <div id="testimonial-slider" class="overflow-hidden cursor-grab active:cursor-grabbing">
