@@ -1,13 +1,24 @@
 {{-- Row partial for the blog-categories AJAX table. --}}
 @forelse ($categories as $category)
     <tr>
-        <td data-label="Name" class="font-medium text-slate-800">{{ $category->name }}</td>
-        <td data-label="Slug" class="text-slate-500">{{ $category->slug }}</td>
-        <td data-label="Sort Order" class="text-slate-500">{{ $category->sort_order }}</td>
-        <td data-label="Status"><span class="badge {{ $category->status ? 'badge-green' : 'badge-red' }}">{{ $category->status ? 'Active' : 'Inactive' }}</span></td>
+        <td data-label="Name" class="font-medium text-slate-800 dark:text-slate-100">{{ $category->name }}</td>
+        <td data-label="Slug" class="text-slate-500 dark:text-slate-400">{{ $category->slug }}</td>
+        <td data-label="Sort Order" class="text-slate-500 dark:text-slate-400">{{ $category->sort_order }}</td>
+        <td data-label="Status">
+            <button onclick="toggleBlogCatStatus('{{ route('admin.blog-categories.toggle-status', $category) }}', this)"
+                    title="Click to {{ $category->status ? 'deactivate' : 'activate' }}"
+                    class="badge {{ $category->status ? 'badge-green' : 'badge-red' }} hover:opacity-80 transition-opacity cursor-pointer">
+                {{ $category->status ? 'Active' : 'Inactive' }}
+            </button>
+        </td>
         <td data-label="Actions" class="no-label whitespace-nowrap">
-            <button type="button" onclick="openDrawer('{{ route('admin.blog-categories.edit', $category) }}', 'Edit Category')" class="btn btn-secondary !py-1.5 !px-3 !text-xs">Edit</button>
-            <button class="btn btn-danger !py-1.5 !px-3 !text-xs" onclick="confirmDelete('{{ route('admin.blog-categories.destroy', $category) }}', 'blog-categories-table', 'Delete this category?')">Delete</button>
+            <x-admin.row-actions
+                :viewUrl="route('admin.blog-categories.show', $category)"
+                viewTitle="View Details"
+                :editUrl="route('admin.blog-categories.edit', $category)"
+                editTitle="Edit Category"
+                :deleteUrl="route('admin.blog-categories.destroy', $category)"
+                tableId="blog-categories-table" />
         </td>
     </tr>
 @empty
