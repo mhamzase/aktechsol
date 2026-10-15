@@ -26,6 +26,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\ClientProposalController;
 use App\Http\Controllers\FaqController as PublicFaqController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewsletterController;
@@ -60,6 +61,9 @@ Route::get('/get-a-quote', [QuoteController::class, 'create'])->name('quote.crea
 Route::post('/get-a-quote', [QuoteController::class, 'store'])->name('quote.store');
 
 Route::post('/chatbot/message', [ChatbotController::class, 'message'])->name('chatbot.message');
+
+Route::get('/proposal/{token}', [ClientProposalController::class, 'show'])->name('proposals.show');
+Route::post('/proposal/{token}/respond', [ClientProposalController::class, 'respond'])->name('proposals.respond');
 
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
@@ -213,7 +217,8 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
         Route::get($uri, fn () => app(ComingSoonController::class)->show($title, $phase))
             ->middleware("can:{$can}")->name($name);
     };
-    $soon('proposals', 'Proposals', 'Phase 2', 'proposals.index', 'manage proposals');
+    Route::resource('proposals', \App\Http\Controllers\Admin\ProposalController::class)->middleware('can:manage proposals');
+    Route::post('proposals/{proposal}/send', [\App\Http\Controllers\Admin\ProposalController::class, 'send'])->middleware('can:manage proposals')->name('proposals.send');
     $soon('client-projects', 'Client Projects', 'Phase 3', 'client-projects.index', 'manage projects');
     $soon('invoices', 'Invoices', 'Phase 4', 'invoices.index', 'manage invoices');
     $soon('reviews', 'Reviews', 'Phase 3', 'reviews.index', 'manage reviews');
