@@ -2,7 +2,7 @@
 <div class="drawer-content">
     <form data-ajax-form data-reload-table="proposals-table" method="POST"
           action="{{ $proposal->exists ? route('admin.proposals.update', $proposal) : route('admin.proposals.store') }}"
-          class="p-6 space-y-4">
+          class="px-6 pb-6 pt-2 space-y-4">
         @csrf
         @if($proposal->exists) @method('PUT') @endif
 
