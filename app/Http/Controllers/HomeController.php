@@ -22,6 +22,7 @@ class HomeController extends Controller
             ->get();
 
         $testimonials = Testimonial::active()
+            ->where('rating', 5)
             ->latest('sort_order')
             ->take(20)
             ->get();
