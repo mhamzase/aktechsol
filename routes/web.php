@@ -64,6 +64,7 @@ Route::post('/chatbot/message', [ChatbotController::class, 'message'])->name('ch
 
 Route::get('/proposal/{token}', [ClientProposalController::class, 'show'])->name('proposals.show');
 Route::post('/proposal/{token}/respond', [ClientProposalController::class, 'respond'])->name('proposals.respond');
+Route::get('/proposal/{token}/pdf', [ClientProposalController::class, 'pdf'])->name('proposals.pdf.download');
 
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
@@ -219,6 +220,7 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     };
     Route::resource('proposals', \App\Http\Controllers\Admin\ProposalController::class)->middleware('can:manage proposals');
     Route::post('proposals/{proposal}/send', [\App\Http\Controllers\Admin\ProposalController::class, 'send'])->middleware('can:manage proposals')->name('proposals.send');
+    Route::get('proposals/{proposal}/pdf', [\App\Http\Controllers\Admin\ProposalController::class, 'pdf'])->middleware('can:manage proposals')->name('proposals.pdf');
     $soon('client-projects', 'Client Projects', 'Phase 3', 'client-projects.index', 'manage projects');
     $soon('invoices', 'Invoices', 'Phase 4', 'invoices.index', 'manage invoices');
     $soon('reviews', 'Reviews', 'Phase 3', 'reviews.index', 'manage reviews');
