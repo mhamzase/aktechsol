@@ -6,6 +6,7 @@ use App\Mail\ProposalResponseMail;
 use App\Models\Proposal;
 use App\Settings\SiteSettings;
 use App\Support\NotifyAdmins;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -77,5 +78,13 @@ class ClientProposalController extends Controller
         }
 
         return back()->with('success', $messages[$validated['action']]);
+    }
+
+    /** Client downloads proposal as PDF. */
+    public function pdf(string $token)
+    {
+        $proposal = Proposal::where('token', $token)->firstOrFail();
+        $pdf = Pdf::loadView('proposals.pdf', compact('proposal'));
+        return $pdf->download('proposal-' . $proposal->id . '.pdf');
     }
 }

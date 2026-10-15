@@ -8,6 +8,7 @@ use App\Models\Proposal;
 use App\Models\QuoteRequest;
 use App\Support\LogActivity;
 use App\Support\NotifyAdmins;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -161,5 +162,12 @@ class ProposalController extends Controller
         }
 
         return redirect()->route('admin.proposals.index')->with('success', 'Proposal deleted.');
+    }
+
+    /** Download proposal as PDF. */
+    public function pdf(Proposal $proposal)
+    {
+        $pdf = Pdf::loadView('proposals.pdf', compact('proposal'));
+        return $pdf->download('proposal-' . $proposal->id . '.pdf');
     }
 }
