@@ -11,7 +11,7 @@
     "name": "{{ $siteSettings->site_name ?? 'AK Tech SOL' }}",
     "url": "{{ url('/') }}",
     "description": "Full-service digital agency offering web development, mobile apps, UI/UX design and cloud solutions.",
-    @if($logoUrl)"logo": "{{ $logoUrl }}",@endif
+    @if($logoUrl ?? null)"logo": "{{ $logoUrl }}",@endif
     "sameAs": [
         @if($siteSettings->facebook_url ?? null)"{{ $siteSettings->facebook_url }}",@endif
         @if($siteSettings->linkedin_url ?? null)"{{ $siteSettings->linkedin_url }}",@endif
