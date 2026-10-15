@@ -6,12 +6,12 @@
     <style>
         @font-face {
             font-family: 'Sora';
-            src: url('{{ public_path('assets/fonts/sora-pdf/Sora.ttf') }}') format('truetype');
+            src: url('{{ public_path('assets/fonts/sora-pdf/Sora-Regular.ttf') }}') format('truetype');
             font-weight: normal;
         }
         @font-face {
             font-family: 'Sora';
-            src: url('{{ public_path('assets/fonts/sora-pdf/Sora.ttf') }}') format('truetype');
+            src: url('{{ public_path('assets/fonts/sora-pdf/Sora-Bold.ttf') }}') format('truetype');
             font-weight: bold;
         }
         * { box-sizing: border-box; }
