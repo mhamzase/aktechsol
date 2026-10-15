@@ -20,10 +20,10 @@
                 <x-ui.select name="quote_request_id" label="Linked Quote (optional)" :value="$proposal->quote_request_id"
                              :options="$quotes->pluck('subject', 'id')->prepend('— None —', '')->toArray()" />
             </div>
-            <div class="md:col-span-3">
+            <div class="md:col-span-6">
                 <x-ui.input name="amount" type="number" step="0.01" min="0" label="Amount ($)" :value="$proposal->amount" required placeholder="5000" />
             </div>
-            <div class="md:col-span-3">
+            <div class="md:col-span-6">
                 <x-ui.date name="valid_until" label="Valid Until" :value="$proposal->valid_until?->format('Y-m-d')" hint="Expiry date" />
             </div>
             <div class="md:col-span-12">
