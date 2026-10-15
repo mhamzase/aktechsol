@@ -84,6 +84,12 @@ class FaqController extends Controller
                          ->with('success', 'FAQ updated successfully.');
     }
 
+    /** Drawer: view FAQ details. */
+    public function show(Faq $faq)
+    {
+        return view('admin.faqs.show', compact('faq'));
+    }
+
     public function destroy(Faq $faq)
     {
         $faq->delete();
@@ -95,5 +101,16 @@ class FaqController extends Controller
 
         return redirect()->route('admin.faqs.index')
                          ->with('success', 'FAQ deleted successfully.');
+    }
+
+    /** Toggle active/inactive status via AJAX. */
+    public function toggleStatus(Faq $faq)
+    {
+        $faq->update(['status' => ! $faq->status]);
+
+        return response()->json([
+            'message' => $faq->status ? 'FAQ activated.' : 'FAQ deactivated.',
+            'status' => (bool) $faq->status,
+        ]);
     }
 }
