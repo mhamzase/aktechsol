@@ -120,8 +120,10 @@
                     body: new FormData(form),
                     headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
                 });
-                const data = await res.json();
+                let data = {};
+                try { data = await res.json(); } catch (e) { /* non-JSON response (e.g. 500 page) */ }
                 if (res.ok) {
+                    window.notify.success(data.message || 'Quote request sent successfully!');
                     successBox.classList.remove('hidden');
                     form.reset();
                     successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -130,12 +132,15 @@
                         const el = form.querySelector(`[data-err="${field}"]`);
                         if (el) { el.textContent = msgs[0]; el.classList.remove('hidden'); }
                     });
+                    window.notify.error('Please fix the highlighted fields.');
                     form.querySelector('.err:not(.hidden)')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else if (res.status === 419) {
+                    window.notify.error('Session expired. Please refresh the page and try again.');
                 } else {
-                    alert(data.message || 'Something went wrong. Please try again.');
+                    window.notify.error(data.message || `Server error (${res.status}). Please try again.`);
                 }
             } catch (err) {
-                alert('Network error. Please try again.');
+                window.notify.error('Network error. Please check your connection and try again.');
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'Request Free Quote';
