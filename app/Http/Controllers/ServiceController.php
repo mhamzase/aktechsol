@@ -44,7 +44,26 @@ class ServiceController extends Controller
 
     public function show($slug)
     {
-        $service = Service::where('slug', $slug)->active()->firstOrFail();
-        return view('services.show', compact('service'));
+        $service = Service::where('slug', $slug)->active()->with('category')->firstOrFail();
+
+        $related = Service::active()
+            ->where('id', '!=', $service->id)
+            ->when($service->category_id, fn($q) => $q->where('category_id', $service->category_id))
+            ->orderBy('sort_order')
+            ->take(3)
+            ->get();
+
+        if ($related->count() < 3) {
+            $related = $related->merge(
+                Service::active()
+                    ->where('id', '!=', $service->id)
+                    ->whereNotIn('id', $related->pluck('id'))
+                    ->orderBy('sort_order')
+                    ->take(3 - $related->count())
+                    ->get()
+            );
+        }
+
+        return view('services.show', compact('service', 'related'));
     }
 }
