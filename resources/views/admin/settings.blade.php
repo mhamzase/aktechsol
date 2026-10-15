@@ -310,15 +310,13 @@
                     Content
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-3">
-                    <div class="md:col-span-4"><x-ui.input name="popup_title" label="Popup Title" :value="$s->popup_title" placeholder="Special Offer!" /></div>
-                    <div class="md:col-span-4"><x-ui.input name="popup_btn_text" label="Button Text" :value="$s->popup_btn_text" placeholder="Get Started" /></div>
-                    <div class="md:col-span-4"><x-ui.input name="popup_btn_url" type="url" label="Button URL" :value="$s->popup_btn_url" placeholder="/contact" /></div>
-                    <div class="md:col-span-6"><x-ui.textarea name="popup_message" label="Message" rows="4" :value="$s->popup_message" placeholder="Write your announcement message…" /></div>
+                    <div class="md:col-span-6"><x-ui.input name="popup_link_url" type="url" label="Link URL (optional)" :value="$s->popup_link_url" placeholder="https://… or /get-a-quote" hint="Where visitors go when they click the popup image." /></div>
                     <div class="md:col-span-6" data-brand-preview="popup_image">
                         @if ($popupImageUrl)<img src="{{ $popupImageUrl }}" class="h-16 mb-2 rounded-lg bg-slate-100 p-1 dark:bg-white/10" alt="Popup image">@endif
-                        <x-ui.file name="popup_image" label="Popup Image (optional)" accept="image/jpeg,image/jpg,image/png,image/webp" hint="Shown on the popup. JPG/PNG/WebP, max 2MB." />
+                        <x-ui.file name="popup_image" label="Popup Image" accept="image/jpeg,image/jpg,image/png,image/webp" hint="The announcement image. JPG/PNG/WebP, max 2MB." />
                     </div>
                 </div>
+                <p class="text-xs text-slate-400 mt-3">Visitors see a "Don't show me again" option. Changing the image resets it for everyone.</p>
             </div>
             <x-admin.drawer-footer save-label="Save Popup" />
         </form>
