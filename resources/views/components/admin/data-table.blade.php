@@ -28,7 +28,7 @@
     <div class="flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3 border-b border-slate-100 dark:border-white/10">
         <label class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
             <span>Show</span>
-            <select data-per-page class="form-control !w-auto !py-1.5 cursor-pointer">
+            <select data-per-page class="form-control table-select !w-auto !py-1.5 cursor-pointer">
                 @foreach ([10, 25, 50, 100] as $n)
                     <option value="{{ $n }}" @selected($n == $perPage)>{{ $n }}</option>
                 @endforeach

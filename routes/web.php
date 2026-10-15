@@ -164,8 +164,10 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::post('service-categories/{serviceCategory}/toggle-status', [ServiceCategoryController::class, 'toggleStatus'])->name('service-categories.toggle-status');
     Route::resource('projects', ProjectController::class)->except(['show']);
     Route::resource('testimonials', TestimonialController::class)->except(['show']);
-    Route::resource('blog-categories', BlogCategoryController::class)->except(['show']);
-    Route::resource('blog-posts', BlogPostController::class)->except(['show']);
+    Route::resource('blog-categories', BlogCategoryController::class);
+    Route::post('blog-categories/{blogCategory}/toggle-status', [BlogCategoryController::class, 'toggleStatus'])->name('blog-categories.toggle-status');
+    Route::resource('blog-posts', BlogPostController::class);
+    Route::post('blog-posts/{blogPost}/toggle-status', [BlogPostController::class, 'toggleStatus'])->name('blog-posts.toggle-status');
     Route::resource('faqs', FaqController::class)->except(['show']);
 
     Route::get('contact-messages', [ContactMessageController::class, 'index'])->name('contact-messages.index');

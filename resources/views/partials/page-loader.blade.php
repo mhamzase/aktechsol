@@ -20,7 +20,11 @@
 <div id="page-loader" aria-hidden="true">
     <div class="pl-box">
         <div class="pl-ring"></div>
-        <div class="pl-logo">A</div>
+        @if(!empty($logoUrl ?? null))
+            <img src="{{ $logoUrl }}" alt="AK Tech Sol" class="pl-logo-img">
+        @else
+            <div class="pl-logo">A</div>
+        @endif
     </div>
     <p class="pl-brand">AK Tech Sol</p>
 </div>
@@ -77,6 +81,17 @@
         font-family: 'Sora', 'Nunito', ui-sans-serif, system-ui, sans-serif;
         font-weight: 800;
         font-size: calc(var(--pl-size) * 0.44);
+        box-shadow: 0 10px 26px rgba(22, 105, 217, 0.35);
+        animation: pl-pulse 1.6s ease-in-out infinite;
+    }
+    /* Real logo image (from Settings) — replaces the "A" when set */
+    #page-loader .pl-logo-img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
         box-shadow: 0 10px 26px rgba(22, 105, 217, 0.35);
         animation: pl-pulse 1.6s ease-in-out infinite;
     }

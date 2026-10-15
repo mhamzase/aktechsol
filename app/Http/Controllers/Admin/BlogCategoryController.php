@@ -84,6 +84,14 @@ class BlogCategoryController extends Controller
                          ->with('success', 'Blog category updated successfully.');
     }
 
+    /** Drawer: view category details. */
+    public function show(BlogCategory $blogCategory)
+    {
+        $blogCategory->loadCount('posts');
+
+        return view('admin.blog-categories.show', ['category' => $blogCategory]);
+    }
+
     public function destroy(BlogCategory $blogCategory)
     {
         $blogCategory->delete();
@@ -95,5 +103,16 @@ class BlogCategoryController extends Controller
 
         return redirect()->route('admin.blog-categories.index')
                          ->with('success', 'Blog category deleted successfully.');
+    }
+
+    /** Toggle active/inactive status via AJAX. */
+    public function toggleStatus(BlogCategory $blogCategory)
+    {
+        $blogCategory->update(['status' => ! $blogCategory->status]);
+
+        return response()->json([
+            'message' => $blogCategory->status ? 'Category activated.' : 'Category deactivated.',
+            'status' => (bool) $blogCategory->status,
+        ]);
     }
 }

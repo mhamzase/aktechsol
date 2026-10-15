@@ -3,6 +3,8 @@
 @section('title', 'Services')
 
 @section('content')
+    @include('admin.services._tabs', ['serviceTab' => 'services'])
+
     <x-admin.page-header title="Services" subtitle="Manage your services and their details"
                         icon="M13 10V3L4 14h7v7l9-11h-7z">
         <x-slot:actions>
@@ -18,7 +20,7 @@
                         :columns="['Image', 'Title', 'Category', 'Sort Order', 'Status', 'Actions']"
                         search-placeholder="Search services…">
         <x-slot:filters>
-            <select data-table-filter="status" class="form-control !w-auto !py-1.5 text-sm">
+            <select data-table-filter="status" class="form-control table-select !w-auto !py-1.5 text-sm">
                 <option value="">All Status</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>

@@ -16,7 +16,7 @@
     <div class="flex items-center justify-between px-5 h-16 border-b border-white/10">
         <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5">
             @if (!empty($logoUrl))
-                <img src="{{ $logoUrl }}" alt="Logo" class="h-9 w-9 rounded-lg object-contain bg-white/10 p-1">
+                <img src="{{ $logoUrl }}" alt="Logo" class="h-10 w-10 rounded-xl object-cover bg-white p-0.5 shadow">
             @else
                 <span class="h-9 w-9 rounded-lg bg-white text-[#12307e] font-extrabold flex items-center justify-center text-lg">A</span>
             @endif
@@ -130,13 +130,9 @@
             <p class="nav-group-label px-3 mb-2">Content</p>
             <div class="space-y-1">
                 @can('manage services')
-                <a href="{{ route('admin.services.index') }}" class="nav-link {{ $isActive('admin.services.*') }}">
+                <a href="{{ route('admin.services.index') }}" class="nav-link {{ $isActive(['admin.services.*', 'admin.service-categories.*']) }}">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                     Services
-                </a>
-                <a href="{{ route('admin.service-categories.index') }}" class="nav-link {{ $isActive('admin.service-categories.*') }}">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5.586a1 1 0 01.707.293l7.414 7.414a1 1 0 010 1.414l-5.414 5.414a1 1 0 01-1.414 0L5.879 10.12a1 1 0 01-.293-.707V7a2 2 0 012-2z"/></svg>
-                    Service Categories
                 </a>
                 @endcan
                 @can('manage packages')
@@ -158,9 +154,9 @@
                 </a>
                 @endcan
                 @can('manage blog')
-                <a href="{{ route('admin.blog-posts.index') }}" class="nav-link {{ $isActive('admin.blog-posts.*') }}">
+                <a href="{{ route('admin.blog-posts.index') }}" class="nav-link {{ $isActive(['admin.blog-posts.*', 'admin.blog-categories.*']) }}">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                    Blog Posts
+                    Blog
                 </a>
                 @endcan
                 @can('manage faqs')

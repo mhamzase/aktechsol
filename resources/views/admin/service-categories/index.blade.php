@@ -3,6 +3,8 @@
 @section('title', 'Service Categories')
 
 @section('content')
+    @include('admin.services._tabs', ['serviceTab' => 'categories'])
+
     <x-admin.page-header title="Service Categories" subtitle="Manage categories for your services"
                         icon="M7 7h.01M7 3h5.586a1 1 0 01.707.293l7.414 7.414a1 1 0 010 1.414l-5.414 5.414a1 1 0 01-1.414 0L5.879 10.12a1 1 0 01-.293-.707V7a2 2 0 012-2z">
         <x-slot:actions>
@@ -18,7 +20,7 @@
                         :columns="['Name', 'Slug', 'Sort Order', 'Status', 'Actions']"
                         search-placeholder="Search categories…">
         <x-slot:filters>
-            <select data-table-filter="status" class="form-control !w-auto !py-1.5 text-sm">
+            <select data-table-filter="status" class="form-control table-select !w-auto !py-1.5 text-sm">
                 <option value="">All Status</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
