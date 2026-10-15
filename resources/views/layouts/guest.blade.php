@@ -52,7 +52,9 @@
         <div class="hidden lg:flex lg:w-[45%] login-branding items-center justify-center p-12">
             <div class="relative z-10 text-center max-w-md">
                 @if($logoUrl)
-                    <img src="{{ $logoUrl }}" alt="AK Tech SOL" class="h-16 mx-auto mb-6 object-contain brightness-0 invert">
+                    <div class="inline-block bg-white rounded-2xl p-3 mb-6 shadow-lg">
+                        <img src="{{ $logoUrl }}" alt="AK Tech SOL" class="h-16 object-contain">
+                    </div>
                 @else
                     <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center">
                         <span class="text-3xl font-extrabold text-white">A</span>
