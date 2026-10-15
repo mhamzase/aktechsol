@@ -48,12 +48,13 @@
         </div>
         @endif
 
-        @if ($project->getGalleryUrls() && count($project->getGalleryUrls()))
+        @php $gallery = $project->getGalleryImages(); @endphp
+        @if ($gallery && count($gallery))
         <div class="mb-4">
             <p class="text-[0.7rem] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Gallery</p>
             <div class="grid grid-cols-3 gap-2">
-                @foreach ($project->getGalleryUrls() as $url)
-                    <img src="{{ $url }}" alt="" class="h-20 w-full object-cover rounded-lg">
+                @foreach ($gallery as $media)
+                    <img src="{{ $media->getUrl() }}" alt="" class="h-20 w-full object-cover rounded-lg">
                 @endforeach
             </div>
         </div>
