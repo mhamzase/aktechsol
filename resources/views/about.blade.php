@@ -119,3 +119,23 @@
         </div>
     </section>
 @endsection
+
+@push('seo')
+<meta property="og:title" content="{{ ($siteSettings->about_hero_title ?? 'About Us') . ' | ' . ($siteSettings->site_name ?? 'AK Tech SOL') }}">
+<meta property="og:description" content="{{ $siteSettings->about_hero_subtitle ?? 'Learn more about our team, mission and values.' }}">
+<meta property="og:url" content="{{ url()->current() }}">
+<meta property="og:type" content="website">
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "AboutPage",
+    "name": "{{ ($siteSettings->about_hero_title ?? 'About Us') . ' | ' . ($siteSettings->site_name ?? 'AK Tech SOL') }}",
+    "url": "{{ url()->current() }}",
+    "about": {
+        "@@type": "Organization",
+        "name": "{{ $siteSettings->site_name ?? 'AK Tech SOL' }}",
+        "url": "{{ url('/') }}"
+    }
+}
+</script>
+@endpush

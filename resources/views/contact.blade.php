@@ -119,6 +119,32 @@
     </section>
 @endsection
 
+@push('seo')
+<meta property="og:title" content="Contact Us | {{ $siteSettings->site_name ?? 'AK Tech SOL' }}">
+<meta property="og:description" content="Get in touch with {{ $siteSettings->site_name ?? 'AK Tech SOL' }} — we work with clients worldwide and reply within 24 hours.">
+<meta property="og:url" content="{{ url()->current() }}">
+<meta property="og:type" content="website">
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "ContactPage",
+    "name": "Contact Us | {{ $siteSettings->site_name ?? 'AK Tech SOL' }}",
+    "url": "{{ url()->current() }}",
+    "about": {
+        "@@type": "Organization",
+        "name": "{{ $siteSettings->site_name ?? 'AK Tech SOL' }}",
+        "url": "{{ url('/') }}"
+        @if($siteSettings->site_email ?? null)
+        ,"email": "{{ $siteSettings->site_email }}"
+        @endif
+        @if($siteSettings->site_phone ?? null)
+        ,"telephone": "{{ $siteSettings->site_phone }}"
+        @endif
+    }
+}
+</script>
+@endpush
+
 @push('scripts')
 <script>
     (function() {
