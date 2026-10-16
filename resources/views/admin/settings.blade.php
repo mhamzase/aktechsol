@@ -238,14 +238,14 @@
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">Shown to clients on invoices (manual payments). Add each method with its account details.</p>
                 <div id="payment-methods" class="space-y-4">
-                    @forelse (($s->payment_methods ?? []) as $pm)
-                        <div class="pm-card">
+                    @forelse (($s->payment_methods ?? []) as $idx => $pm)
+                        <div class="pm-card" data-pm-index="{{ $idx }}">
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-                                <div class="ui-field"><label class="ui-label">Payment Method</label><div class="ui-input-wrap"><input name="payment_methods[][method]" class="ui-control" value="{{ $pm['method'] ?? $pm['name'] ?? '' }}" placeholder="Easypaisa / JazzCash / Bank Transfer"></div></div>
-                                <div class="ui-field"><label class="ui-label">Account Holder Name</label><div class="ui-input-wrap"><input name="payment_methods[][account_holder]" class="ui-control" value="{{ $pm['account_holder'] ?? '' }}" placeholder="Muhammad Hamza"></div></div>
-                                <div class="ui-field"><label class="ui-label">Bank Name</label><div class="ui-input-wrap"><input name="payment_methods[][bank_name]" class="ui-control" value="{{ $pm['bank_name'] ?? '' }}" placeholder="Meezan Bank"></div></div>
-                                <div class="ui-field"><label class="ui-label">Account Number</label><div class="ui-input-wrap"><input name="payment_methods[][account_number]" class="ui-control" value="{{ $pm['account_number'] ?? '' }}" placeholder="0300 1234567"></div></div>
-                                <div class="md:col-span-3 ui-field"><label class="ui-label">IBAN</label><div class="ui-input-wrap"><input name="payment_methods[][iban]" class="ui-control" value="{{ $pm['iban'] ?? '' }}" placeholder="PK36SCBL0000001123456702"></div></div>
+                                <div class="ui-field"><label class="ui-label">Payment Method</label><div class="ui-input-wrap"><input name="payment_methods[{{ $idx }}][method]" class="ui-control" value="{{ $pm['method'] ?? $pm['name'] ?? '' }}" placeholder="Easypaisa / JazzCash / Bank Transfer"></div></div>
+                                <div class="ui-field"><label class="ui-label">Account Holder Name</label><div class="ui-input-wrap"><input name="payment_methods[{{ $idx }}][account_holder]" class="ui-control" value="{{ $pm['account_holder'] ?? '' }}" placeholder="Muhammad Hamza"></div></div>
+                                <div class="ui-field"><label class="ui-label">Bank Name</label><div class="ui-input-wrap"><input name="payment_methods[{{ $idx }}][bank_name]" class="ui-control" value="{{ $pm['bank_name'] ?? '' }}" placeholder="Meezan Bank"></div></div>
+                                <div class="ui-field"><label class="ui-label">Account Number</label><div class="ui-input-wrap"><input name="payment_methods[{{ $idx }}][account_number]" class="ui-control" value="{{ $pm['account_number'] ?? '' }}" placeholder="0300 1234567"></div></div>
+                                <div class="md:col-span-3 ui-field"><label class="ui-label">IBAN</label><div class="ui-input-wrap"><input name="payment_methods[{{ $idx }}][iban]" class="ui-control" value="{{ $pm['iban'] ?? '' }}" placeholder="PK36SCBL0000001123456702"></div></div>
                                 <div class="flex items-end justify-end"><button type="button" class="btn btn-ghost !text-red-500" onclick="removePaymentRow(this)" title="Remove" class="btn btn-ghost !text-red-500 pm-remove">✕ Remove</button></div>
                             </div>
                         </div>
@@ -484,14 +484,16 @@
 
 function addPaymentRow() {
     const wrap = document.getElementById('payment-methods');
+    const idx = wrap.querySelectorAll('.pm-card').length;
     const div = document.createElement('div');
     div.className = 'pm-card';
+    div.dataset.pmIndex = idx;
     div.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-        <div class="ui-field"><label class="ui-label">Payment Method</label><div class="ui-input-wrap"><input name="payment_methods[][method]" class="ui-control" placeholder="Easypaisa / JazzCash / Bank Transfer"></div></div>
-        <div class="ui-field"><label class="ui-label">Account Holder Name</label><div class="ui-input-wrap"><input name="payment_methods[][account_holder]" class="ui-control" placeholder="Muhammad Hamza"></div></div>
-        <div class="ui-field"><label class="ui-label">Bank Name</label><div class="ui-input-wrap"><input name="payment_methods[][bank_name]" class="ui-control" placeholder="Meezan Bank"></div></div>
-        <div class="ui-field"><label class="ui-label">Account Number</label><div class="ui-input-wrap"><input name="payment_methods[][account_number]" class="ui-control" placeholder="0300 1234567"></div></div>
-        <div class="md:col-span-3 ui-field"><label class="ui-label">IBAN</label><div class="ui-input-wrap"><input name="payment_methods[][iban]" class="ui-control" placeholder="PK36SCBL0000001123456702"></div></div>
+        <div class="ui-field"><label class="ui-label">Payment Method</label><div class="ui-input-wrap"><input name="payment_methods[${idx}][method]" class="ui-control" placeholder="Easypaisa / JazzCash / Bank Transfer"></div></div>
+        <div class="ui-field"><label class="ui-label">Account Holder Name</label><div class="ui-input-wrap"><input name="payment_methods[${idx}][account_holder]" class="ui-control" placeholder="Muhammad Hamza"></div></div>
+        <div class="ui-field"><label class="ui-label">Bank Name</label><div class="ui-input-wrap"><input name="payment_methods[${idx}][bank_name]" class="ui-control" placeholder="Meezan Bank"></div></div>
+        <div class="ui-field"><label class="ui-label">Account Number</label><div class="ui-input-wrap"><input name="payment_methods[${idx}][account_number]" class="ui-control" placeholder="0300 1234567"></div></div>
+        <div class="md:col-span-3 ui-field"><label class="ui-label">IBAN</label><div class="ui-input-wrap"><input name="payment_methods[${idx}][iban]" class="ui-control" placeholder="PK36SCBL0000001123456702"></div></div>
         <div class="flex items-end justify-end"><button type="button" class="btn btn-ghost !text-red-500 pm-remove" onclick="removePaymentRow(this)">✕ Remove</button></div>
     </div>`;
     wrap.appendChild(div);
