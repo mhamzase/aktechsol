@@ -101,12 +101,22 @@ class ClientProjectController extends Controller
             'is_client_visible' => 'boolean',
         ]);
 
-        $clientProject->updates()->create([
+        $update = $clientProject->updates()->create([
             'title'             => $validated['title'],
             'note'              => $validated['note'] ?? null,
             'is_client_visible' => $validated['is_client_visible'] ?? true,
             'created_by'        => auth()->id(),
         ]);
+
+        // Email the client if the update is visible to them.
+        if ($update->is_client_visible && $clientProject->client_email) {
+            try {
+                \Illuminate\Support\Facades\Mail::to($clientProject->client_email)
+                    ->queue(new \App\Mail\ProjectUpdateMail($clientProject, $update));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
 
         return response()->json(['message' => 'Update added.']);
     }

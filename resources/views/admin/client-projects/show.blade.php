@@ -57,7 +57,10 @@
             <div class="flex items-center justify-between mb-3">
                 <h4 class="font-extrabold text-slate-800 dark:text-slate-100">Project Updates</h4>
                 <button type="button" onclick="document.getElementById('add-update-form').classList.toggle('hidden')"
-                        class="text-sm font-bold text-blue-600 hover:text-blue-700">+ Add Update</button>
+                        class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    Add Update
+                </button>
             </div>
 
             {{-- Add update form --}}
