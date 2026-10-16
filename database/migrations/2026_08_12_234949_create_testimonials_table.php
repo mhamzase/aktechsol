@@ -11,7 +11,8 @@ return new class extends Migration {
             $table->id();
             // Link to the source review when auto-converted on approval.
             // No FK: the reviews table is created by a later migration file.
-            $table->unsignedBigInteger('review_id')->nullable()->after('id');
+            // (No ->after(): MySQL forbids AFTER inside CREATE TABLE.)
+            $table->unsignedBigInteger('review_id')->nullable();
             $table->string('client_name');
             $table->string('client_position')->nullable();
             $table->string('company')->nullable();
