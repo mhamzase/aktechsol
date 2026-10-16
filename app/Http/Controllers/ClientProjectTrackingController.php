@@ -10,7 +10,7 @@ class ClientProjectTrackingController extends Controller
     public function show(string $token)
     {
         $project = ClientProject::where('token', $token)
-            ->with(['visibleUpdates.author', 'assignee'])
+            ->with(['visibleUpdates.author', 'assignee', 'invoices' => fn($q) => $q->latest()])
             ->firstOrFail();
 
         return view('projects.track', compact('project'));

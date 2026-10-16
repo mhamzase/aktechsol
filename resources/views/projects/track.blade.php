@@ -12,9 +12,18 @@
             <h1 class="text-2xl md:text-3xl font-extrabold mt-2">{{ $project->title }}</h1>
             <p class="text-blue-200/80 text-sm mt-1.5">Hi {{ $project->client_name }} — follow your project's progress live.</p>
 
+            @php
+                $projColors = [
+                    'received' => 'bg-slate-500/25 text-slate-100 border border-slate-300/40',
+                    'in_progress' => 'bg-blue-400/30 text-blue-100 border border-blue-300/40',
+                    'review' => 'bg-amber-500/25 text-amber-100 border border-amber-300/40',
+                    'revision' => 'bg-orange-500/25 text-orange-100 border border-orange-300/40',
+                    'delivered' => 'bg-green-500/25 text-green-100 border border-green-300/40',
+                ];
+            @endphp
             <div class="mt-6">
                 <div class="flex items-center justify-between text-sm font-bold mb-2">
-                    <span class="inline-block px-3 py-1 bg-white/15 rounded-full text-xs">{{ $project->statusLabel() }}</span>
+                    <span class="inline-block px-3 py-1 rounded-full text-xs {{ $projColors[$project->status] ?? $projColors['received'] }}">{{ $project->statusLabel() }}</span>
                     <span>{{ $project->progress }}% complete</span>
                 </div>
                 @php
@@ -82,6 +91,40 @@
             </div>
             @endforelse
         </div>
+
+        {{-- Project invoices --}}
+        @if($project->invoices->isNotEmpty())
+        @php
+            $invBadge = [
+                'unpaid' => 'bg-red-100 text-red-700',
+                'partially_paid' => 'bg-amber-100 text-amber-700',
+                'paid' => 'bg-green-100 text-green-700',
+                'overdue' => 'bg-orange-100 text-orange-700',
+                'cancelled' => 'bg-slate-100 text-slate-500',
+            ];
+        @endphp
+        <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-100">
+            <h2 class="text-lg font-extrabold text-slate-900 mb-5">Invoices</h2>
+            <div class="space-y-3">
+                @foreach($project->invoices as $invoice)
+                <a href="{{ route('invoices.show', $invoice->token) }}"
+                   class="flex items-center justify-between gap-3 p-4 rounded-2xl border border-slate-100 hover:border-blue-300 hover:shadow-md transition">
+                    <div class="min-w-0">
+                        <p class="font-bold text-slate-900 text-sm truncate">{{ $invoice->invoice_no }}</p>
+                        <p class="text-xs text-slate-400 truncate">{{ $invoice->title }}</p>
+                        <p class="text-xs font-bold text-slate-700 mt-1">${{ number_format($invoice->amount, 2) }}
+                            @if($invoice->balance() > 0)<span class="text-slate-400 font-medium">· Balance ${{ number_format($invoice->balance(), 2) }}</span>@endif
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="px-2.5 py-1 rounded-full text-[0.7rem] font-bold {{ $invBadge[$invoice->status] ?? $invBadge['unpaid'] }}">{{ $invoice->statusLabel() }}</span>
+                        <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </div>
+                </a>
+                @endforeach
+            </div>
+        </div>
+        @endif
 
         {{-- Footer note --}}
         <p class="text-center text-xs text-slate-400">
