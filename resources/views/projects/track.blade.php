@@ -107,6 +107,7 @@
             <h2 class="text-lg font-extrabold text-slate-900 mb-5">Invoices</h2>
             <div class="space-y-3">
                 @foreach($project->invoices as $invoice)
+                @if($invoice->token)
                 <a href="{{ route('invoices.show', $invoice->token) }}"
                    class="flex items-center justify-between gap-3 p-4 rounded-2xl border border-slate-100 hover:border-blue-300 hover:shadow-md transition">
                     <div class="min-w-0">
@@ -121,6 +122,7 @@
                         <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
                 </a>
+                @endif
                 @endforeach
             </div>
         </div>
