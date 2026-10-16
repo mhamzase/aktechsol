@@ -17,11 +17,26 @@
 
     {{-- Stats --}}
     <div class="grid grid-cols-2 md:grid-cols-5 gap-4" id="project-stats">
-        <x-admin.stat-card label="Total" :value="$stats['total']" icon="folder" color="blue" />
-        <x-admin.stat-card label="Received" :value="$stats['received']" icon="inbox" color="slate" />
-        <x-admin.stat-card label="In Progress" :value="$stats['in_progress']" icon="cog" color="amber" />
-        <x-admin.stat-card label="Review" :value="$stats['review']" icon="eye" color="violet" />
-        <x-admin.stat-card label="Delivered" :value="$stats['delivered']" icon="check" color="green" />
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-700">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total</p>
+            <p class="text-2xl font-extrabold text-slate-800 dark:text-slate-100 mt-1" data-stat="total">{{ $stats['total'] }}</p>
+        </div>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-700">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Received</p>
+            <p class="text-2xl font-extrabold text-slate-500 mt-1" data-stat="received">{{ $stats['received'] }}</p>
+        </div>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-700">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">In Progress</p>
+            <p class="text-2xl font-extrabold text-blue-600 mt-1" data-stat="in_progress">{{ $stats['in_progress'] }}</p>
+        </div>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-700">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Review</p>
+            <p class="text-2xl font-extrabold text-amber-600 mt-1" data-stat="review">{{ $stats['review'] }}</p>
+        </div>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-700">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Delivered</p>
+            <p class="text-2xl font-extrabold text-green-600 mt-1" data-stat="delivered">{{ $stats['delivered'] }}</p>
+        </div>
     </div>
 
     {{-- Filters --}}
@@ -83,9 +98,10 @@
             `Showing ${data.from ?? 0}–${data.to ?? 0} of ${data.total ?? 0}`;
         // Update stats.
         if (data.stats) {
-            const cards = document.querySelectorAll('#project-stats [data-stat-value]');
-            const keys = ['total', 'received', 'in_progress', 'review', 'delivered'];
-            cards.forEach((el, i) => { if (data.stats[keys[i]] !== undefined) el.textContent = data.stats[keys[i]]; });
+            Object.entries(data.stats).forEach(([key, val]) => {
+                const el = document.querySelector(`#project-stats [data-stat="${key}"]`);
+                if (el) el.textContent = val;
+            });
         }
     }
 
