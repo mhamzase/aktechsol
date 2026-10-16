@@ -231,7 +231,6 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::resource('client-projects', \App\Http\Controllers\Admin\ClientProjectController::class)->middleware('can:manage proposals');
     Route::post('client-projects/{clientProject}/updates', [\App\Http\Controllers\Admin\ClientProjectController::class, 'addUpdate'])->middleware('can:manage proposals')->name('client-projects.updates.store');
     Route::delete('client-projects/{clientProject}/updates/{updateId}', [\App\Http\Controllers\Admin\ClientProjectController::class, 'deleteUpdate'])->middleware('can:manage proposals')->name('client-projects.updates.destroy');
-    $soon('client-projects', 'Client Projects', 'Phase 3', 'client-projects.index', 'manage projects');
     $soon('invoices', 'Invoices', 'Phase 4', 'invoices.index', 'manage invoices');
     $soon('reviews', 'Reviews', 'Phase 3', 'reviews.index', 'manage reviews');
     $soon('chatbot', 'Chatbot', 'Phase 5', 'chatbot.index', 'manage chatbot');
