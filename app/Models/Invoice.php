@@ -58,7 +58,7 @@ class Invoice extends Model
     /** Remaining balance. */
     public function balance(): float
     {
-        return (float) $this->amount - (float) $this->paid_amount;
+        return round((float) $this->amount - (float) $this->paid_amount, 2);
     }
 
     /** Alias for balance (template-friendly). */
