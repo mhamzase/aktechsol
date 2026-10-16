@@ -115,6 +115,16 @@ class InvoiceController extends Controller
 
         LogActivity::record('payment_verified', $payment, "Verified payment of {$payment->amount} on {$invoice->invoice_no}");
 
+        // Email the client (queued).
+        try {
+            if ($invoice->clientEmail()) {
+                \Illuminate\Support\Facades\Mail::to($invoice->clientEmail())
+                    ->queue(new \App\Mail\PaymentStatusMail($invoice, $payment, true));
+            }
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
         return response()->json(['message' => 'Payment verified.']);
     }
 
@@ -133,6 +143,16 @@ class InvoiceController extends Controller
         ]);
 
         LogActivity::record('payment_rejected', $payment, "Rejected payment on {$invoice->invoice_no}");
+
+        // Email the client (queued).
+        try {
+            if ($invoice->clientEmail()) {
+                \Illuminate\Support\Facades\Mail::to($invoice->clientEmail())
+                    ->queue(new \App\Mail\PaymentStatusMail($invoice, $payment, false));
+            }
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         return response()->json(['message' => 'Payment rejected.']);
     }
