@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ReviewRequestMail;
 use App\Models\ClientProject;
+use App\Models\Review;
 use App\Models\User;
 use App\Support\LogActivity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class ClientProjectController extends Controller
 {
@@ -78,10 +82,36 @@ class ClientProjectController extends Controller
 
     public function update(Request $request, ClientProject $clientProject)
     {
+        $wasDelivered = $clientProject->status === 'delivered';
         $clientProject->update($this->validateData($request));
         LogActivity::record('project_updated', $clientProject, "Updated project: {$clientProject->title}");
 
+        // Auto-send a review request when the project is newly delivered.
+        if (! $wasDelivered && $clientProject->status === 'delivered' && $clientProject->client_email) {
+            $this->sendReviewRequest($clientProject);
+        }
+
         return response()->json(['message' => 'Project updated.']);
+    }
+
+    /** Queue a review request email (creates the token placeholder if needed). */
+    protected function sendReviewRequest(ClientProject $clientProject): void
+    {
+        try {
+            // Reuse an existing pending placeholder if one exists.
+            $review = Review::firstOrCreate(
+                ['client_project_id' => $clientProject->id, 'reviewer_type' => 'client', 'status' => 'pending'],
+                ['reviewer_name' => $clientProject->client_name, 'rating' => 5, 'token' => Str::random(48)]
+            );
+            if (! $review->token) {
+                $review->update(['token' => Str::random(48)]);
+            }
+
+            Mail::to($clientProject->client_email)->queue(new ReviewRequestMail($clientProject, $review->token));
+            LogActivity::record('review_requested', $review, "Auto-sent review request for {$clientProject->title}");
+        } catch (\Throwable $e) {
+            report($e);
+        }
     }
 
     public function destroy(ClientProject $clientProject)
