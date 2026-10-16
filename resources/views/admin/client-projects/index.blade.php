@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="space-y-6">
-    {{-- Page header --}}
     <x-admin.page-header title="Client Projects" subtitle="Track projects created from accepted proposals.">
         <x-slot:actions>
             <button type="button" onclick="window.openDrawer('{{ route('admin.client-projects.create') }}', 'New Project', true)"
@@ -68,4 +67,5 @@ document.addEventListener('ajaxFormSuccess', (e) => {
     });
 });
 </script>
+@endpush
 @endsection

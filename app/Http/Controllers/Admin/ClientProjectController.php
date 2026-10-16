@@ -59,7 +59,7 @@ class ClientProjectController extends Controller
         $project = ClientProject::create($this->validateData($request));
         LogActivity::record('project_created', $project, "Created project: {$project->title}");
 
-        return response()->json(['message' => 'Project created.', 'id' => $project->id, 'stats' => $this->stats()]);
+        return response()->json(['message' => 'Project created.', 'id' => $project->id]);
     }
 
     public function show(ClientProject $clientProject)
@@ -81,7 +81,7 @@ class ClientProjectController extends Controller
         $clientProject->update($this->validateData($request));
         LogActivity::record('project_updated', $clientProject, "Updated project: {$clientProject->title}");
 
-        return response()->json(['message' => 'Project updated.', 'stats' => $this->stats()]);
+        return response()->json(['message' => 'Project updated.']);
     }
 
     public function destroy(ClientProject $clientProject)
@@ -101,22 +101,12 @@ class ClientProjectController extends Controller
             'is_client_visible' => 'boolean',
         ]);
 
-        $update = $clientProject->updates()->create([
+        $clientProject->updates()->create([
             'title'             => $validated['title'],
             'note'              => $validated['note'] ?? null,
             'is_client_visible' => $validated['is_client_visible'] ?? true,
             'created_by'        => auth()->id(),
         ]);
-
-        // Email the client if the update is visible to them.
-        if ($update->is_client_visible && $clientProject->client_email) {
-            try {
-                \Illuminate\Support\Facades\Mail::to($clientProject->client_email)
-                    ->queue(new \App\Mail\ProjectUpdateMail($clientProject, $update));
-            } catch (\Throwable $e) {
-                report($e);
-            }
-        }
 
         return response()->json(['message' => 'Update added.']);
     }
@@ -129,24 +119,8 @@ class ClientProjectController extends Controller
         return response()->json(['message' => 'Update deleted.']);
     }
 
-    protected function stats(): array
-    {
-        return [
-            'total'       => ClientProject::count(),
-            'received'    => ClientProject::where('status', 'received')->count(),
-            'in_progress' => ClientProject::where('status', 'in_progress')->count(),
-            'review'      => ClientProject::whereIn('status', ['review', 'revision'])->count(),
-            'delivered'   => ClientProject::where('status', 'delivered')->count(),
-        ];
-    }
-
     protected function validateData(Request $request): array
     {
-        // Convert empty assigned_to to null (passes nullable|exists).
-        if ($request->input('assigned_to') === '') {
-            $request->merge(['assigned_to' => null]);
-        }
-
         return $request->validate([
             'title'        => 'required|string|max:255',
             'client_name'  => 'required|string|max:255',
