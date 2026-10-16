@@ -97,6 +97,7 @@
                 @endforeach
             </div>
         </div>
+        @endif
 
         @if($invoice->notes)
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-100">
