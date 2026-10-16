@@ -73,6 +73,10 @@ Route::get('/project/{token}', [\App\Http\Controllers\ClientProjectTrackingContr
 Route::get('/invoice/{token}', [\App\Http\Controllers\ClientInvoiceController::class, 'show'])->name('invoices.show');
 Route::post('/invoice/{token}/proof', [\App\Http\Controllers\ClientInvoiceController::class, 'submitProof'])->name('invoices.proof');
 
+// Client review form (Phase 3).
+Route::get('/review/{token}', [\App\Http\Controllers\ClientReviewController::class, 'showForm'])->name('reviews.form');
+Route::post('/review/{token}', [\App\Http\Controllers\ClientReviewController::class, 'submit'])->name('reviews.submit');
+
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
 Route::get('/privacy-policy', function () {
@@ -243,7 +247,12 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::post('invoices/{invoice}/mark-paid', [\App\Http\Controllers\Admin\InvoiceController::class, 'markPaid'])->middleware('can:manage invoices')->name('invoices.mark-paid');
     Route::post('invoices/{invoice}/send-email', [\App\Http\Controllers\Admin\InvoiceController::class, 'sendEmail'])->middleware('can:manage invoices')->name('invoices.send-email');
     Route::get('invoices/{invoice}/pdf', [\App\Http\Controllers\Admin\InvoiceController::class, 'downloadPdf'])->middleware('can:manage invoices')->name('invoices.pdf');
-    $soon('reviews', 'Reviews', 'Phase 3', 'reviews.index', 'manage reviews');
+    // Reviews (Phase 3).
+    Route::get('reviews/request-form', [\App\Http\Controllers\Admin\ReviewController::class, 'requestForm'])->middleware('can:manage reviews')->name('reviews.request-form');
+    Route::resource('reviews', \App\Http\Controllers\Admin\ReviewController::class)->only(['index', 'show', 'destroy'])->middleware('can:manage reviews');
+    Route::post('reviews/{review}/approve', [\App\Http\Controllers\Admin\ReviewController::class, 'approve'])->middleware('can:manage reviews')->name('reviews.approve');
+    Route::post('reviews/{review}/reject', [\App\Http\Controllers\Admin\ReviewController::class, 'reject'])->middleware('can:manage reviews')->name('reviews.reject');
+    Route::post('reviews/send-request', [\App\Http\Controllers\Admin\ReviewController::class, 'sendRequest'])->middleware('can:manage reviews')->name('reviews.send-request');
     $soon('chatbot', 'Chatbot', 'Phase 5', 'chatbot.index', 'manage chatbot');
     $soon('demo-bookings', 'Demo Bookings', 'Phase 6', 'demo-bookings.index', 'manage demo bookings');
     $soon('job-applications', 'Job Applications', 'Phase 6', 'job-applications.index', 'manage job applications');

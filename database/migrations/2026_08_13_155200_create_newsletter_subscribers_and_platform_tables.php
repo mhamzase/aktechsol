@@ -171,6 +171,9 @@ return new class extends Migration {
             $table->unsignedTinyInteger('rating')->default(5);
             $table->text('review')->nullable();
             $table->boolean('is_published')->default(false);
+            // pending | approved | rejected
+            $table->string('status')->default('pending')->index();
+            $table->string('token', 64)->nullable()->unique();
             $table->timestamps();
         });
 

@@ -761,6 +761,65 @@
         finally { btn.disabled = false; }
     });
 
+    /* ---------------- Review actions (delegated, drawer-safe) ---------------- */
+    // Helper: refresh the reviews table + stat cards from a JSON response.
+    function refreshReviews(data) {
+        if (window.reloadAdminTable) window.reloadAdminTable('reviews-table');
+        if (data && data.stats) {
+            Object.entries(data.stats).forEach(([key, val]) => {
+                const el = document.querySelector(`#review-stats [data-stat="${key}"]`);
+                if (el) el.textContent = key === 'avg' ? val + ' ★' : val;
+            });
+        }
+    }
+
+    document.addEventListener('click', async (e) => {
+        // Approve a review.
+        const approveBtn = e.target.closest('[data-approve-review]');
+        if (approveBtn) {
+            window.confirmAction({
+                title: 'Approve Review?',
+                message: 'This review will be published on the website.',
+                confirmLabel: 'Approve',
+                onConfirm: async () => {
+                    try {
+                        const res = await fetch(approveBtn.dataset.url, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        if (res.ok) { window.notify.success(data.message || 'Approved!'); refreshReviews(data); window.closeDrawer(); }
+                        else window.notify.error(data.message || 'Failed.');
+                    } catch (err) { window.notify.error('Network error.'); }
+                },
+            });
+            return;
+        }
+
+        // Reject a review.
+        const rejectBtn = e.target.closest('[data-reject-review]');
+        if (rejectBtn) {
+            window.confirmAction({
+                title: 'Reject Review?',
+                message: 'This review will be marked as rejected.',
+                confirmLabel: 'Reject',
+                confirmClass: 'btn-danger',
+                onConfirm: async () => {
+                    try {
+                        const res = await fetch(rejectBtn.dataset.url, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        if (res.ok) { window.notify.success(data.message || 'Rejected.'); refreshReviews(data); window.closeDrawer(); }
+                        else window.notify.error(data.message || 'Failed.');
+                    } catch (err) { window.notify.error('Network error.'); }
+                },
+            });
+            return;
+        }
+    });
+
     /* ---------------- Project updates (delegated, drawer-safe) ---------------- */
     // Toggle add-update form with icon swap.
     document.addEventListener('click', (e) => {
@@ -974,6 +1033,7 @@
             if (!res.ok) throw new Error(data.message || 'Delete failed.');
             window.notify.success(data.message || 'Deleted successfully.');
             if (tableId) window.reloadAdminTable(tableId);
+            document.dispatchEvent(new CustomEvent('rowDeleted', { detail: data }));
         } catch (err) {
             window.notify.error(err.message);
         }
