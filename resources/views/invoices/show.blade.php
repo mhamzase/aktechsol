@@ -45,7 +45,7 @@
                 @if(!empty($pm['method']) || !empty($pm['account_number']))
                 <label class="cursor-pointer block">
                     <input type="radio" name="payment_method_select" value="{{ $idx }}" class="peer sr-only" {{ $idx === 0 ? 'checked' : '' }}>
-                    <div class="p-5 rounded-2xl border-2 border-slate-200 peer-checked:border-blue-600 peer-checked:bg-blue-50/60 peer-checked:shadow-lg peer-checked:shadow-blue-100 hover:border-blue-300 hover:shadow-md transition-all">
+                    <div class="p-5 rounded-2xl border-2 border-slate-200 bg-white peer-checked:border-blue-600 peer-checked:bg-gradient-to-br peer-checked:from-blue-50 peer-checked:to-blue-100/50 peer-checked:shadow-xl peer-checked:shadow-blue-200/50 hover:border-blue-400 hover:shadow-lg transition-all">
                         <div class="flex items-start justify-between mb-3">
                             <div>
                                 <p class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-1">Payment Method</p>
@@ -70,13 +70,25 @@
                             @endif
                         </div>
                         @if(!empty($pm['account_number']))
-                        <div class="mt-3 pt-3 border-t border-slate-100 peer-checked:border-blue-100">
-                            <p class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Account Number</p>
-                            <p class="text-lg font-extrabold text-slate-900 tracking-wide">{{ $pm['account_number'] }}</p>
+                        <div class="mt-3 pt-3 border-t border-slate-100 peer-checked:border-blue-200">
+                            <p class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-1">Account Number</p>
+                            <div class="flex items-center justify-between gap-2">
+                                <p class="text-lg font-extrabold text-slate-900 tracking-wide select-all">{{ $pm['account_number'] }}</p>
+                                <button type="button" data-copy="{{ $pm['account_number'] }}" title="Copy account number"
+                                        class="p-2 rounded-xl bg-slate-100 hover:bg-blue-100 text-slate-500 hover:text-blue-600 transition shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                </button>
+                            </div>
                         </div>
                         @endif
                         @if(!empty($pm['iban']))
-                        <p class="text-xs text-slate-400 mt-2 break-all"><span class="font-bold">IBAN:</span> {{ $pm['iban'] }}</p>
+                        <div class="mt-2 flex items-center justify-between gap-2">
+                            <p class="text-xs text-slate-400 break-all"><span class="font-bold">IBAN:</span> <span class="select-all">{{ $pm['iban'] }}</span></p>
+                            <button type="button" data-copy="{{ $pm['iban'] }}" title="Copy IBAN"
+                                    class="p-1.5 rounded-lg bg-slate-100 hover:bg-blue-100 text-slate-400 hover:text-blue-600 transition shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            </button>
+                        </div>
                         @endif
                     </div>
                 </label>
@@ -161,6 +173,32 @@
 
 @push('scripts')
 <script>
+// Copy to clipboard (account numbers, IBANs, links).
+(function() {
+    document.addEventListener('click', async (e) => {
+        const btn = e.target.closest('[data-copy]');
+        if (!btn) return;
+        const text = btn.dataset.copy;
+        try {
+            await navigator.clipboard.writeText(text);
+            const original = btn.innerHTML;
+            btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>';
+            btn.classList.add('!bg-green-100', '!text-green-600');
+            setTimeout(() => {
+                btn.innerHTML = original;
+                btn.classList.remove('!bg-green-100', '!text-green-600');
+            }, 1500);
+        } catch (err) {
+            // Fallback for older browsers.
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+        }
+    });
+})();
 // Auto-fill method field from selected payment method card.
 (function() {
     const methods = @json($paymentMethods);
