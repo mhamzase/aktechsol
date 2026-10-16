@@ -100,17 +100,13 @@
             <p class="text-sm text-slate-400 mb-5">Paid? Upload your payment screenshot below and we'll verify it.</p>
             <form id="proof-form" action="{{ route('invoices.proof', $invoice->token) }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-12 gap-4">
                 @csrf
-                <div class="md:col-span-6">
+                <div class="md:col-span-12">
                     <label class="block text-sm font-bold text-slate-700 mb-1.5">Amount ($) <span class="text-red-500">*</span></label>
                     <input type="number" name="amount" step="0.01" min="0.01" max="{{ $invoice->balance() }}" required placeholder="0.00"
                            class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
                     <p class="text-xs text-slate-400 mt-1">Max: ${{ number_format($invoice->balance(), 2) }}</p>
                 </div>
-                <div class="md:col-span-6">
-                    <label class="block text-sm font-bold text-slate-700 mb-1.5">Payment Method <span class="text-red-500">*</span></label>
-                    <input type="text" name="method" id="proof-method" required placeholder="Bank transfer / Easypaisa / JazzCash"
-                           class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
-                </div>
+                <input type="hidden" name="method" id="proof-method" value="">
                 <div class="md:col-span-6">
                     <label class="block text-sm font-bold text-slate-700 mb-1.5">Transaction Reference</label>
                     <input type="text" name="reference" placeholder="TXN-123456"
