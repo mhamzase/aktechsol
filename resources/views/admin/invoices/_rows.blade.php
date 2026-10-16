@@ -39,7 +39,6 @@
                 :editWide="true"
                 :deleteUrl="route('admin.invoices.destroy', $invoice)"
                 tableId="invoices-table" />
-            </x-admin.row-actions>
         </td>
     </tr>
 @empty
