@@ -104,13 +104,24 @@ class ReviewController extends Controller
         return response()->json(['message' => 'Review deleted.', 'stats' => $this->stats()]);
     }
 
-    /** Show the send-request form in a drawer. */
-    public function requestForm()
+    /** Show the send-request form in a drawer (AJAX search supported). */
+    public function requestForm(Request $request)
     {
         $projects = ClientProject::where('status', 'delivered')
             ->whereNotNull('client_email')
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $s = $request->search;
+                $q->where(fn($qq) => $qq->where('title', 'like', "%{$s}%")
+                    ->orWhere('client_name', 'like', "%{$s}%")
+                    ->orWhere('client_email', 'like', "%{$s}%"));
+            })
             ->orderBy('title')
-            ->get(['id', 'title', 'client_name']);
+            ->get(['id', 'title', 'client_name', 'client_email']);
+
+        // List-only HTML for the picker's AJAX search.
+        if ($request->query('partial') === 'list') {
+            return view('admin.reviews._project-options', compact('projects'));
+        }
 
         return view('admin.reviews.request-form', compact('projects'));
     }

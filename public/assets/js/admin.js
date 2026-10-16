@@ -820,6 +820,102 @@
         }
     });
 
+    /* ---------------- Review-request project picker (delegated, drawer-safe) ---------------- */
+    // Paint a project card selected / unselected (state classes come from the
+    // card's data-* attributes so Tailwind compiles them from Blade).
+    const paintPick = (btn, on) => {
+        const onCls = (btn.dataset.pickOn || '').split(' ').filter(Boolean);
+        const offCls = (btn.dataset.pickOff || '').split(' ').filter(Boolean);
+        btn.classList.remove(...(on ? offCls : onCls));
+        btn.classList.add(...(on ? onCls : offCls));
+        const circle = btn.querySelector('[data-pick-circle]');
+        if (circle) {
+            const cOn = (btn.dataset.circleOn || '').split(' ').filter(Boolean);
+            const cOff = (btn.dataset.circleOff || '').split(' ').filter(Boolean);
+            circle.classList.remove(...(on ? cOff : cOn));
+            circle.classList.add(...(on ? cOn : cOff));
+        }
+        const check = btn.querySelector('[data-pick-check]');
+        if (check) {
+            check.classList.toggle('opacity-100', on);
+            check.classList.toggle('scale-100', on);
+            check.classList.toggle('opacity-0', !on);
+            check.classList.toggle('scale-75', !on);
+        }
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    };
+    const clearPickError = (form) => {
+        form.querySelector('[data-project-error]')?.classList.add('hidden');
+        const list = form.querySelector('[data-project-list]');
+        if (list) list.classList.remove(...(list.dataset.errorRing || '').split(' ').filter(Boolean));
+    };
+    // Select a project card.
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-project-pick]');
+        if (!btn) return;
+        const form = btn.closest('form[data-project-picker]');
+        if (!form) return;
+        form.querySelector('[data-project-value]').value = btn.dataset.projectPick;
+        form.querySelectorAll('[data-project-pick]').forEach((b) => paintPick(b, b === btn));
+        clearPickError(form);
+    });
+    // Debounced AJAX search of delivered projects.
+    let projectSearchT;
+    const runProjectSearch = async (input) => {
+        const form = input.closest('form[data-project-picker]');
+        const list = form?.querySelector('[data-project-list]');
+        if (!list) return;
+        const url = new URL(input.dataset.searchUrl, window.location.origin);
+        url.searchParams.set('search', input.value.trim());
+        url.searchParams.set('partial', 'list');
+        list.innerHTML = '<div class="p-6 text-center text-sm text-slate-400 dark:text-slate-500">Searching…</div>';
+        try {
+            const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            list.innerHTML = await res.text();
+            // Re-apply the current selection if it's still in the results.
+            const val = form.querySelector('[data-project-value]')?.value;
+            list.querySelectorAll('[data-project-pick]').forEach((b) => paintPick(b, !!val && b.dataset.projectPick === val));
+            const count = form.querySelector('[data-project-count]');
+            if (count) count.textContent = list.querySelectorAll('[data-project-pick]').length;
+        } catch (err) {
+            list.innerHTML = '<div class="p-6 text-center text-sm text-red-500">Search failed. Try again.</div>';
+        }
+    };
+    document.addEventListener('input', (e) => {
+        const input = e.target.closest('[data-project-search]');
+        if (!input) return;
+        input.closest('form[data-project-picker]')
+            ?.querySelector('[data-project-search-clear]')
+            ?.classList.toggle('hidden', !input.value);
+        clearTimeout(projectSearchT);
+        projectSearchT = setTimeout(() => runProjectSearch(input), 300);
+    });
+    // Clear search button.
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('[data-project-search-clear]')) return;
+        const form = e.target.closest('form[data-project-picker]');
+        const input = form?.querySelector('[data-project-search]');
+        if (!input) return;
+        input.value = '';
+        e.target.closest('[data-project-search-clear]').classList.add('hidden');
+        runProjectSearch(input);
+        input.focus();
+    });
+    // Frontend "required" validation — capture phase so it runs before the
+    // generic data-ajax-form submit handler.
+    document.addEventListener('submit', (e) => {
+        const form = e.target.closest?.('form[data-project-picker]');
+        if (!form) return;
+        if (form.querySelector('[data-project-value]')?.value) return; // valid
+        e.preventDefault();
+        e.stopPropagation();
+        form.querySelector('[data-project-error]')?.classList.remove('hidden');
+        const list = form.querySelector('[data-project-list]');
+        if (list) list.classList.add(...(list.dataset.errorRing || '').split(' ').filter(Boolean));
+        list?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        if (window.notify) window.notify.error('Please select a project first.');
+    }, true);
+
     /* ---------------- Project updates (delegated, drawer-safe) ---------------- */
     // Toggle add-update form with icon swap.
     document.addEventListener('click', (e) => {
