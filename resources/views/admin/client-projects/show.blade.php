@@ -56,24 +56,29 @@
         <div>
             <div class="flex items-center justify-between mb-3">
                 <h4 class="font-extrabold text-slate-800 dark:text-slate-100">Project Updates</h4>
-                <button type="button" onclick="document.getElementById('add-update-form').classList.toggle('hidden')"
+                <button type="button" data-toggle-update-form
                         class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    Add Update
+                    <svg data-toggle-icon-plus class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <svg data-toggle-icon-minus class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                    <span data-toggle-label>Add Update</span>
                 </button>
             </div>
 
             {{-- Add update form --}}
             <form id="add-update-form" class="hidden bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4 mb-4 space-y-3"
-                  data-update-url="{{ route('admin.client-projects.updates.store', $project) }}">
+                  data-update-url="{{ route('admin.client-projects.updates.store', $project) }}"
+                  data-project-id="{{ $project->id }}">
                 @csrf
                 <x-ui.input name="title" label="Update Title" required placeholder="Design mockups ready" />
                 <x-ui.textarea name="note" label="Note" rows="2" placeholder="Details…" />
                 <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 cursor-pointer">
-                    <input type="checkbox" name="is_client_visible" value="1" checked class="rounded">
+                    <input type="checkbox" name="is_client_visible" value="1" checked class="rounded w-4 h-4 accent-blue-600">
                     Visible to client
                 </label>
-                <button type="submit" class="btn btn-primary text-sm">Add Update</button>
+                <div class="flex gap-2">
+                    <button type="submit" class="btn btn-primary text-sm">Add Update</button>
+                    <button type="button" data-toggle-update-form class="btn btn-ghost text-sm">Cancel</button>
+                </div>
             </form>
 
             {{-- Timeline --}}
@@ -95,10 +100,20 @@
                         @if($update->note)
                         <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">{{ $update->note }}</p>
                         @endif
-                        <p class="text-xs text-slate-400 mt-2">
-                            {{ $update->created_at->format('M d, Y h:i A') }}
-                            @if($update->author)· {{ $update->author->name }}@endif
-                            @unless($update->is_client_visible)<span class="ml-1 px-2 py-0.5 bg-slate-200 dark:bg-slate-700 rounded-full text-[0.65rem] font-bold">Internal</span>@endunless
+                        <p class="text-xs text-slate-400 mt-2 flex items-center gap-1.5 flex-wrap">
+                            <span>{{ $update->created_at->format('M d, Y h:i A') }}</span>
+                            @if($update->author)<span>· {{ $update->author->name }}</span>@endif
+                            @if($update->is_client_visible)
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 rounded-full text-[0.65rem] font-bold">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                Client visible
+                            </span>
+                            @else
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full text-[0.65rem] font-bold">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
+                                Internal only
+                            </span>
+                            @endif
                         </p>
                     </div>
                 </div>
@@ -110,57 +125,3 @@
     </div>
 </div>
 
-<script>
-// Add / delete project updates (delegated, drawer-safe).
-(function() {
-    const addForm = document.getElementById('add-update-form');
-    if (addForm) {
-        addForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = addForm.querySelector('[type="submit"]');
-            btn.disabled = true;
-            try {
-                const res = await fetch(addForm.dataset.updateUrl, {
-                    method: 'POST',
-                    body: new FormData(addForm),
-                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
-                });
-                const data = await res.json().catch(() => ({}));
-                if (res.ok) {
-                    window.notify.success(data.message || 'Update added!');
-                    // Reload the drawer.
-                    if (window.openDrawer) window.openDrawer(window.location.href, 'Project Details');
-                    else location.reload();
-                } else {
-                    window.notify.error(data.message || 'Failed to add update.');
-                }
-            } catch (err) {
-                window.notify.error('Network error.');
-            } finally {
-                btn.disabled = false;
-            }
-        });
-    }
-
-    document.addEventListener('click', async (e) => {
-        const delBtn = e.target.closest('[data-delete-update]');
-        if (!delBtn) return;
-        if (!confirm('Delete this update?')) return;
-        try {
-            const res = await fetch(delBtn.dataset.deleteUpdate, {
-                method: 'DELETE',
-                headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
-            });
-            const data = await res.json().catch(() => ({}));
-            if (res.ok) {
-                window.notify.success(data.message || 'Deleted!');
-                delBtn.closest('.group').remove();
-            } else {
-                window.notify.error(data.message || 'Failed.');
-            }
-        } catch (err) {
-            window.notify.error('Network error.');
-        }
-    });
-})();
-</script>

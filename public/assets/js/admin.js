@@ -611,6 +611,151 @@
             label.textContent = option.dataset.label;
             label.classList.remove('text-slate-400');
             wrap.querySelector('[data-search-select-menu]').classList.add('hidden');
+            wrap.querySelectorAll('[data-search-select-option]').forEach(o => {
+                const selected = o.dataset.value === option.dataset.value;
+                o.classList.toggle('bg-blue-50', selected);
+                o.classList.toggle('font-bold', selected);
+                o.classList.toggle('text-blue-700', selected);
+            });
+        }
+    });
+
+    document.addEventListener('input', (e) => {
+        const search = e.target.closest('[data-search-select-search]');
+        if (!search) return;
+        const wrap = search.closest('[data-search-select]');
+        const term = search.value.toLowerCase().trim();
+        let visible = 0;
+        wrap.querySelectorAll('[data-search-select-option]').forEach(o => {
+            const match = o.dataset.label.toLowerCase().includes(term);
+            o.classList.toggle('hidden', !match);
+            if (match) visible++;
+        });
+        wrap.querySelector('[data-search-select-empty]').classList.toggle('hidden', visible > 0);
+    });
+
+    /* ---------------- Project updates (delegated, drawer-safe) ---------------- */
+    // Toggle add-update form with icon swap.
+    document.addEventListener('click', (e) => {
+        const toggle = e.target.closest('[data-toggle-update-form]');
+        if (!toggle) return;
+        const form = document.getElementById('add-update-form');
+        if (!form) return;
+        const isHidden = form.classList.toggle('hidden');
+        const plusIcon = toggle.querySelector('[data-toggle-icon-plus]');
+        const minusIcon = toggle.querySelector('[data-toggle-icon-minus]');
+        const label = toggle.querySelector('[data-toggle-label]');
+        if (plusIcon) plusIcon.classList.toggle('hidden', !isHidden);
+        if (minusIcon) minusIcon.classList.toggle('hidden', isHidden);
+        if (label) label.textContent = isHidden ? 'Add Update' : 'Close';
+    });
+
+    // Submit add-update form via AJAX (no refresh).
+    document.addEventListener('submit', async (e) => {
+        const form = e.target.closest('#add-update-form');
+        if (!form) return;
+        e.preventDefault();
+
+        const titleInput = form.querySelector('[name="title"]');
+        if (!titleInput.value.trim()) {
+            window.notify.error('Please enter an update title.');
+            titleInput.focus();
+            return;
+        }
+
+        const btn = form.querySelector('[type="submit"]');
+        btn.disabled = true;
+        const originalText = btn.textContent;
+        btn.textContent = 'Adding...';
+
+        try {
+            const res = await fetch(form.dataset.updateUrl, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok) {
+                window.notify.success(data.message || 'Update added!');
+                // Reload just the drawer content (no page refresh).
+                const projectId = form.dataset.projectId;
+                if (window.openDrawer && projectId) {
+                    window.openDrawer(`/admin/client-projects/${projectId}`, 'Project Details');
+                }
+            } else if (res.status === 422 && data.errors) {
+                const firstError = Object.values(data.errors)[0]?.[0];
+                window.notify.error(firstError || 'Please check your input.');
+            } else {
+                window.notify.error(data.message || 'Failed to add update.');
+            }
+        } catch (err) {
+            window.notify.error('Network error.');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    });
+
+    // Delete a project update.
+    document.addEventListener('click', async (e) => {
+        const delBtn = e.target.closest('[data-delete-update]');
+        if (!delBtn) return;
+        window.confirmAction({
+            title: 'Delete Update?',
+            message: 'This update will be permanently removed.',
+            confirmLabel: 'Delete',
+            confirmClass: 'btn-danger',
+            onConfirm: async () => {
+                try {
+                    const res = await fetch(delBtn.dataset.deleteUpdate, {
+                        method: 'DELETE',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
+                    });
+                    const data = await res.json().catch(() => ({}));
+                    if (res.ok) {
+                        window.notify.success(data.message || 'Deleted!');
+                        delBtn.closest('.group')?.remove();
+                    } else {
+                        window.notify.error(data.message || 'Failed.');
+                    }
+                } catch (err) {
+                    window.notify.error('Network error.');
+                }
+            },
+        });
+    });
+    document.addEventListener('click', (e) => {
+        // Close all open menus when clicking outside.
+        document.querySelectorAll('[data-search-select-menu]').forEach(menu => {
+            const wrap = menu.closest('[data-search-select]');
+            if (wrap && !wrap.contains(e.target)) menu.classList.add('hidden');
+        });
+
+        const toggle = e.target.closest('[data-search-select-toggle]');
+        if (toggle) {
+            const wrap = toggle.closest('[data-search-select]');
+            const menu = wrap.querySelector('[data-search-select-menu]');
+            const wasHidden = menu.classList.contains('hidden');
+            document.querySelectorAll('[data-search-select-menu]').forEach(m => m.classList.add('hidden'));
+            if (wasHidden) {
+                menu.classList.remove('hidden');
+                const search = wrap.querySelector('[data-search-select-search]');
+                search.value = '';
+                wrap.querySelectorAll('[data-search-select-option]').forEach(o => o.classList.remove('hidden'));
+                wrap.querySelector('[data-search-select-empty]').classList.add('hidden');
+                setTimeout(() => search.focus(), 50);
+            }
+            return;
+        }
+
+        const option = e.target.closest('[data-search-select-option]');
+        if (option) {
+            const wrap = option.closest('[data-search-select]');
+            wrap.querySelector('[data-search-select-value]').value = option.dataset.value;
+            const label = wrap.querySelector('[data-search-select-label]');
+            label.textContent = option.dataset.label;
+            label.classList.remove('text-slate-400');
+            wrap.querySelector('[data-search-select-menu]').classList.add('hidden');
             // Update selected styling.
             wrap.querySelectorAll('[data-search-select-option]').forEach(o => {
                 const selected = o.dataset.value === option.dataset.value;
