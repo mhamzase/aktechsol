@@ -22,7 +22,7 @@
         <td data-label="Progress" class="whitespace-nowrap">
             <div class="flex items-center gap-2 min-w-[110px]">
                 <div class="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-                    <div class="h-full bg-blue-600 rounded-full" style="width: {{ $project->progress }}%"></div>
+                    <div class="h-full rounded-full" data-progress-bar="{{ $project->progress }}" style="width: {{ $project->progress }}%"></div>
                 </div>
                 <span class="text-xs font-bold text-slate-500">{{ $project->progress }}%</span>
             </div>

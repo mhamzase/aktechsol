@@ -639,13 +639,40 @@
     });
 
     /* ---------------- Progress slider (project form) ---------------- */
+    function progressColor(p) {
+        p = parseInt(p, 10);
+        if (p >= 75) return '#16a34a'; // green
+        if (p >= 50) return '#1d4ed8'; // blue
+        if (p >= 25) return '#f59e0b'; // amber
+        return '#dc2626'; // red
+    }
+    function paintProgressBar(bar, pct) {
+        bar.style.width = pct + '%';
+        bar.style.backgroundColor = progressColor(pct);
+    }
     document.addEventListener('input', (e) => {
         const slider = e.target.closest('[data-progress-slider]');
         if (!slider) return;
-        const wrap = slider.closest('div').parentElement;
         const label = slider.parentElement.querySelector('[data-progress-value]');
-        if (label) label.textContent = slider.value + '%';
+        if (label) {
+            label.textContent = slider.value + '%';
+            label.style.color = progressColor(slider.value);
+        }
+        slider.style.accentColor = progressColor(slider.value);
     });
+    // Paint listing progress bars on load / after AJAX.
+    function paintAllProgressBars() {
+        document.querySelectorAll('[data-progress-bar]').forEach(bar => {
+            paintProgressBar(bar, bar.dataset.progressBar);
+        });
+    }
+    document.addEventListener('DOMContentLoaded', paintAllProgressBars);
+    // Re-paint after table AJAX reloads.
+    const _origReload = window.reloadAdminTable;
+    window.reloadAdminTable = function (id) {
+        _origReload(id);
+        setTimeout(paintAllProgressBars, 300);
+    };
     document.addEventListener('click', (e) => {
         const addBtn = e.target.closest('[data-add-milestone]');
         if (addBtn) {
