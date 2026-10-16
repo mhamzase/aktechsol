@@ -916,6 +916,53 @@
         if (window.notify) window.notify.error('Please select a project first.');
     }, true);
 
+    /* ---------------- Review edit form widgets (delegated, drawer-safe) ---------------- */
+    // Star rating picker.
+    const rateLabels = { 1: 'Poor', 2: 'Fair', 3: 'Good', 4: 'Very Good', 5: 'Excellent' };
+    const paintRateStars = (wrap, n) => {
+        wrap.querySelectorAll('[data-rate-star]').forEach((s) => {
+            const svg = s.querySelector('svg');
+            const active = parseInt(s.dataset.rateStar, 10) <= n;
+            svg.classList.toggle('text-amber-400', active);
+            svg.classList.toggle('text-slate-300', !active);
+            svg.classList.toggle('dark:text-slate-600', !active);
+        });
+        const label = wrap.closest('form')?.querySelector('[data-rating-label]');
+        if (label) label.textContent = `${rateLabels[n]} — ${n} star${n > 1 ? 's' : ''}`;
+    };
+    document.addEventListener('click', (e) => {
+        const star = e.target.closest('[data-rate-star]');
+        if (!star) return;
+        const wrap = star.closest('[data-star-picker]');
+        if (!wrap) return;
+        const n = parseInt(star.dataset.rateStar, 10);
+        const form = star.closest('form');
+        if (form) form.querySelector('[data-rating-value]').value = n;
+        paintRateStars(wrap, n);
+    });
+    // Status segmented pills.
+    document.addEventListener('click', (e) => {
+        const pill = e.target.closest('[data-status-pill]');
+        if (!pill) return;
+        const group = pill.closest('[data-status-pills]');
+        const form = pill.closest('form');
+        if (form) form.querySelector('[data-status-value]').value = pill.dataset.statusPill;
+        group.querySelectorAll('[data-status-pill]').forEach((p) => {
+            const on = p === pill;
+            const onCls = (p.dataset.pillOn || '').split(' ').filter(Boolean);
+            const offCls = (p.dataset.pillOff || '').split(' ').filter(Boolean);
+            p.classList.remove(...(on ? offCls : onCls));
+            p.classList.add(...(on ? onCls : offCls));
+        });
+    });
+    // Review character counter.
+    document.addEventListener('input', (e) => {
+        const ta = e.target.closest('[data-review-text]');
+        if (!ta) return;
+        const count = ta.closest('form')?.querySelector('[data-review-count]');
+        if (count) count.textContent = ta.value.length;
+    });
+
     /* ---------------- Project updates (delegated, drawer-safe) ---------------- */
     // Toggle add-update form with icon swap.
     document.addEventListener('click', (e) => {
