@@ -51,6 +51,24 @@ class ClientInvoiceController extends Controller
             $payment->addMediaFromRequest('screenshot')->toMediaCollection('screenshot');
         }
 
+        // Notify admins: system notification + queued email.
+        try {
+            \App\Support\NotifyAdmins::send(
+                'payment',
+                'Payment proof submitted',
+                "{$invoice->clientName()} submitted \${$payment->amount} for {$invoice->invoice_no}.",
+                route('admin.invoices.show', $invoice)
+            );
+
+            $notifyEmail = app(\App\Settings\SiteSettings::class)->notification_email ?? null;
+            if ($notifyEmail) {
+                \Illuminate\Support\Facades\Mail::to($notifyEmail)
+                    ->queue(new \App\Mail\PaymentProofMail($invoice, $payment));
+            }
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
         return response()->json(['message' => 'Payment proof submitted. We will verify it shortly.']);
     }
 }
