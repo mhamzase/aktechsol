@@ -103,56 +103,145 @@
                 </form>
             </div>
             @push('scripts')
+            {{-- Branded confirm modal for proposal responses --}}
+            <div id="respond-confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" data-confirm-cancel></div>
+                <div class="relative bg-white rounded-3xl shadow-2xl max-w-sm w-full p-7 text-center">
+                    <div id="respond-confirm-icon" class="w-14 h-14 mx-auto rounded-2xl flex items-center justify-center mb-4"></div>
+                    <h3 id="respond-confirm-title" class="text-lg font-extrabold text-slate-900"></h3>
+                    <p id="respond-confirm-msg" class="text-sm text-slate-500 mt-2 mb-6"></p>
+                    <div class="flex gap-3">
+                        <button type="button" data-confirm-cancel
+                                class="flex-1 px-4 py-3 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition">
+                            Cancel
+                        </button>
+                        <button type="button" id="respond-confirm-btn"
+                                class="flex-1 px-4 py-3 text-white font-bold rounded-2xl transition">
+                            Confirm
+                        </button>
+                    </div>
+                </div>
+            </div>
             <script>
             (function() {
                 const form = document.getElementById('proposal-respond-form');
                 if (!form) return;
                 const buttons = form.querySelectorAll('.respond-btn');
+                const modal = document.getElementById('respond-confirm-modal');
+                const noteInput = form.querySelector('[name="client_note"]');
+
+                const configs = {
+                    accepted: {
+                        title: 'Accept Proposal?',
+                        msg: 'You are accepting this proposal. Our team will contact you to get started.',
+                        iconBg: 'bg-green-100', iconColor: 'text-green-600',
+                        icon: '<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>',
+                        btnClass: 'bg-green-600 hover:bg-green-700',
+                    },
+                    changes_requested: {
+                        title: 'Request Changes?',
+                        msg: 'We will review your feedback and send an updated proposal.',
+                        iconBg: 'bg-amber-100', iconColor: 'text-amber-600',
+                        icon: '<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>',
+                        btnClass: 'bg-amber-500 hover:bg-amber-600',
+                    },
+                    rejected: {
+                        title: 'Decline Proposal?',
+                        msg: 'Are you sure you want to decline? This cannot be undone.',
+                        iconBg: 'bg-red-100', iconColor: 'text-red-600',
+                        icon: '<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>',
+                        btnClass: 'bg-red-600 hover:bg-red-700',
+                    },
+                };
+
+                let pendingAction = null;
+
+                function showError(msg) {
+                    window.notify.error(msg);
+                    noteInput.classList.add('!border-red-400', '!ring-2', '!ring-red-100');
+                    noteInput.focus();
+                    setTimeout(() => noteInput.classList.remove('!border-red-400', '!ring-2', '!ring-red-100'), 3000);
+                }
+
+                function openConfirm(action) {
+                    const cfg = configs[action];
+                    pendingAction = action;
+                    document.getElementById('respond-confirm-title').textContent = cfg.title;
+                    document.getElementById('respond-confirm-msg').textContent = cfg.msg;
+                    const iconBox = document.getElementById('respond-confirm-icon');
+                    iconBox.className = `w-14 h-14 mx-auto rounded-2xl flex items-center justify-center mb-4 ${cfg.iconBg} ${cfg.iconColor}`;
+                    iconBox.innerHTML = cfg.icon;
+                    const confirmBtn = document.getElementById('respond-confirm-btn');
+                    confirmBtn.className = `flex-1 px-4 py-3 text-white font-bold rounded-2xl transition ${cfg.btnClass}`;
+                    confirmBtn.textContent = cfg.title.replace('?', '');
+                    modal.classList.remove('hidden');
+                }
+
+                function closeConfirm() {
+                    modal.classList.add('hidden');
+                    pendingAction = null;
+                }
+
+                modal.querySelectorAll('[data-confirm-cancel]').forEach(el =>
+                    el.addEventListener('click', closeConfirm));
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeConfirm();
+                });
+
+                async function submitResponse(action, btn) {
+                    buttons.forEach(b => b.disabled = true);
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Sending...';
+                    try {
+                        const formData = new FormData(form);
+                        formData.set('action', action);
+                        const res = await fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+                        });
+                        let data = {};
+                        try { data = await res.json(); } catch (e) {}
+                        if (res.ok) {
+                            window.notify.success(data.message || 'Response recorded!');
+                            setTimeout(() => location.reload(), 1500);
+                        } else if (res.status === 422 && data.errors) {
+                            const firstError = Object.values(data.errors)[0]?.[0];
+                            showError(firstError || 'Please check your input.');
+                        } else {
+                            window.notify.error(data.message || 'Something went wrong. Please try again.');
+                        }
+                    } catch (err) {
+                        window.notify.error('Network error. Please check your connection.');
+                    } finally {
+                        buttons.forEach(b => b.disabled = false);
+                        btn.textContent = originalText;
+                    }
+                }
+
+                document.getElementById('respond-confirm-btn').addEventListener('click', () => {
+                    if (!pendingAction) return;
+                    const btn = form.querySelector(`[data-respond="${pendingAction}"]`);
+                    closeConfirm();
+                    submitResponse(pendingAction, btn);
+                });
 
                 buttons.forEach(btn => {
-                    btn.addEventListener('click', async () => {
-                        const action = btn.dataset.respond;
-                        if (action === 'rejected' && !confirm('Are you sure you want to decline this proposal?')) return;
-
-                        buttons.forEach(b => b.disabled = true);
-                        const originalText = btn.textContent;
-                        btn.textContent = 'Sending...';
-
-                        try {
-                            const formData = new FormData(form);
-                            formData.set('action', action);
-                            // Frontend check: message required
-                            const note = (formData.get('client_note') || '').toString().trim();
-                            if (note.length < 10) {
-                                window.notify.error('Please write your message (minimum 10 characters).');
-                                form.querySelector('[name="client_note"]').focus();
-                                buttons.forEach(b => b.disabled = false);
-                                btn.textContent = originalText;
-                                return;
-                            }
-                            const res = await fetch(form.action, {
-                                method: 'POST',
-                                body: formData,
-                                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
-                            });
-                            let data = {};
-                            try { data = await res.json(); } catch (e) {}
-                            if (res.ok) {
-                                window.notify.success(data.message || 'Response recorded!');
-                                setTimeout(() => location.reload(), 1500);
-                            } else if (res.status === 422 && data.errors) {
-                                const firstError = Object.values(data.errors)[0]?.[0];
-                                window.notify.error(firstError || 'Please check your input.');
-                            } else {
-                                window.notify.error(data.message || 'Something went wrong. Please try again.');
-                            }
-                        } catch (err) {
-                            window.notify.error('Network error. Please check your connection.');
-                        } finally {
-                            buttons.forEach(b => b.disabled = false);
-                            btn.textContent = originalText;
+                    btn.addEventListener('click', () => {
+                        // Step 1: validate message first.
+                        const note = (noteInput.value || '').trim();
+                        if (note.length < 10) {
+                            showError('Please write your message first (minimum 10 characters).');
+                            return;
                         }
+                        // Step 2: branded confirmation.
+                        openConfirm(btn.dataset.respond);
                     });
+                });
+
+                // Live-clear error styling.
+                noteInput.addEventListener('input', () => {
+                    noteInput.classList.remove('!border-red-400', '!ring-2', '!ring-red-100');
                 });
             })();
             </script>
