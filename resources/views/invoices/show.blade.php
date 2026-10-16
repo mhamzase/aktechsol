@@ -3,27 +3,27 @@
 @section('title', 'Invoice ' . $invoice->invoice_no)
 
 @section('content')
-<div class="min-h-screen bg-slate-50 py-10 px-4">
-    <div class="max-w-3xl mx-auto space-y-6">
+<div class="min-h-screen bg-slate-50 py-6 md:py-10 px-4">
+    <div class="max-w-3xl mx-auto space-y-5 md:space-y-6">
 
         {{-- Hero --}}
-        <div class="rounded-3xl p-8 text-white" style="background: linear-gradient(135deg, #1d4ed8 0%, #12307e 100%);">
+        <div class="rounded-3xl p-6 md:p-8 text-white" style="background: linear-gradient(135deg, #1d4ed8 0%, #12307e 100%);">
             <p class="text-xs font-bold uppercase tracking-[0.2em] text-blue-200/70">Invoice {{ $invoice->invoice_no }}</p>
             <h1 class="text-2xl md:text-3xl font-extrabold mt-2">{{ $invoice->title }}</h1>
             <p class="text-blue-200/80 text-sm mt-1.5">Hi {{ $invoice->clientName() }} — here's your invoice.</p>
 
-            <div class="grid grid-cols-3 gap-3 mt-6">
-                <div class="bg-white/10 rounded-2xl p-4">
+            <div class="grid grid-cols-3 gap-2 md:gap-3 mt-6">
+                <div class="bg-white/10 rounded-2xl p-3 md:p-4">
                     <p class="text-[0.65rem] font-bold uppercase tracking-wider text-blue-200/70">Total</p>
-                    <p class="text-xl font-extrabold mt-1">${{ number_format($invoice->amount, 2) }}</p>
+                    <p class="text-base md:text-xl font-extrabold mt-1 break-all">${{ number_format($invoice->amount, 2) }}</p>
                 </div>
-                <div class="bg-white/10 rounded-2xl p-4">
+                <div class="bg-white/10 rounded-2xl p-3 md:p-4">
                     <p class="text-[0.65rem] font-bold uppercase tracking-wider text-blue-200/70">Paid</p>
-                    <p class="text-xl font-extrabold mt-1">${{ number_format($invoice->paid_amount, 2) }}</p>
+                    <p class="text-base md:text-xl font-extrabold mt-1 break-all">${{ number_format($invoice->paid_amount, 2) }}</p>
                 </div>
-                <div class="bg-white/10 rounded-2xl p-4">
+                <div class="bg-white/10 rounded-2xl p-3 md:p-4">
                     <p class="text-[0.65rem] font-bold uppercase tracking-wider text-blue-200/70">Balance</p>
-                    <p class="text-xl font-extrabold mt-1">${{ number_format($invoice->balance(), 2) }}</p>
+                    <p class="text-base md:text-xl font-extrabold mt-1 break-all">${{ number_format($invoice->balance(), 2) }}</p>
                 </div>
             </div>
 
@@ -40,7 +40,7 @@
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-100">
             <h2 class="text-lg font-extrabold text-slate-900 mb-1">Pay Via</h2>
             <p class="text-sm text-slate-400 mb-5">Choose a payment method, then submit your proof below.</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 gap-4">
                 @foreach($paymentMethods as $idx => $pm)
                 @if(!empty($pm['method']) || !empty($pm['account_number']))
                 <label class="cursor-pointer block">
