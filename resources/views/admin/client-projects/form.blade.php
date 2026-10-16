@@ -26,7 +26,14 @@
                              :options="['received' => 'Received', 'in_progress' => 'In Progress', 'review' => 'In Review', 'revision' => 'Revision', 'delivered' => 'Delivered']" />
             </div>
             <div class="md:col-span-6">
-                <x-ui.input name="progress" type="number" min="0" max="100" label="Progress (%)" :value="$project->progress ?? 0" required />
+                <span class="ui-label">Progress (%)<span class="ui-required">*</span></span>
+                <div class="flex items-center gap-3">
+                    <input type="range" name="progress" min="0" max="100" step="5" value="{{ $project->progress ?? 0 }}"
+                           data-progress-slider
+                           class="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-full appearance-none cursor-pointer accent-blue-600">
+                    <span data-progress-value class="text-sm font-extrabold text-blue-600 w-12 text-right">{{ $project->progress ?? 0 }}%</span>
+                </div>
+                <p class="ui-hint">Drag to set completion.</p>
             </div>
             <div class="md:col-span-6">
                 <div class="grid grid-cols-2 gap-3">

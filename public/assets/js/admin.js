@@ -637,6 +637,15 @@
             document.querySelectorAll('[data-search-select-menu]').forEach(m => m.classList.add('hidden'));
         }
     });
+
+    /* ---------------- Progress slider (project form) ---------------- */
+    document.addEventListener('input', (e) => {
+        const slider = e.target.closest('[data-progress-slider]');
+        if (!slider) return;
+        const wrap = slider.closest('div').parentElement;
+        const label = slider.parentElement.querySelector('[data-progress-value]');
+        if (label) label.textContent = slider.value + '%';
+    });
     document.addEventListener('click', (e) => {
         const addBtn = e.target.closest('[data-add-milestone]');
         if (addBtn) {
