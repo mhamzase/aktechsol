@@ -265,7 +265,9 @@
         document.body.style.overflow = 'hidden';
         try {
             const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-            d.querySelector('[data-drawer-body]').innerHTML = await res.text();
+            const body = d.querySelector('[data-drawer-body]');
+            body.innerHTML = await res.text();
+            body.dataset.drawerUrl = url;
             // Paint dynamic elements (progress sliders, etc.) after drawer content loads.
             document.dispatchEvent(new CustomEvent('drawerOpened'));
         } catch (err) {
@@ -634,6 +636,131 @@
         wrap.querySelector('[data-search-select-empty]').classList.toggle('hidden', visible > 0);
     });
 
+    /* ---------------- Invoice actions (delegated, drawer-safe) ---------------- */
+    // Helper: reload the current drawer content.
+    function reloadInvoiceDrawer() {
+        const drawerBody = document.querySelector('[data-drawer-body]');
+        const currentUrl = drawerBody?.dataset?.drawerUrl;
+        if (currentUrl && window.openDrawer) {
+            const title = document.querySelector('[data-drawer-title]')?.textContent || '';
+            window.openDrawer(currentUrl, title);
+        }
+    }
+
+    document.addEventListener('click', async (e) => {
+        // Verify a payment proof.
+        const verifyBtn = e.target.closest('[data-verify-payment]');
+        if (verifyBtn) {
+            window.confirmAction({
+                title: 'Verify Payment?',
+                message: 'The amount will be added to the invoice paid total.',
+                confirmLabel: 'Verify',
+                onConfirm: async () => {
+                    try {
+                        const res = await fetch(verifyBtn.dataset.url, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        if (res.ok) { window.notify.success(data.message || 'Verified!'); reloadInvoiceDrawer(); }
+                        else window.notify.error(data.message || 'Failed.');
+                    } catch (err) { window.notify.error('Network error.'); }
+                },
+            });
+            return;
+        }
+
+        // Reject a payment proof.
+        const rejectBtn = e.target.closest('[data-reject-payment]');
+        if (rejectBtn) {
+            window.confirmAction({
+                title: 'Reject Payment?',
+                message: 'This proof will be marked as rejected.',
+                confirmLabel: 'Reject',
+                confirmClass: 'btn-danger',
+                onConfirm: async () => {
+                    try {
+                        const res = await fetch(rejectBtn.dataset.url, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        if (res.ok) { window.notify.success(data.message || 'Rejected!'); reloadInvoiceDrawer(); }
+                        else window.notify.error(data.message || 'Failed.');
+                    } catch (err) { window.notify.error('Network error.'); }
+                },
+            });
+            return;
+        }
+
+        // Email invoice to client.
+        const emailBtn = e.target.closest('[data-invoice-email]');
+        if (emailBtn) {
+            window.confirmAction({
+                title: 'Email Invoice?',
+                message: 'The invoice will be emailed to the client.',
+                confirmLabel: 'Send Email',
+                onConfirm: async () => {
+                    try {
+                        const res = await fetch(emailBtn.dataset.url, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        window.notify[res.ok ? 'success' : 'error'](data.message || (res.ok ? 'Sent!' : 'Failed.'));
+                    } catch (err) { window.notify.error('Network error.'); }
+                },
+            });
+            return;
+        }
+
+        // Mark invoice as paid.
+        const paidBtn = e.target.closest('[data-invoice-mark-paid]');
+        if (paidBtn) {
+            window.confirmAction({
+                title: 'Mark as Paid?',
+                message: 'The full invoice amount will be marked as paid.',
+                confirmLabel: 'Mark Paid',
+                onConfirm: async () => {
+                    try {
+                        const res = await fetch(paidBtn.dataset.url, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        if (res.ok) {
+                            window.notify.success(data.message || 'Done!');
+                            window.closeDrawer();
+                            window.reloadAdminTable('invoices-table');
+                        } else window.notify.error(data.message || 'Failed.');
+                    } catch (err) { window.notify.error('Network error.'); }
+                },
+            });
+        }
+    });
+
+    // Manual payment form (AJAX).
+    document.addEventListener('submit', async (e) => {
+        const form = e.target.closest('[data-manual-payment]');
+        if (!form) return;
+        e.preventDefault();
+        const btn = form.querySelector('[type="submit"]');
+        btn.disabled = true;
+        try {
+            const res = await fetch(form.dataset.url, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok) { window.notify.success(data.message || 'Recorded!'); reloadInvoiceDrawer(); }
+            else if (res.status === 422 && data.errors) {
+                window.notify.error(Object.values(data.errors)[0]?.[0] || 'Please check your input.');
+            } else window.notify.error(data.message || 'Failed.');
+        } catch (err) { window.notify.error('Network error.'); }
+        finally { btn.disabled = false; }
+    });
+
     /* ---------------- Project updates (delegated, drawer-safe) ---------------- */
     // Toggle add-update form with icon swap.
     document.addEventListener('click', (e) => {
@@ -678,10 +805,7 @@
             if (res.ok) {
                 window.notify.success(data.message || 'Update added!');
                 // Reload just the drawer content (no page refresh).
-                const projectId = form.dataset.projectId;
-                if (window.openDrawer && projectId) {
-                    window.openDrawer(`/admin/client-projects/${projectId}`, 'Project Details');
-                }
+                reloadInvoiceDrawer();
             } else if (res.status === 422 && data.errors) {
                 const firstError = Object.values(data.errors)[0]?.[0];
                 window.notify.error(firstError || 'Please check your input.');
