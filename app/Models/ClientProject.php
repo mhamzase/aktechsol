@@ -62,6 +62,12 @@ class ClientProject extends Model
         return $this->hasMany(ProjectUpdate::class)->latest();
     }
 
+    /** Client-visible timeline entries, newest first. */
+    public function visibleUpdates(): HasMany
+    {
+        return $this->hasMany(ProjectUpdate::class)->where('is_client_visible', true)->latest();
+    }
+
     /** Invoices raised against this project. */
     public function invoices(): HasMany
     {

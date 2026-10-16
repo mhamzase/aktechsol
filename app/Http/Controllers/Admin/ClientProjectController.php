@@ -38,12 +38,9 @@ class ClientProjectController extends Controller
 
         if ($request->ajax()) {
             return response()->json([
-                'rows'  => view('admin.client-projects._rows', compact('projects'))->render(),
-                'links' => $projects->links()->render(),
-                'stats' => $stats,
-                'from'  => $projects->firstItem(),
-                'to'    => $projects->lastItem(),
-                'total' => $projects->total(),
+                'rows'       => view('admin.client-projects._rows', ['projects' => $projects])->render(),
+                'pagination' => view('admin.partials.ajax-pagination', ['items' => $projects])->render(),
+                'stats'      => "Showing {$projects->firstItem()}–{$projects->lastItem()} of {$projects->total()}",
             ]);
         }
 
