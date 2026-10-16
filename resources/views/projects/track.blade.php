@@ -34,9 +34,9 @@
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-100">
             <h2 class="text-lg font-extrabold text-slate-900 mb-5">Project Pipeline</h2>
             @php
-                $stages = ['received' => 'Received', 'in_progress' => 'In Progress', 'review' => 'Review', 'delivered' => 'Delivered'];
+                $stages = ['received' => 'Received', 'in_progress' => 'In Progress', 'review' => 'Review', 'revision' => 'Revision', 'delivered' => 'Delivered'];
                 $order = array_keys($stages);
-                $currentIdx = array_search($project->status === 'revision' ? 'review' : $project->status, $order);
+                $currentIdx = array_search($project->status, $order);
                 $currentIdx = $currentIdx === false ? 0 : $currentIdx;
             @endphp
             <div class="flex items-center">
