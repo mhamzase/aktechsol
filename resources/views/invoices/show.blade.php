@@ -45,35 +45,29 @@
                 @if(!empty($pm['method']) || !empty($pm['account_number']))
                 <label class="cursor-pointer block">
                     <input type="radio" name="payment_method_select" value="{{ $idx }}" class="peer sr-only" {{ $idx === 0 ? 'checked' : '' }}>
-                    <div class="p-5 rounded-2xl border-2 border-slate-200 bg-white peer-checked:border-blue-600 peer-checked:bg-gradient-to-br peer-checked:from-blue-50 peer-checked:to-blue-100/50 peer-checked:shadow-xl peer-checked:shadow-blue-200/50 hover:border-blue-400 hover:shadow-lg transition-all">
-                        <div class="flex items-start justify-between mb-3">
+                    <div class="p-4 rounded-2xl border-2 border-slate-200 bg-white peer-checked:border-blue-600 peer-checked:bg-gradient-to-br peer-checked:from-blue-50 peer-checked:to-blue-100/50 peer-checked:shadow-xl peer-checked:shadow-blue-200/50 hover:border-blue-400 hover:shadow-lg transition-all">
+                        <div class="flex items-start justify-between mb-2">
                             <div>
                                 <p class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-1">Payment Method</p>
-                                <p class="text-base font-extrabold text-slate-900">{{ $pm['method'] ?? 'Payment' }}</p>
+                                <p class="text-sm font-extrabold text-slate-900">{{ $pm['method'] ?? 'Payment' }}</p>
                             </div>
                             <span class="w-6 h-6 rounded-full border-2 border-slate-300 peer-checked:border-blue-600 flex items-center justify-center shrink-0 mt-0.5">
                                 <span class="w-3 h-3 rounded-full bg-blue-600 scale-0 peer-checked:scale-100 transition-transform"></span>
                             </span>
                         </div>
-                        <div class="space-y-1.5 text-sm">
+                        <div class="flex flex-wrap gap-x-5 gap-y-1 text-xs">
                             @if(!empty($pm['account_holder']))
-                            <div class="flex justify-between gap-3">
-                                <span class="text-slate-400 font-medium">Account Holder</span>
-                                <span class="font-bold text-slate-800 text-right">{{ $pm['account_holder'] }}</span>
-                            </div>
+                            <p><span class="text-slate-400 font-medium">Holder:</span> <span class="font-bold text-slate-800">{{ $pm['account_holder'] }}</span></p>
                             @endif
                             @if(!empty($pm['bank_name']))
-                            <div class="flex justify-between gap-3">
-                                <span class="text-slate-400 font-medium">Bank</span>
-                                <span class="font-bold text-slate-800 text-right">{{ $pm['bank_name'] }}</span>
-                            </div>
+                            <p><span class="text-slate-400 font-medium">Bank:</span> <span class="font-bold text-slate-800">{{ $pm['bank_name'] }}</span></p>
                             @endif
                         </div>
                         @if(!empty($pm['account_number']))
-                        <div class="mt-3 pt-3 border-t border-slate-100 peer-checked:border-blue-200">
+                        <div class="mt-2 pt-2 border-t border-slate-100 peer-checked:border-blue-200">
                             <p class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-1">Account Number</p>
                             <div class="flex items-center justify-between gap-2">
-                                <p class="text-lg font-extrabold text-slate-900 tracking-wide select-all">{{ $pm['account_number'] }}</p>
+                                <p class="text-base font-extrabold text-slate-900 tracking-wide select-all">{{ $pm['account_number'] }}</p>
                                 <button type="button" data-copy="{{ $pm['account_number'] }}" title="Copy account number"
                                         class="p-2 rounded-xl bg-slate-100 hover:bg-blue-100 text-slate-500 hover:text-blue-600 transition shrink-0">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
