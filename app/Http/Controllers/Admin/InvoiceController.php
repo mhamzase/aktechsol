@@ -166,7 +166,7 @@ class InvoiceController extends Controller
             'reference' => 'nullable|string|max:255',
         ]);
 
-        $invoice->payments()->create([
+        $payment = $invoice->payments()->create([
             'amount'      => $validated['amount'],
             'method'      => $validated['method'],
             'reference'   => $validated['reference'] ?? null,
@@ -180,6 +180,16 @@ class InvoiceController extends Controller
         $invoice->refreshPaymentStatus();
 
         LogActivity::record('payment_recorded', $invoice, "Manual payment of {$validated['amount']} on {$invoice->invoice_no}");
+
+        // Email the client (queued).
+        try {
+            if ($invoice->clientEmail()) {
+                \Illuminate\Support\Facades\Mail::to($invoice->clientEmail())
+                    ->queue(new \App\Mail\PaymentStatusMail($invoice, $payment, true));
+            }
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         return response()->json(['message' => 'Payment recorded.']);
     }
