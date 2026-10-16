@@ -43,19 +43,41 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 @foreach($paymentMethods as $idx => $pm)
                 @if(!empty($pm['method']) || !empty($pm['account_number']))
-                <label class="cursor-pointer">
+                <label class="cursor-pointer block">
                     <input type="radio" name="payment_method_select" value="{{ $idx }}" class="peer sr-only" {{ $idx === 0 ? 'checked' : '' }}>
-                    <div class="p-4 rounded-2xl border-2 border-slate-100 peer-checked:border-blue-600 peer-checked:bg-blue-50/50 transition">
-                        <div class="flex items-center justify-between mb-2">
-                            <p class="font-extrabold text-slate-900">{{ $pm['method'] ?? 'Payment' }}</p>
-                            <span class="w-5 h-5 rounded-full border-2 border-slate-300 peer-checked:border-blue-600 flex items-center justify-center">
-                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 peer-checked:opacity-100"></span>
+                    <div class="p-5 rounded-2xl border-2 border-slate-200 peer-checked:border-blue-600 peer-checked:bg-blue-50/60 peer-checked:shadow-lg peer-checked:shadow-blue-100 hover:border-blue-300 hover:shadow-md transition-all">
+                        <div class="flex items-start justify-between mb-3">
+                            <div>
+                                <p class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-1">Payment Method</p>
+                                <p class="text-base font-extrabold text-slate-900">{{ $pm['method'] ?? 'Payment' }}</p>
+                            </div>
+                            <span class="w-6 h-6 rounded-full border-2 border-slate-300 peer-checked:border-blue-600 flex items-center justify-center shrink-0 mt-0.5">
+                                <span class="w-3 h-3 rounded-full bg-blue-600 scale-0 peer-checked:scale-100 transition-transform"></span>
                             </span>
                         </div>
-                        @if(!empty($pm['account_holder']))<p class="text-sm text-slate-600"><span class="text-slate-400">Holder:</span> {{ $pm['account_holder'] }}</p>@endif
-                        @if(!empty($pm['bank_name']))<p class="text-sm text-slate-600"><span class="text-slate-400">Bank:</span> {{ $pm['bank_name'] }}</p>@endif
-                        @if(!empty($pm['account_number']))<p class="text-sm font-bold text-slate-900 mt-1">{{ $pm['account_number'] }}</p>@endif
-                        @if(!empty($pm['iban']))<p class="text-xs text-slate-400 mt-0.5 break-all">IBAN: {{ $pm['iban'] }}</p>@endif
+                        <div class="space-y-1.5 text-sm">
+                            @if(!empty($pm['account_holder']))
+                            <div class="flex justify-between gap-3">
+                                <span class="text-slate-400 font-medium">Account Holder</span>
+                                <span class="font-bold text-slate-800 text-right">{{ $pm['account_holder'] }}</span>
+                            </div>
+                            @endif
+                            @if(!empty($pm['bank_name']))
+                            <div class="flex justify-between gap-3">
+                                <span class="text-slate-400 font-medium">Bank</span>
+                                <span class="font-bold text-slate-800 text-right">{{ $pm['bank_name'] }}</span>
+                            </div>
+                            @endif
+                        </div>
+                        @if(!empty($pm['account_number']))
+                        <div class="mt-3 pt-3 border-t border-slate-100 peer-checked:border-blue-100">
+                            <p class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Account Number</p>
+                            <p class="text-lg font-extrabold text-slate-900 tracking-wide">{{ $pm['account_number'] }}</p>
+                        </div>
+                        @endif
+                        @if(!empty($pm['iban']))
+                        <p class="text-xs text-slate-400 mt-2 break-all"><span class="font-bold">IBAN:</span> {{ $pm['iban'] }}</p>
+                        @endif
                     </div>
                 </label>
                 @endif
