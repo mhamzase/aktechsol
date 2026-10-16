@@ -55,6 +55,12 @@ class Proposal extends Model
         return $this->hasMany(ClientProject::class);
     }
 
+    /** The (first) project created from this proposal. */
+    public function project()
+    {
+        return $this->hasOne(ClientProject::class);
+    }
+
     /** Public secure link for the client. */
     public function publicUrl(): string
     {

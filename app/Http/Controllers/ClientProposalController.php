@@ -55,6 +55,32 @@ class ClientProposalController extends Controller
             'responded_at' => now(),
         ]);
 
+        // Auto-create a client project when the proposal is accepted.
+        if ($validated['action'] === 'accepted' && ! $proposal->project) {
+            $project = \App\Models\ClientProject::create([
+                'proposal_id'  => $proposal->id,
+                'title'        => $proposal->title,
+                'client_name'  => $proposal->client_name,
+                'client_email' => $proposal->client_email,
+                'status'       => 'received',
+                'started_at'   => today(),
+            ]);
+
+            // Seed the first timeline entry.
+            $project->updates()->create([
+                'title'            => 'Project received',
+                'note'             => 'Your proposal was accepted. Our team will begin work shortly.',
+                'is_client_visible' => true,
+            ]);
+
+            NotifyAdmins::send(
+                'project',
+                'New project created',
+                "Project '{$project->title}' created from accepted proposal.",
+                route('admin.projects.show', $project),
+            );
+        }
+
         // Notify admins in-app.
         NotifyAdmins::send(
             'proposal',

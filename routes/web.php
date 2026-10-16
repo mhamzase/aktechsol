@@ -66,6 +66,9 @@ Route::get('/proposal/{token}', [ClientProposalController::class, 'show'])->name
 Route::post('/proposal/{token}/respond', [ClientProposalController::class, 'respond'])->name('proposals.respond');
 Route::get('/proposal/{token}/pdf', [ClientProposalController::class, 'pdf'])->name('proposals.pdf.download');
 
+// Client project tracking (Phase 3).
+Route::get('/project/{token}', [\App\Http\Controllers\ClientProjectTrackingController::class, 'show'])->name('projects.track');
+
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
 Route::get('/privacy-policy', function () {
@@ -223,6 +226,11 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::get('proposals/{proposal}/pdf', [\App\Http\Controllers\Admin\ProposalController::class, 'pdf'])->middleware('can:manage proposals')->name('proposals.pdf');
     Route::post('proposals/{proposal}/resend', [\App\Http\Controllers\Admin\ProposalController::class, 'resend'])->middleware('can:manage proposals')->name('proposals.resend');
     Route::post('proposals/{proposal}/duplicate', [\App\Http\Controllers\Admin\ProposalController::class, 'duplicate'])->middleware('can:manage proposals')->name('proposals.duplicate');
+
+    // Client projects (Phase 3).
+    Route::resource('client-projects', \App\Http\Controllers\Admin\ClientProjectController::class)->middleware('can:manage proposals');
+    Route::post('client-projects/{clientProject}/updates', [\App\Http\Controllers\Admin\ClientProjectController::class, 'addUpdate'])->middleware('can:manage proposals')->name('client-projects.updates.store');
+    Route::delete('client-projects/{clientProject}/updates/{updateId}', [\App\Http\Controllers\Admin\ClientProjectController::class, 'deleteUpdate'])->middleware('can:manage proposals')->name('client-projects.updates.destroy');
     $soon('client-projects', 'Client Projects', 'Phase 3', 'client-projects.index', 'manage projects');
     $soon('invoices', 'Invoices', 'Phase 4', 'invoices.index', 'manage invoices');
     $soon('reviews', 'Reviews', 'Phase 3', 'reviews.index', 'manage reviews');
