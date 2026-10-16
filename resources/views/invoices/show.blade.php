@@ -11,12 +11,28 @@
             <p class="text-xs font-bold uppercase tracking-[0.2em] text-blue-200/70">Invoice {{ $invoice->invoice_no }}</p>
             <h1 class="text-2xl md:text-3xl font-extrabold mt-2">{{ $invoice->title }}</h1>
             <p class="text-blue-200/80 text-sm mt-1.5">Hi {{ $invoice->clientName() }} — here's your invoice.</p>
+            @php
+                $invColors = [
+                    'unpaid' => 'bg-red-500/25 text-red-100 border border-red-300/40',
+                    'partially_paid' => 'bg-amber-500/25 text-amber-100 border border-amber-300/40',
+                    'paid' => 'bg-green-500/25 text-green-100 border border-green-300/40',
+                    'overdue' => 'bg-orange-500/25 text-orange-100 border border-orange-300/40',
+                    'cancelled' => 'bg-slate-500/25 text-slate-200 border border-slate-300/40',
+                ];
+                $projColors = [
+                    'received' => 'bg-slate-500/25 text-slate-100 border border-slate-300/40',
+                    'in_progress' => 'bg-blue-400/30 text-blue-100 border border-blue-300/40',
+                    'review' => 'bg-amber-500/25 text-amber-100 border border-amber-300/40',
+                    'revision' => 'bg-orange-500/25 text-orange-100 border border-orange-300/40',
+                    'delivered' => 'bg-green-500/25 text-green-100 border border-green-300/40',
+                ];
+            @endphp
             @if($invoice->project)
             <a href="{{ $invoice->project->trackingUrl() }}" target="_blank"
                class="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-xs font-bold transition">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.938 23.938 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                 Project: {{ $invoice->project->title }}
-                <span class="px-2 py-0.5 bg-white/15 rounded-full">{{ $invoice->project->statusLabel() }}</span>
+                <span class="px-2 py-0.5 rounded-full font-bold {{ $projColors[$invoice->project->status] ?? $projColors['received'] }}">{{ $invoice->project->statusLabel() }}</span>
             </a>
             @endif
 
@@ -36,7 +52,7 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-3 mt-5 text-sm">
-                <span class="inline-block px-3 py-1 bg-white/15 rounded-full text-xs font-bold">{{ $invoice->statusLabel() }}</span>
+                <span class="inline-block px-3 py-1 rounded-full text-xs font-bold {{ $invColors[$invoice->status] ?? $invColors['unpaid'] }}">{{ $invoice->statusLabel() }}</span>
                 @if($invoice->due_date)
                 <span class="text-blue-200/80 text-xs">Due: <strong class="text-white">{{ $invoice->due_date->format('M d, Y') }}</strong></span>
                 @endif
