@@ -38,6 +38,8 @@
                 <x-admin.row-actions
                     :viewUrl="route('admin.reviews.show', $review)"
                     viewTitle="Review Details"
+                    :editUrl="route('admin.reviews.edit', $review)"
+                    editTitle="Edit Review"
                     :deleteUrl="route('admin.reviews.destroy', $review)"
                     tableId="reviews-table" />
             </div>

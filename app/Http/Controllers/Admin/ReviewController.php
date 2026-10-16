@@ -64,26 +64,59 @@ class ReviewController extends Controller
         $review->update(['status' => 'approved', 'is_published' => true]);
         LogActivity::record('review_approved', $review, "Approved review by {$review->reviewer_name}");
 
-        // Auto-convert client reviews into testimonials (once per review).
-        $testimonialCreated = false;
-        if ($review->reviewer_type === 'client') {
-            $testimonial = Testimonial::firstOrCreate(
-                ['review_id' => $review->id],
-                [
-                    'client_name' => $review->reviewer_name,
-                    'content'     => $review->review,
-                    'rating'      => $review->rating,
-                    'status'      => true, // active => shows on homepage immediately
-                ]
-            );
-            $testimonialCreated = $testimonial->wasRecentlyCreated;
-        }
-
-        $message = $testimonialCreated
+        $message = $this->syncTestimonial($review)
             ? 'Review approved, published & added as a testimonial.'
             : 'Review approved and published.';
 
         return response()->json(['message' => $message, 'stats' => $this->stats()]);
+    }
+
+    /** Show the edit form in a drawer. */
+    public function edit(Review $review)
+    {
+        return view('admin.reviews.form', compact('review'));
+    }
+
+    /** Update a review from the drawer form. */
+    public function update(Request $request, Review $review)
+    {
+        $validated = $request->validate([
+            'reviewer_name' => 'required|string|max:255',
+            'rating'        => 'required|integer|min:1|max:5',
+            'review'        => 'nullable|string|min:20',
+            'status'        => 'required|in:' . implode(',', Review::STATUSES),
+        ]);
+
+        $review->update($validated + ['is_published' => $validated['status'] === 'approved']);
+        LogActivity::record('review_updated', $review, "Updated review by {$review->reviewer_name}");
+
+        $message = 'Review updated.';
+        if ($validated['status'] === 'approved' && $this->syncTestimonial($review)) {
+            $message = 'Review updated & added as a testimonial.';
+        }
+
+        return response()->json(['message' => $message, 'stats' => $this->stats()]);
+    }
+
+    /**
+     * Auto-convert a client review into a homepage testimonial (once per review).
+     * Returns true when a new testimonial was created.
+     */
+    protected function syncTestimonial(Review $review): bool
+    {
+        if ($review->reviewer_type !== 'client' || empty($review->review)) {
+            return false;
+        }
+
+        return Testimonial::firstOrCreate(
+            ['review_id' => $review->id],
+            [
+                'client_name' => $review->reviewer_name,
+                'content'     => $review->review,
+                'rating'      => $review->rating,
+                'status'      => true, // active => shows on homepage immediately
+            ]
+        )->wasRecentlyCreated;
     }
 
     /** Reject a review. */
@@ -109,6 +142,12 @@ class ReviewController extends Controller
     {
         $projects = ClientProject::where('status', 'delivered')
             ->whereNotNull('client_email')
+            // Hide projects whose review is already given & approved.
+            ->whereNotExists(function ($q) {
+                $q->selectRaw('1')->from('reviews')
+                    ->whereColumn('reviews.client_project_id', 'client_projects.id')
+                    ->where('reviews.status', 'approved');
+            })
             ->when($request->filled('search'), function ($q) use ($request) {
                 $s = $request->search;
                 $q->where(fn($qq) => $qq->where('title', 'like', "%{$s}%")

@@ -249,7 +249,7 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::get('invoices/{invoice}/pdf', [\App\Http\Controllers\Admin\InvoiceController::class, 'downloadPdf'])->middleware('can:manage invoices')->name('invoices.pdf');
     // Reviews (Phase 3).
     Route::get('reviews/request-form', [\App\Http\Controllers\Admin\ReviewController::class, 'requestForm'])->middleware('can:manage reviews')->name('reviews.request-form');
-    Route::resource('reviews', \App\Http\Controllers\Admin\ReviewController::class)->only(['index', 'show', 'destroy'])->middleware('can:manage reviews');
+    Route::resource('reviews', \App\Http\Controllers\Admin\ReviewController::class)->only(['index', 'show', 'edit', 'update', 'destroy'])->middleware('can:manage reviews');
     Route::post('reviews/{review}/approve', [\App\Http\Controllers\Admin\ReviewController::class, 'approve'])->middleware('can:manage reviews')->name('reviews.approve');
     Route::post('reviews/{review}/reject', [\App\Http\Controllers\Admin\ReviewController::class, 'reject'])->middleware('can:manage reviews')->name('reviews.reject');
     Route::post('reviews/send-request', [\App\Http\Controllers\Admin\ReviewController::class, 'sendRequest'])->middleware('can:manage reviews')->name('reviews.send-request');
