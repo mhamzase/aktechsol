@@ -65,7 +65,11 @@
                 </div>
                 <div class="max-h-80 overflow-y-auto" id="topbar-notifications-list">
                     @forelse ($latestNotes as $note)
-                        <a href="{{ $note->data['url'] ?? route('admin.notifications.index') }}"
+                        @php $nurl = $note->data['url'] ?? route('admin.notifications.index'); @endphp
+                        <a href="{{ $nurl }}"
+                           @if(str_contains($nurl, '/admin/invoices/') && !str_contains($nurl, '/edit'))
+                           onclick="event.preventDefault(); window.openDrawer('{{ $nurl }}', 'Invoice Details');"
+                           @endif
                            class="flex gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 border-b border-slate-50 dark:border-slate-700/50">
                             <span class="w-2 h-2 rounded-full bg-[#1d4ed8] mt-1.5 shrink-0"></span>
                             <span>

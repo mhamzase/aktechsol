@@ -81,6 +81,7 @@ return new class extends Migration {
             $table->string('status')->default('draft')->index();
             $table->string('token', 64)->unique()->comment('Secure public link token');
             $table->timestamp('sent_at')->nullable();
+            $table->timestamp('viewed_at')->nullable()->comment('First time client opened the link');
             $table->timestamp('responded_at')->nullable();
             $table->text('client_note')->nullable()->comment('Note left by client on respond');
             $table->timestamps();
@@ -129,6 +130,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('client_project_id')->nullable()->constrained()->nullOnDelete();
             $table->string('invoice_no')->unique();
+            $table->string('token', 64)->nullable()->unique(); // secure client link
             $table->string('title');
             $table->decimal('amount', 12, 2)->default(0);
             $table->decimal('paid_amount', 12, 2)->default(0);

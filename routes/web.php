@@ -26,6 +26,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\ClientProposalController;
 use App\Http\Controllers\FaqController as PublicFaqController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewsletterController;
@@ -60,6 +61,17 @@ Route::get('/get-a-quote', [QuoteController::class, 'create'])->name('quote.crea
 Route::post('/get-a-quote', [QuoteController::class, 'store'])->name('quote.store');
 
 Route::post('/chatbot/message', [ChatbotController::class, 'message'])->name('chatbot.message');
+
+Route::get('/proposal/{token}', [ClientProposalController::class, 'show'])->name('proposals.show');
+Route::post('/proposal/{token}/respond', [ClientProposalController::class, 'respond'])->name('proposals.respond');
+Route::get('/proposal/{token}/pdf', [ClientProposalController::class, 'pdf'])->name('proposals.pdf.download');
+
+// Client project tracking (Phase 3).
+Route::get('/project/{token}', [\App\Http\Controllers\ClientProjectTrackingController::class, 'show'])->name('projects.track');
+
+// Client invoice view + payment proof (Phase 4).
+Route::get('/invoice/{token}', [\App\Http\Controllers\ClientInvoiceController::class, 'show'])->name('invoices.show');
+Route::post('/invoice/{token}/proof', [\App\Http\Controllers\ClientInvoiceController::class, 'submitProof'])->name('invoices.proof');
 
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
@@ -213,9 +225,24 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
         Route::get($uri, fn () => app(ComingSoonController::class)->show($title, $phase))
             ->middleware("can:{$can}")->name($name);
     };
-    $soon('proposals', 'Proposals', 'Phase 2', 'proposals.index', 'manage proposals');
-    $soon('client-projects', 'Client Projects', 'Phase 3', 'client-projects.index', 'manage projects');
-    $soon('invoices', 'Invoices', 'Phase 4', 'invoices.index', 'manage invoices');
+    Route::resource('proposals', \App\Http\Controllers\Admin\ProposalController::class)->middleware('can:manage proposals');
+    Route::post('proposals/{proposal}/send', [\App\Http\Controllers\Admin\ProposalController::class, 'send'])->middleware('can:manage proposals')->name('proposals.send');
+    Route::get('proposals/{proposal}/pdf', [\App\Http\Controllers\Admin\ProposalController::class, 'pdf'])->middleware('can:manage proposals')->name('proposals.pdf');
+    Route::post('proposals/{proposal}/resend', [\App\Http\Controllers\Admin\ProposalController::class, 'resend'])->middleware('can:manage proposals')->name('proposals.resend');
+    Route::post('proposals/{proposal}/duplicate', [\App\Http\Controllers\Admin\ProposalController::class, 'duplicate'])->middleware('can:manage proposals')->name('proposals.duplicate');
+
+    // Client projects (Phase 3).
+    Route::resource('client-projects', \App\Http\Controllers\Admin\ClientProjectController::class)->middleware('can:manage proposals');
+    Route::post('client-projects/{clientProject}/updates', [\App\Http\Controllers\Admin\ClientProjectController::class, 'addUpdate'])->middleware('can:manage proposals')->name('client-projects.updates.store');
+    Route::delete('client-projects/{clientProject}/updates/{updateId}', [\App\Http\Controllers\Admin\ClientProjectController::class, 'deleteUpdate'])->middleware('can:manage proposals')->name('client-projects.updates.destroy');
+    // Invoices (Phase 4).
+    Route::resource('invoices', \App\Http\Controllers\Admin\InvoiceController::class)->middleware('can:manage invoices');
+    Route::post('invoices/{invoice}/payments/{payment}/verify', [\App\Http\Controllers\Admin\InvoiceController::class, 'verifyPayment'])->middleware('can:manage invoices')->name('invoices.payments.verify');
+    Route::post('invoices/{invoice}/payments/{payment}/reject', [\App\Http\Controllers\Admin\InvoiceController::class, 'rejectPayment'])->middleware('can:manage invoices')->name('invoices.payments.reject');
+    Route::post('invoices/{invoice}/payments/manual', [\App\Http\Controllers\Admin\InvoiceController::class, 'addManualPayment'])->middleware('can:manage invoices')->name('invoices.payments.manual');
+    Route::post('invoices/{invoice}/mark-paid', [\App\Http\Controllers\Admin\InvoiceController::class, 'markPaid'])->middleware('can:manage invoices')->name('invoices.mark-paid');
+    Route::post('invoices/{invoice}/send-email', [\App\Http\Controllers\Admin\InvoiceController::class, 'sendEmail'])->middleware('can:manage invoices')->name('invoices.send-email');
+    Route::get('invoices/{invoice}/pdf', [\App\Http\Controllers\Admin\InvoiceController::class, 'downloadPdf'])->middleware('can:manage invoices')->name('invoices.pdf');
     $soon('reviews', 'Reviews', 'Phase 3', 'reviews.index', 'manage reviews');
     $soon('chatbot', 'Chatbot', 'Phase 5', 'chatbot.index', 'manage chatbot');
     $soon('demo-bookings', 'Demo Bookings', 'Phase 6', 'demo-bookings.index', 'manage demo bookings');

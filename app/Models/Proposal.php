@@ -23,13 +23,14 @@ class Proposal extends Model
     protected $fillable = [
         'quote_request_id', 'title', 'client_name', 'client_email',
         'scope', 'timeline', 'amount', 'milestones', 'valid_until',
-        'status', 'token', 'sent_at', 'responded_at', 'client_note',
+        'status', 'token', 'sent_at', 'viewed_at', 'responded_at', 'client_note',
     ];
 
     protected $casts = [
         'milestones'   => 'array',
         'valid_until'  => 'date',
         'sent_at'      => 'datetime',
+        'viewed_at'    => 'datetime',
         'responded_at' => 'datetime',
         'amount'       => 'decimal:2',
     ];
@@ -52,6 +53,12 @@ class Proposal extends Model
     public function clientProjects(): HasMany
     {
         return $this->hasMany(ClientProject::class);
+    }
+
+    /** The (first) project created from this proposal. */
+    public function project()
+    {
+        return $this->hasOne(ClientProject::class);
     }
 
     /** Public secure link for the client. */

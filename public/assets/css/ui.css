@@ -115,7 +115,7 @@ textarea.ui-control { resize: vertical; min-height: 5.5rem; }
 .ui-date { position: relative; }
 .ui-date-display { cursor: pointer; background: #fff; }
 .ui-cal {
-    position: absolute; left: 0; top: calc(100% + 0.35rem); z-index: 60; width: 17rem;
+    position: absolute; right: 0; top: calc(100% + 0.35rem); z-index: 60; width: 17rem;
     background: #fff; border: 1px solid #e5edfb; border-radius: 0.75rem;
     box-shadow: 0 16px 36px rgba(15, 42, 92, 0.16); padding: 0.8rem;
 }
@@ -172,4 +172,31 @@ html.dark .ui-file-drop p strong { color: #60a5fa; }
 /* ---- Responsive ---- */
 @media (max-width: 640px) {
     .ui-cal { position: fixed; left: 1rem; right: 1rem; top: auto; bottom: 1rem; width: auto; }
+}
+
+/* ---- Proposal milestone rows ---- */
+.milestone-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.milestone-row .milestone-title { flex: 1 1 0%; min-width: 0; }
+.milestone-row .milestone-amount { flex: 0 0 9rem; width: 9rem; }
+.milestone-row .milestone-remove {
+    flex-shrink: 0;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    color: #dc2626;
+    border-color: #fecaca;
+    background: #fef2f2;
+}
+.milestone-row .milestone-remove:hover {
+    color: #fff;
+    border-color: #dc2626;
+    background: #dc2626;
+}
+@media (max-width: 480px) {
+    .milestone-row { flex-wrap: wrap; }
+    .milestone-row .milestone-title { flex: 1 1 100%; }
+    .milestone-row .milestone-amount { flex: 1 1 0%; width: auto; }
 }

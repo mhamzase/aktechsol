@@ -225,6 +225,8 @@
                 this.rowsEl.innerHTML = data.rows || '';
                 if (this.pagEl) this.pagEl.innerHTML = data.pagination || '';
                 if (this.statsEl && data.stats !== undefined) this.statsEl.innerHTML = data.stats;
+                // Let listeners repaint dynamic row elements (progress bars, etc.).
+                document.dispatchEvent(new CustomEvent('tableRowsLoaded'));
             } catch (err) {
                 this.rowsEl.innerHTML = `<tr><td colspan="20" class="text-center py-8 text-red-500">
                     Failed to load. Please retry.</td></tr>`;
@@ -263,7 +265,11 @@
         document.body.style.overflow = 'hidden';
         try {
             const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-            d.querySelector('[data-drawer-body]').innerHTML = await res.text();
+            const body = d.querySelector('[data-drawer-body]');
+            body.innerHTML = await res.text();
+            body.dataset.drawerUrl = url;
+            // Paint dynamic elements (progress sliders, etc.) after drawer content loads.
+            document.dispatchEvent(new CustomEvent('drawerOpened'));
         } catch (err) {
             d.querySelector('[data-drawer-body]').innerHTML =
                 '<div class="p-8 text-center text-red-500">Failed to load form.</div>';
@@ -458,6 +464,22 @@
         const form = e.target.closest('form[data-ajax-form]');
         if (!form) return;
         e.preventDefault();
+
+        // ---- Confirmation (if the form declares one) ----
+        if (form.dataset.confirmTitle && !form.dataset.confirmDone) {
+            window.confirmAction({
+                title: form.dataset.confirmTitle,
+                message: form.dataset.confirmMessage || 'Are you sure?',
+                confirmLabel: form.dataset.confirmLabel || 'Confirm',
+                onConfirm: () => {
+                    form.dataset.confirmDone = '1';
+                    form.requestSubmit();
+                },
+            });
+            return;
+        }
+        delete form.dataset.confirmDone;
+
         const btn = form.querySelector('[type="submit"]');
         const original = btn ? btn.innerHTML : '';
         if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin inline-block">◌</span> Saving…'; }
@@ -558,6 +580,351 @@
         }
     });
 
+    /* ---------------- Searchable select (x-ui.search-select) ---------------- */
+    document.addEventListener('click', (e) => {
+        // Close all open menus when clicking outside.
+        document.querySelectorAll('[data-search-select-menu]').forEach(menu => {
+            const wrap = menu.closest('[data-search-select]');
+            if (wrap && !wrap.contains(e.target)) menu.classList.add('hidden');
+        });
+
+        const toggle = e.target.closest('[data-search-select-toggle]');
+        if (toggle) {
+            const wrap = toggle.closest('[data-search-select]');
+            const menu = wrap.querySelector('[data-search-select-menu]');
+            const wasHidden = menu.classList.contains('hidden');
+            document.querySelectorAll('[data-search-select-menu]').forEach(m => m.classList.add('hidden'));
+            if (wasHidden) {
+                menu.classList.remove('hidden');
+                const search = wrap.querySelector('[data-search-select-search]');
+                search.value = '';
+                wrap.querySelectorAll('[data-search-select-option]').forEach(o => o.classList.remove('hidden'));
+                wrap.querySelector('[data-search-select-empty]').classList.add('hidden');
+                setTimeout(() => search.focus(), 50);
+            }
+            return;
+        }
+
+        const option = e.target.closest('[data-search-select-option]');
+        if (option) {
+            const wrap = option.closest('[data-search-select]');
+            wrap.querySelector('[data-search-select-value]').value = option.dataset.value;
+            const label = wrap.querySelector('[data-search-select-label]');
+            label.textContent = option.dataset.label;
+            label.classList.remove('text-slate-400');
+            wrap.querySelector('[data-search-select-menu]').classList.add('hidden');
+            wrap.querySelectorAll('[data-search-select-option]').forEach(o => {
+                const selected = o.dataset.value === option.dataset.value;
+                o.classList.toggle('bg-blue-50', selected);
+                o.classList.toggle('font-bold', selected);
+                o.classList.toggle('text-blue-700', selected);
+            });
+        }
+    });
+
+    document.addEventListener('input', (e) => {
+        const search = e.target.closest('[data-search-select-search]');
+        if (!search) return;
+        const wrap = search.closest('[data-search-select]');
+        const term = search.value.toLowerCase().trim();
+        let visible = 0;
+        wrap.querySelectorAll('[data-search-select-option]').forEach(o => {
+            const match = o.dataset.label.toLowerCase().includes(term);
+            o.classList.toggle('hidden', !match);
+            if (match) visible++;
+        });
+        wrap.querySelector('[data-search-select-empty]').classList.toggle('hidden', visible > 0);
+    });
+
+    /* ---------------- Invoice actions (delegated, drawer-safe) ---------------- */
+    // Helper: reload the current drawer content.
+    function reloadInvoiceDrawer() {
+        const drawerBody = document.querySelector('[data-drawer-body]');
+        const currentUrl = drawerBody?.dataset?.drawerUrl;
+        if (currentUrl && window.openDrawer) {
+            const title = document.querySelector('[data-drawer-title]')?.textContent || '';
+            window.openDrawer(currentUrl, title);
+        }
+    }
+
+    document.addEventListener('click', async (e) => {
+        // Verify a payment proof.
+        const verifyBtn = e.target.closest('[data-verify-payment]');
+        if (verifyBtn) {
+            window.confirmAction({
+                title: 'Verify Payment?',
+                message: 'The amount will be added to the invoice paid total.',
+                confirmLabel: 'Verify',
+                onConfirm: async () => {
+                    try {
+                        const res = await fetch(verifyBtn.dataset.url, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        if (res.ok) { window.notify.success(data.message || 'Verified!'); reloadInvoiceDrawer(); }
+                        else window.notify.error(data.message || 'Failed.');
+                    } catch (err) { window.notify.error('Network error.'); }
+                },
+            });
+            return;
+        }
+
+        // Reject a payment proof.
+        const rejectBtn = e.target.closest('[data-reject-payment]');
+        if (rejectBtn) {
+            window.confirmAction({
+                title: 'Reject Payment?',
+                message: 'This proof will be marked as rejected.',
+                confirmLabel: 'Reject',
+                confirmClass: 'btn-danger',
+                onConfirm: async () => {
+                    try {
+                        const res = await fetch(rejectBtn.dataset.url, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        if (res.ok) { window.notify.success(data.message || 'Rejected!'); reloadInvoiceDrawer(); }
+                        else window.notify.error(data.message || 'Failed.');
+                    } catch (err) { window.notify.error('Network error.'); }
+                },
+            });
+            return;
+        }
+
+        // Email invoice to client.
+        const emailBtn = e.target.closest('[data-invoice-email]');
+        if (emailBtn) {
+            window.confirmAction({
+                title: 'Email Invoice?',
+                message: 'The invoice will be emailed to the client.',
+                confirmLabel: 'Send Email',
+                onConfirm: async () => {
+                    try {
+                        const res = await fetch(emailBtn.dataset.url, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        window.notify[res.ok ? 'success' : 'error'](data.message || (res.ok ? 'Sent!' : 'Failed.'));
+                    } catch (err) { window.notify.error('Network error.'); }
+                },
+            });
+            return;
+        }
+
+        // Mark invoice as paid.
+        const paidBtn = e.target.closest('[data-invoice-mark-paid]');
+        if (paidBtn) {
+            window.confirmAction({
+                title: 'Mark as Paid?',
+                message: 'The full invoice amount will be marked as paid.',
+                confirmLabel: 'Mark Paid',
+                onConfirm: async () => {
+                    try {
+                        const res = await fetch(paidBtn.dataset.url, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        if (res.ok) {
+                            window.notify.success(data.message || 'Done!');
+                            window.closeDrawer();
+                            window.reloadAdminTable('invoices-table');
+                        } else window.notify.error(data.message || 'Failed.');
+                    } catch (err) { window.notify.error('Network error.'); }
+                },
+            });
+        }
+    });
+
+    // Manual payment form (AJAX).
+    document.addEventListener('submit', async (e) => {
+        const form = e.target.closest('[data-manual-payment]');
+        if (!form) return;
+        e.preventDefault();
+        const btn = form.querySelector('[type="submit"]');
+        btn.disabled = true;
+        try {
+            const res = await fetch(form.dataset.url, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok) { window.notify.success(data.message || 'Recorded!'); reloadInvoiceDrawer(); }
+            else if (res.status === 422 && data.errors) {
+                window.notify.error(Object.values(data.errors)[0]?.[0] || 'Please check your input.');
+            } else window.notify.error(data.message || 'Failed.');
+        } catch (err) { window.notify.error('Network error.'); }
+        finally { btn.disabled = false; }
+    });
+
+    /* ---------------- Project updates (delegated, drawer-safe) ---------------- */
+    // Toggle add-update form with icon swap.
+    document.addEventListener('click', (e) => {
+        const toggle = e.target.closest('[data-toggle-update-form]');
+        if (!toggle) return;
+        const form = document.getElementById('add-update-form');
+        if (!form) return;
+        const isHidden = form.classList.toggle('hidden');
+        const plusIcon = toggle.querySelector('[data-toggle-icon-plus]');
+        const minusIcon = toggle.querySelector('[data-toggle-icon-minus]');
+        const label = toggle.querySelector('[data-toggle-label]');
+        if (plusIcon) plusIcon.classList.toggle('hidden', !isHidden);
+        if (minusIcon) minusIcon.classList.toggle('hidden', isHidden);
+        if (label) label.textContent = isHidden ? 'Add Update' : 'Close';
+    });
+
+    // Submit add-update form via AJAX (no refresh).
+    document.addEventListener('submit', async (e) => {
+        const form = e.target.closest('#add-update-form');
+        if (!form) return;
+        e.preventDefault();
+
+        const titleInput = form.querySelector('[name="title"]');
+        if (!titleInput.value.trim()) {
+            window.notify.error('Please enter an update title.');
+            titleInput.focus();
+            return;
+        }
+
+        const btn = form.querySelector('[type="submit"]');
+        btn.disabled = true;
+        const originalText = btn.textContent;
+        btn.textContent = 'Adding...';
+
+        try {
+            const res = await fetch(form.dataset.updateUrl, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok) {
+                window.notify.success(data.message || 'Update added!');
+                // Reload just the drawer content (no page refresh).
+                reloadInvoiceDrawer();
+            } else if (res.status === 422 && data.errors) {
+                const firstError = Object.values(data.errors)[0]?.[0];
+                window.notify.error(firstError || 'Please check your input.');
+            } else {
+                window.notify.error(data.message || 'Failed to add update.');
+            }
+        } catch (err) {
+            window.notify.error('Network error.');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    });
+
+    // Delete a project update.
+    document.addEventListener('click', async (e) => {
+        const delBtn = e.target.closest('[data-delete-update]');
+        if (!delBtn) return;
+        window.confirmAction({
+            title: 'Delete Update?',
+            message: 'This update will be permanently removed.',
+            confirmLabel: 'Delete',
+            confirmClass: 'btn-danger',
+            onConfirm: async () => {
+                try {
+                    const res = await fetch(delBtn.dataset.deleteUpdate, {
+                        method: 'DELETE',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
+                    });
+                    const data = await res.json().catch(() => ({}));
+                    if (res.ok) {
+                        window.notify.success(data.message || 'Deleted!');
+                        delBtn.closest('.group')?.remove();
+                    } else {
+                        window.notify.error(data.message || 'Failed.');
+                    }
+                } catch (err) {
+                    window.notify.error('Network error.');
+                }
+            },
+        });
+    });
+
+    // Close on Escape.
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('[data-search-select-menu]').forEach(m => m.classList.add('hidden'));
+        }
+    });
+
+    /* ---------------- Progress slider (project form) ---------------- */
+    function progressColor(p) {
+        p = parseInt(p, 10);
+        if (p >= 75) return '#16a34a'; // green
+        if (p >= 50) return '#1d4ed8'; // blue
+        if (p >= 25) return '#f59e0b'; // amber
+        return '#dc2626'; // red
+    }
+    function paintSliderFill(slider) {
+        const pct = parseInt(slider.value, 10);
+        const color = progressColor(pct);
+        slider.style.background = `linear-gradient(to right, ${color} 0%, ${color} ${pct}%, #e2e8f0 ${pct}%, #e2e8f0 100%)`;
+        slider.style.color = color;
+    }
+    function paintProgressBar(bar, pct) {
+        pct = parseInt(pct, 10);
+        bar.style.width = pct + '%';
+        bar.style.backgroundColor = progressColor(pct);
+    }
+    document.addEventListener('input', (e) => {
+        const slider = e.target.closest('[data-progress-slider]');
+        if (!slider) return;
+        paintSliderFill(slider);
+        const label = slider.parentElement.querySelector('[data-progress-value]');
+        if (label) {
+            label.textContent = slider.value + '%';
+            label.style.color = progressColor(slider.value);
+        }
+    });
+    // Paint listing progress bars + slider fills on load.
+    function paintAllProgress() {
+        document.querySelectorAll('[data-progress-bar]').forEach(bar => {
+            paintProgressBar(bar, bar.dataset.progressBar);
+        });
+        document.querySelectorAll('[data-progress-slider]').forEach(paintSliderFill);
+    }
+    document.addEventListener('DOMContentLoaded', paintAllProgress);
+    // Paint when drawer content loads (AJAX).
+    document.addEventListener('drawerOpened', () => setTimeout(paintAllProgress, 100));
+    // Paint after table rows load (AJAX).
+    document.addEventListener('tableRowsLoaded', () => setTimeout(paintAllProgress, 100));
+    // Re-paint after table AJAX reloads.
+    const _origReload = window.reloadAdminTable;
+    window.reloadAdminTable = function (id) {
+        _origReload(id);
+        setTimeout(paintAllProgress, 500);
+    };
+    document.addEventListener('click', (e) => {
+        const addBtn = e.target.closest('[data-add-milestone]');
+        if (addBtn) {
+            const list = document.getElementById('milestones-list');
+            if (!list) return;
+            let idx = parseInt(list.dataset.milestoneIndex || '0', 10);
+            const div = document.createElement('div');
+            div.className = 'milestone-row';
+            div.innerHTML =
+                '<input type="text" name="milestones[' + idx + '][title]" placeholder="Milestone title" class="ui-control milestone-title">' +
+                '<input type="number" name="milestones[' + idx + '][amount]" placeholder="$ Amount" step="0.01" min="0" class="ui-control milestone-amount">' +
+                '<button type="button" data-remove-milestone class="btn btn-secondary milestone-remove" title="Remove">×</button>';
+            list.appendChild(div);
+            list.dataset.milestoneIndex = String(idx + 1);
+            return;
+        }
+        const removeBtn = e.target.closest('[data-remove-milestone]');
+        if (removeBtn) {
+            removeBtn.closest('.milestone-row')?.remove();
+        }
+    });
+
     /* ---------------- Delete confirmation ---------------- */
     let pendingDelete = null;
     window.confirmDelete = function (url, tableId, message) {
@@ -569,6 +936,30 @@
     window.closeConfirmDelete = function () {
         pendingDelete = null;
         document.getElementById('confirm-delete-modal').classList.add('hidden');
+    };
+
+    /* ---------------- Generic confirm-action modal ---------------- */
+    let pendingAction = null;
+    window.confirmAction = function (opts) {
+        // opts: { title, message, confirmLabel, confirmClass, onConfirm }
+        pendingAction = opts;
+        document.getElementById('confirm-action-title').textContent = opts.title || 'Are you sure?';
+        document.getElementById('confirm-action-message').textContent = opts.message || '';
+        const btn = document.getElementById('confirm-action-btn');
+        btn.textContent = opts.confirmLabel || 'Confirm';
+        btn.className = 'btn ' + (opts.confirmClass || 'btn-primary');
+        document.getElementById('confirm-action-modal').classList.remove('hidden');
+    };
+    window.closeConfirmAction = function () {
+        pendingAction = null;
+        document.getElementById('confirm-action-modal').classList.add('hidden');
+    };
+    window.doConfirmAction = async function () {
+        const action = pendingAction;
+        window.closeConfirmAction();
+        if (action && typeof action.onConfirm === 'function') {
+            await action.onConfirm();
+        }
     };
     window.doDelete = async function () {
         if (!pendingDelete) return;

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 /**
  * Invoice — a milestone / project invoice.
@@ -20,7 +21,7 @@ class Invoice extends Model
     public const STATUSES = ['unpaid', 'partially_paid', 'paid', 'overdue', 'cancelled'];
 
     protected $fillable = [
-        'client_project_id', 'invoice_no', 'title',
+        'client_project_id', 'invoice_no', 'token', 'title',
         'amount', 'paid_amount', 'due_date', 'status', 'notes',
     ];
 
@@ -30,7 +31,7 @@ class Invoice extends Model
         'paid_amount' => 'decimal:2',
     ];
 
-    /** Auto-generate a readable invoice number on creation. */
+    /** Auto-generate invoice number + secure token on creation. */
     protected static function booted(): void
     {
         static::creating(function (Invoice $invoice) {
@@ -38,6 +39,7 @@ class Invoice extends Model
                 $invoice->invoice_no = 'INV-' . now()->format('Ym') . '-'
                     . str_pad((string) (self::withTrashed()->count() + 1), 4, '0', STR_PAD_LEFT);
             }
+            $invoice->token ??= Str::random(48);
         });
     }
 
@@ -56,6 +58,72 @@ class Invoice extends Model
     /** Remaining balance. */
     public function balance(): float
     {
-        return (float) $this->amount - (float) $this->paid_amount;
+        return round((float) $this->amount - (float) $this->paid_amount, 2);
+    }
+
+    /** Alias for balance (template-friendly). */
+    public function remainingAmount(): float
+    {
+        return $this->balance();
+    }
+
+    /** Human-readable status. */
+    public function statusLabel(): string
+    {
+        return ucfirst(str_replace('_', ' ', $this->status));
+    }
+
+    /** True when past due and not fully paid/cancelled. */
+    public function isOverdue(): bool
+    {
+        return $this->due_date
+            && $this->due_date->isPast()
+            && ! in_array($this->status, ['paid', 'cancelled']);
+    }
+
+    /** Secure client URL. */
+    public function invoiceUrl(): string
+    {
+        return route('invoices.show', $this->token);
+    }
+
+    /** Client name: from project or stored on... falls back gracefully. */
+    public function clientName(): string
+    {
+        return $this->project?->client_name ?? '—';
+    }
+
+    /** Client email from project. */
+    public function clientEmail(): ?string
+    {
+        return $this->project?->client_email;
+    }
+
+    /** Recompute status from paid_amount (keeps 'cancelled' untouched). */
+    public function refreshPaymentStatus(): void
+    {
+        if ($this->status === 'cancelled') return;
+
+        $paid = (float) $this->paid_amount;
+        $total = (float) $this->amount;
+
+        if ($paid >= $total && $total > 0) {
+            $this->status = 'paid';
+        } elseif ($paid > 0) {
+            $this->status = 'partially_paid';
+        } elseif ($this->isOverdue()) {
+            $this->status = 'overdue';
+        } else {
+            $this->status = 'unpaid';
+        }
+        $this->save();
+    }
+
+    /** Scope: invoices that should be flipped to overdue. */
+    public function scopeNeedsOverdue($query)
+    {
+        return $query->whereNotIn('status', ['paid', 'cancelled', 'overdue'])
+            ->whereNotNull('due_date')
+            ->whereDate('due_date', '<', today());
     }
 }
