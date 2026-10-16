@@ -17,8 +17,11 @@
                     <span class="inline-block px-3 py-1 bg-white/15 rounded-full text-xs">{{ $project->statusLabel() }}</span>
                     <span>{{ $project->progress }}% complete</span>
                 </div>
+                @php
+                    $pColor = $project->progress >= 75 ? '#4ade80' : ($project->progress >= 50 ? '#60a5fa' : ($project->progress >= 25 ? '#fbbf24' : '#f87171'));
+                @endphp
                 <div class="h-3 bg-white/15 rounded-full overflow-hidden">
-                    <div class="h-full bg-white rounded-full transition-all duration-500" style="width: {{ $project->progress }}%"></div>
+                    <div class="h-full rounded-full transition-all duration-500" style="width: {{ $project->progress }}%; background-color: {{ $pColor }};"></div>
                 </div>
             </div>
 

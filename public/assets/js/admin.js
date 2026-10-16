@@ -225,6 +225,8 @@
                 this.rowsEl.innerHTML = data.rows || '';
                 if (this.pagEl) this.pagEl.innerHTML = data.pagination || '';
                 if (this.statsEl && data.stats !== undefined) this.statsEl.innerHTML = data.stats;
+                // Let listeners repaint dynamic row elements (progress bars, etc.).
+                document.dispatchEvent(new CustomEvent('tableRowsLoaded'));
             } catch (err) {
                 this.rowsEl.innerHTML = `<tr><td colspan="20" class="text-center py-8 text-red-500">
                     Failed to load. Please retry.</td></tr>`;
@@ -264,6 +266,8 @@
         try {
             const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
             d.querySelector('[data-drawer-body]').innerHTML = await res.text();
+            // Paint dynamic elements (progress sliders, etc.) after drawer content loads.
+            document.dispatchEvent(new CustomEvent('drawerOpened'));
         } catch (err) {
             d.querySelector('[data-drawer-body]').innerHTML =
                 '<div class="p-8 text-center text-red-500">Failed to load form.</div>';
@@ -675,12 +679,11 @@
         document.querySelectorAll('[data-progress-slider]').forEach(paintSliderFill);
     }
     document.addEventListener('DOMContentLoaded', paintAllProgress);
-    // Re-paint after drawer opens (form injected via AJAX) and table reloads.
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('[data-row-edit]') || e.target.closest('[data-add-milestone]')) {
-            setTimeout(paintAllProgress, 400);
-        }
-    });
+    // Paint when drawer content loads (AJAX).
+    document.addEventListener('drawerOpened', () => setTimeout(paintAllProgress, 100));
+    // Paint after table rows load (AJAX).
+    document.addEventListener('tableRowsLoaded', () => setTimeout(paintAllProgress, 100));
+    // Re-paint after table AJAX reloads.
     const _origReload = window.reloadAdminTable;
     window.reloadAdminTable = function (id) {
         _origReload(id);
