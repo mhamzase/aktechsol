@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\ReviewRequestMail;
 use App\Models\ClientProject;
 use App\Models\Review;
+use App\Models\Testimonial;
 use App\Support\LogActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -57,13 +58,32 @@ class ReviewController extends Controller
         return view('admin.reviews.show', compact('review'));
     }
 
-    /** Approve (publish) a review. */
+    /** Approve (publish) a review — auto-creates a homepage testimonial for client reviews. */
     public function approve(Review $review)
     {
         $review->update(['status' => 'approved', 'is_published' => true]);
         LogActivity::record('review_approved', $review, "Approved review by {$review->reviewer_name}");
 
-        return response()->json(['message' => 'Review approved and published.', 'stats' => $this->stats()]);
+        // Auto-convert client reviews into testimonials (once per review).
+        $testimonialCreated = false;
+        if ($review->reviewer_type === 'client') {
+            $testimonial = Testimonial::firstOrCreate(
+                ['review_id' => $review->id],
+                [
+                    'client_name' => $review->reviewer_name,
+                    'content'     => $review->review,
+                    'rating'      => $review->rating,
+                    'status'      => true, // active => shows on homepage immediately
+                ]
+            );
+            $testimonialCreated = $testimonial->wasRecentlyCreated;
+        }
+
+        $message = $testimonialCreated
+            ? 'Review approved, published & added as a testimonial.'
+            : 'Review approved and published.';
+
+        return response()->json(['message' => $message, 'stats' => $this->stats()]);
     }
 
     /** Reject a review. */

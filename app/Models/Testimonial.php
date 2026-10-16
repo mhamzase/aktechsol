@@ -16,6 +16,7 @@ class Testimonial extends Model implements HasMedia
     use HasFactory, LogsActivity, SoftDeletes, InteractsWithMedia;
 
     protected $fillable = [
+        'review_id',
         'client_name',
         'client_position',
         'company',
