@@ -38,6 +38,10 @@ class ExpireProposals extends Command
             $this->info("Sent {$upcoming->count()} expiry reminder(s).");
         }
 
+        // Flip invoices past their due date to overdue.
+        $overdue = \App\Models\Invoice::needsOverdue()->update(['status' => 'overdue']);
+        $this->info("Marked {$overdue} invoice(s) as overdue.");
+
         return self::SUCCESS;
     }
 }

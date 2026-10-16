@@ -130,6 +130,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('client_project_id')->nullable()->constrained()->nullOnDelete();
             $table->string('invoice_no')->unique();
+            $table->string('token', 64)->nullable()->unique(); // secure client link
             $table->string('title');
             $table->decimal('amount', 12, 2)->default(0);
             $table->decimal('paid_amount', 12, 2)->default(0);
