@@ -65,11 +65,14 @@
                 </div>
                 <div class="max-h-80 overflow-y-auto" id="topbar-notifications-list">
                     @forelse ($latestNotes as $note)
-                        @php $nurl = $note->data['url'] ?? route('admin.notifications.index'); @endphp
+                        @php
+                            $nurl = $note->data['url'] ?? route('admin.notifications.index');
+                            $ntitle = $note->data['title'] ?? 'Details';
+                            // Detail pages open in drawer; listing pages navigate normally.
+                            $inDrawer = (bool) preg_match('#/admin/(contact-messages|chatbot|quotes|invoices|client-projects|proposals|reviews)/[^/]+$#', $nurl);
+                        @endphp
                         <a href="{{ $nurl }}"
-                           @if(str_contains($nurl, '/admin/invoices/') && !str_contains($nurl, '/edit'))
-                           onclick="event.preventDefault(); window.openDrawer('{{ $nurl }}', 'Invoice Details');"
-                           @endif
+                           @if($inDrawer) onclick="event.preventDefault(); window.openDrawer('{{ $nurl }}', '{{ addslashes($ntitle) }}');" @endif
                            class="flex gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 border-b border-slate-50 dark:border-slate-700/50">
                             <span class="w-2 h-2 rounded-full bg-[#1d4ed8] mt-1.5 shrink-0"></span>
                             <span>

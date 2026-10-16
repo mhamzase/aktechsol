@@ -5,7 +5,12 @@
         <span class="notif-dot w-2.5 h-2.5 rounded-full mt-1.5 shrink-0 {{ $note->read_at ? 'bg-slate-300 dark:bg-slate-600' : 'bg-[#1d4ed8]' }}"></span>
         <div class="flex-1 min-w-0">
             @if ($note->data['url'] ?? null)
-                <a href="{{ $note->data['url'] }}" class="block group">
+                @php
+                    $nurl = $note->data['url'];
+                    $ntitle = $note->data['title'] ?? 'Details';
+                    $inDrawer = (bool) preg_match('#/admin/(contact-messages|chatbot|quotes|invoices|client-projects|proposals|reviews)/[^/]+$#', $nurl);
+                @endphp
+                <a href="{{ $nurl }}" @if($inDrawer) onclick="event.preventDefault(); window.openDrawer('{{ $nurl }}', '{{ addslashes($ntitle) }}');" @endif class="block group">
                     <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 group-hover:text-[#1d4ed8] dark:group-hover:text-blue-400">{{ $note->data['title'] ?? 'Notification' }}</p>
                     <p class="text-sm text-slate-600 dark:text-slate-300 mt-0.5">{{ $note->data['message'] ?? '' }}</p>
                 </a>

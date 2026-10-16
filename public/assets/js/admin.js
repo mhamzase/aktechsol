@@ -761,6 +761,208 @@
         finally { btn.disabled = false; }
     });
 
+    /* ---------------- Review actions (delegated, drawer-safe) ---------------- */
+    // Helper: refresh the reviews table + stat cards from a JSON response.
+    function refreshReviews(data) {
+        if (window.reloadAdminTable) window.reloadAdminTable('reviews-table');
+        if (data && data.stats) {
+            Object.entries(data.stats).forEach(([key, val]) => {
+                const el = document.querySelector(`#review-stats [data-stat="${key}"]`);
+                if (el) el.textContent = key === 'avg' ? val + ' ★' : val;
+            });
+        }
+    }
+
+    document.addEventListener('click', async (e) => {
+        // Approve a review.
+        const approveBtn = e.target.closest('[data-approve-review]');
+        if (approveBtn) {
+            window.confirmAction({
+                title: 'Approve Review?',
+                message: 'This review will be published on the website.',
+                confirmLabel: 'Approve',
+                onConfirm: async () => {
+                    try {
+                        const res = await fetch(approveBtn.dataset.url, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        if (res.ok) { window.notify.success(data.message || 'Approved!'); refreshReviews(data); window.closeDrawer(); }
+                        else window.notify.error(data.message || 'Failed.');
+                    } catch (err) { window.notify.error('Network error.'); }
+                },
+            });
+            return;
+        }
+
+        // Reject a review.
+        const rejectBtn = e.target.closest('[data-reject-review]');
+        if (rejectBtn) {
+            window.confirmAction({
+                title: 'Reject Review?',
+                message: 'This review will be marked as rejected.',
+                confirmLabel: 'Reject',
+                confirmClass: 'btn-danger',
+                onConfirm: async () => {
+                    try {
+                        const res = await fetch(rejectBtn.dataset.url, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
+                        });
+                        const data = await res.json().catch(() => ({}));
+                        if (res.ok) { window.notify.success(data.message || 'Rejected.'); refreshReviews(data); window.closeDrawer(); }
+                        else window.notify.error(data.message || 'Failed.');
+                    } catch (err) { window.notify.error('Network error.'); }
+                },
+            });
+            return;
+        }
+    });
+
+    /* ---------------- Review-request project picker (delegated, drawer-safe) ---------------- */
+    // Paint a project card selected / unselected (state classes come from the
+    // card's data-* attributes so Tailwind compiles them from Blade).
+    const paintPick = (btn, on) => {
+        const onCls = (btn.dataset.pickOn || '').split(' ').filter(Boolean);
+        const offCls = (btn.dataset.pickOff || '').split(' ').filter(Boolean);
+        btn.classList.remove(...(on ? offCls : onCls));
+        btn.classList.add(...(on ? onCls : offCls));
+        const circle = btn.querySelector('[data-pick-circle]');
+        if (circle) {
+            const cOn = (btn.dataset.circleOn || '').split(' ').filter(Boolean);
+            const cOff = (btn.dataset.circleOff || '').split(' ').filter(Boolean);
+            circle.classList.remove(...(on ? cOff : cOn));
+            circle.classList.add(...(on ? cOn : cOff));
+        }
+        const check = btn.querySelector('[data-pick-check]');
+        if (check) {
+            check.classList.toggle('opacity-100', on);
+            check.classList.toggle('scale-100', on);
+            check.classList.toggle('opacity-0', !on);
+            check.classList.toggle('scale-75', !on);
+        }
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    };
+    const clearPickError = (form) => {
+        form.querySelector('[data-project-error]')?.classList.add('hidden');
+        const list = form.querySelector('[data-project-list]');
+        if (list) list.classList.remove(...(list.dataset.errorRing || '').split(' ').filter(Boolean));
+    };
+    // Select a project card.
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-project-pick]');
+        if (!btn) return;
+        const form = btn.closest('form[data-project-picker]');
+        if (!form) return;
+        form.querySelector('[data-project-value]').value = btn.dataset.projectPick;
+        form.querySelectorAll('[data-project-pick]').forEach((b) => paintPick(b, b === btn));
+        clearPickError(form);
+    });
+    // Debounced AJAX search of delivered projects.
+    let projectSearchT;
+    const runProjectSearch = async (input) => {
+        const form = input.closest('form[data-project-picker]');
+        const list = form?.querySelector('[data-project-list]');
+        if (!list) return;
+        const url = new URL(input.dataset.searchUrl, window.location.origin);
+        url.searchParams.set('search', input.value.trim());
+        url.searchParams.set('partial', 'list');
+        list.innerHTML = '<div class="p-6 text-center text-sm text-slate-400 dark:text-slate-500">Searching…</div>';
+        try {
+            const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            list.innerHTML = await res.text();
+            // Re-apply the current selection if it's still in the results.
+            const val = form.querySelector('[data-project-value]')?.value;
+            list.querySelectorAll('[data-project-pick]').forEach((b) => paintPick(b, !!val && b.dataset.projectPick === val));
+            const count = form.querySelector('[data-project-count]');
+            if (count) count.textContent = list.querySelectorAll('[data-project-pick]').length;
+        } catch (err) {
+            list.innerHTML = '<div class="p-6 text-center text-sm text-red-500">Search failed. Try again.</div>';
+        }
+    };
+    document.addEventListener('input', (e) => {
+        const input = e.target.closest('[data-project-search]');
+        if (!input) return;
+        input.closest('form[data-project-picker]')
+            ?.querySelector('[data-project-search-clear]')
+            ?.classList.toggle('hidden', !input.value);
+        clearTimeout(projectSearchT);
+        projectSearchT = setTimeout(() => runProjectSearch(input), 300);
+    });
+    // Clear search button.
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('[data-project-search-clear]')) return;
+        const form = e.target.closest('form[data-project-picker]');
+        const input = form?.querySelector('[data-project-search]');
+        if (!input) return;
+        input.value = '';
+        e.target.closest('[data-project-search-clear]').classList.add('hidden');
+        runProjectSearch(input);
+        input.focus();
+    });
+    // Frontend "required" validation — capture phase so it runs before the
+    // generic data-ajax-form submit handler.
+    document.addEventListener('submit', (e) => {
+        const form = e.target.closest?.('form[data-project-picker]');
+        if (!form) return;
+        if (form.querySelector('[data-project-value]')?.value) return; // valid
+        e.preventDefault();
+        e.stopPropagation();
+        form.querySelector('[data-project-error]')?.classList.remove('hidden');
+        const list = form.querySelector('[data-project-list]');
+        if (list) list.classList.add(...(list.dataset.errorRing || '').split(' ').filter(Boolean));
+        list?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        if (window.notify) window.notify.error('Please select a project first.');
+    }, true);
+
+    /* ---------------- Review edit form widgets (delegated, drawer-safe) ---------------- */
+    // Star rating picker.
+    const rateLabels = { 1: 'Poor', 2: 'Fair', 3: 'Good', 4: 'Very Good', 5: 'Excellent' };
+    const paintRateStars = (wrap, n) => {
+        wrap.querySelectorAll('[data-rate-star]').forEach((s) => {
+            const svg = s.querySelector('svg');
+            const active = parseInt(s.dataset.rateStar, 10) <= n;
+            svg.classList.toggle('text-amber-400', active);
+            svg.classList.toggle('text-slate-300', !active);
+            svg.classList.toggle('dark:text-slate-600', !active);
+        });
+        const label = wrap.closest('form')?.querySelector('[data-rating-label]');
+        if (label) label.textContent = `${rateLabels[n]} — ${n} star${n > 1 ? 's' : ''}`;
+    };
+    document.addEventListener('click', (e) => {
+        const star = e.target.closest('[data-rate-star]');
+        if (!star) return;
+        const wrap = star.closest('[data-star-picker]');
+        if (!wrap) return;
+        const n = parseInt(star.dataset.rateStar, 10);
+        const form = star.closest('form');
+        if (form) form.querySelector('[data-rating-value]').value = n;
+        paintRateStars(wrap, n);
+    });
+    // Status segmented pills.
+    document.addEventListener('click', (e) => {
+        const pill = e.target.closest('[data-status-pill]');
+        if (!pill) return;
+        const group = pill.closest('[data-status-pills]');
+        const form = pill.closest('form');
+        if (form) form.querySelector('[data-status-value]').value = pill.dataset.statusPill;
+        group.querySelectorAll('[data-status-pill]').forEach((p) => {
+            const on = p === pill;
+            const onCls = (p.dataset.pillOn || '').split(' ').filter(Boolean);
+            const offCls = (p.dataset.pillOff || '').split(' ').filter(Boolean);
+            p.classList.remove(...(on ? offCls : onCls));
+            p.classList.add(...(on ? onCls : offCls));
+        });
+    });
+    // Review character counter.
+    document.addEventListener('input', (e) => {
+        const ta = e.target.closest('[data-review-text]');
+        if (!ta) return;
+        const count = ta.closest('form')?.querySelector('[data-review-count]');
+        if (count) count.textContent = ta.value.length;
+    });
+
     /* ---------------- Project updates (delegated, drawer-safe) ---------------- */
     // Toggle add-update form with icon swap.
     document.addEventListener('click', (e) => {
@@ -974,6 +1176,7 @@
             if (!res.ok) throw new Error(data.message || 'Delete failed.');
             window.notify.success(data.message || 'Deleted successfully.');
             if (tableId) window.reloadAdminTable(tableId);
+            document.dispatchEvent(new CustomEvent('rowDeleted', { detail: data }));
         } catch (err) {
             window.notify.error(err.message);
         }
