@@ -574,7 +574,69 @@
         }
     });
 
-    /* ---------------- Proposal milestones (delegated, drawer-safe) ---------------- */
+    /* ---------------- Searchable select (x-ui.search-select) ---------------- */
+    document.addEventListener('click', (e) => {
+        // Close all open menus when clicking outside.
+        document.querySelectorAll('[data-search-select-menu]').forEach(menu => {
+            const wrap = menu.closest('[data-search-select]');
+            if (wrap && !wrap.contains(e.target)) menu.classList.add('hidden');
+        });
+
+        const toggle = e.target.closest('[data-search-select-toggle]');
+        if (toggle) {
+            const wrap = toggle.closest('[data-search-select]');
+            const menu = wrap.querySelector('[data-search-select-menu]');
+            const wasHidden = menu.classList.contains('hidden');
+            document.querySelectorAll('[data-search-select-menu]').forEach(m => m.classList.add('hidden'));
+            if (wasHidden) {
+                menu.classList.remove('hidden');
+                const search = wrap.querySelector('[data-search-select-search]');
+                search.value = '';
+                wrap.querySelectorAll('[data-search-select-option]').forEach(o => o.classList.remove('hidden'));
+                wrap.querySelector('[data-search-select-empty]').classList.add('hidden');
+                setTimeout(() => search.focus(), 50);
+            }
+            return;
+        }
+
+        const option = e.target.closest('[data-search-select-option]');
+        if (option) {
+            const wrap = option.closest('[data-search-select]');
+            wrap.querySelector('[data-search-select-value]').value = option.dataset.value;
+            const label = wrap.querySelector('[data-search-select-label]');
+            label.textContent = option.dataset.label;
+            label.classList.remove('text-slate-400');
+            wrap.querySelector('[data-search-select-menu]').classList.add('hidden');
+            // Update selected styling.
+            wrap.querySelectorAll('[data-search-select-option]').forEach(o => {
+                const selected = o.dataset.value === option.dataset.value;
+                o.classList.toggle('bg-blue-50', selected);
+                o.classList.toggle('font-bold', selected);
+                o.classList.toggle('text-blue-700', selected);
+            });
+        }
+    });
+
+    document.addEventListener('input', (e) => {
+        const search = e.target.closest('[data-search-select-search]');
+        if (!search) return;
+        const wrap = search.closest('[data-search-select]');
+        const term = search.value.toLowerCase().trim();
+        let visible = 0;
+        wrap.querySelectorAll('[data-search-select-option]').forEach(o => {
+            const match = o.dataset.label.toLowerCase().includes(term);
+            o.classList.toggle('hidden', !match);
+            if (match) visible++;
+        });
+        wrap.querySelector('[data-search-select-empty]').classList.toggle('hidden', visible > 0);
+    });
+
+    // Close on Escape.
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('[data-search-select-menu]').forEach(m => m.classList.add('hidden'));
+        }
+    });
     document.addEventListener('click', (e) => {
         const addBtn = e.target.closest('[data-add-milestone]');
         if (addBtn) {

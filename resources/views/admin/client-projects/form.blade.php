@@ -17,8 +17,9 @@
                 <x-ui.input name="client_email" type="email" label="Client Email" :value="$project->client_email" required placeholder="john@example.com" />
             </div>
             <div class="md:col-span-6">
-                <x-ui.select name="assigned_to" label="Assigned To" :value="$project->assigned_to"
-                             :options="$users->pluck('name', 'id')->prepend('— Unassigned —', '')->toArray()" />
+                <x-ui.search-select name="assigned_to" label="Assigned To" :value="$project->assigned_to"
+                                    placeholder="— Unassigned —"
+                                    :options="$users->pluck('name', 'id')->prepend('— Unassigned —', '')->toArray()" />
             </div>
             <div class="md:col-span-6">
                 <x-ui.select name="status" label="Status" :value="$project->status ?? 'received'" required
