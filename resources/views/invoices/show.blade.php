@@ -11,6 +11,14 @@
             <p class="text-xs font-bold uppercase tracking-[0.2em] text-blue-200/70">Invoice {{ $invoice->invoice_no }}</p>
             <h1 class="text-2xl md:text-3xl font-extrabold mt-2">{{ $invoice->title }}</h1>
             <p class="text-blue-200/80 text-sm mt-1.5">Hi {{ $invoice->clientName() }} — here's your invoice.</p>
+            @if($invoice->project)
+            <a href="{{ $invoice->project->trackingUrl() }}" target="_blank"
+               class="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-xs font-bold transition">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.938 23.938 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                Project: {{ $invoice->project->title }}
+                <span class="px-2 py-0.5 bg-white/15 rounded-full">{{ $invoice->project->statusLabel() }}</span>
+            </a>
+            @endif
 
             <div class="grid grid-cols-3 gap-2 md:gap-3 mt-6">
                 <div class="bg-white/10 rounded-2xl p-3 md:p-4">
