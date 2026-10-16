@@ -17,7 +17,10 @@ class ClientInvoiceController extends Controller
             $invoice->update(['status' => 'overdue']);
         }
 
-        return view('invoices.show', compact('invoice'));
+        // Payment methods from settings (admin panel).
+        $paymentMethods = app(\App\Settings\SiteSettings::class)->payment_methods ?? [];
+
+        return view('invoices.show', compact('invoice', 'paymentMethods'));
     }
 
     /** Client submits a payment proof (screenshot). */

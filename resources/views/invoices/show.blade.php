@@ -35,6 +35,35 @@
             </div>
         </div>
 
+        {{-- Payment methods from settings --}}
+        @if(!empty($paymentMethods))
+        <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-100">
+            <h2 class="text-lg font-extrabold text-slate-900 mb-1">Pay Via</h2>
+            <p class="text-sm text-slate-400 mb-5">Choose a payment method, then submit your proof below.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @foreach($paymentMethods as $idx => $pm)
+                @if(!empty($pm['method']) || !empty($pm['account_number']))
+                <label class="cursor-pointer">
+                    <input type="radio" name="payment_method_select" value="{{ $idx }}" class="peer sr-only" {{ $idx === 0 ? 'checked' : '' }}>
+                    <div class="p-4 rounded-2xl border-2 border-slate-100 peer-checked:border-blue-600 peer-checked:bg-blue-50/50 transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="font-extrabold text-slate-900">{{ $pm['method'] ?? 'Payment' }}</p>
+                            <span class="w-5 h-5 rounded-full border-2 border-slate-300 peer-checked:border-blue-600 flex items-center justify-center">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 peer-checked:opacity-100"></span>
+                            </span>
+                        </div>
+                        @if(!empty($pm['account_holder']))<p class="text-sm text-slate-600"><span class="text-slate-400">Holder:</span> {{ $pm['account_holder'] }}</p>@endif
+                        @if(!empty($pm['bank_name']))<p class="text-sm text-slate-600"><span class="text-slate-400">Bank:</span> {{ $pm['bank_name'] }}</p>@endif
+                        @if(!empty($pm['account_number']))<p class="text-sm font-bold text-slate-900 mt-1">{{ $pm['account_number'] }}</p>@endif
+                        @if(!empty($pm['iban']))<p class="text-xs text-slate-400 mt-0.5 break-all">IBAN: {{ $pm['iban'] }}</p>@endif
+                    </div>
+                </label>
+                @endif
+                @endforeach
+            </div>
+        </div>
+        @endif
+
         @if($invoice->notes)
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-100">
             <h2 class="text-lg font-extrabold text-slate-900 mb-3">Payment Instructions</h2>
@@ -57,7 +86,7 @@
                 </div>
                 <div class="md:col-span-6">
                     <label class="block text-sm font-bold text-slate-700 mb-1.5">Payment Method <span class="text-red-500">*</span></label>
-                    <input type="text" name="method" required placeholder="Bank transfer / Easypaisa / JazzCash"
+                    <input type="text" name="method" id="proof-method" required placeholder="Bank transfer / Easypaisa / JazzCash"
                            class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
                 </div>
                 <div class="md:col-span-6">
@@ -114,6 +143,21 @@
 
 @push('scripts')
 <script>
+// Auto-fill method field from selected payment method card.
+(function() {
+    const methods = @json($paymentMethods);
+    const radios = document.querySelectorAll('input[name="payment_method_select"]');
+    const methodInput = document.getElementById('proof-method');
+    function syncMethod() {
+        const selected = document.querySelector('input[name="payment_method_select"]:checked');
+        if (selected && methods[selected.value] && methodInput) {
+            const pm = methods[selected.value];
+            methodInput.value = pm.method || '';
+        }
+    }
+    radios.forEach(r => r.addEventListener('change', syncMethod));
+    syncMethod();
+})();
 // Submit payment proof via AJAX.
 (function() {
     const form = document.getElementById('proof-form');
