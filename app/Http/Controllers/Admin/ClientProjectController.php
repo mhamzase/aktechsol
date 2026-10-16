@@ -101,10 +101,10 @@ class ClientProjectController extends Controller
             'is_client_visible' => 'boolean',
         ]);
 
-        $clientProject->updates()->create([
+        $update = $clientProject->updates()->create([
             'title'             => $validated['title'],
             'note'              => $validated['note'] ?? null,
-            'is_client_visible' => $validated['is_client_visible'] ?? true,
+            'is_client_visible' => $request->boolean('is_client_visible'),
             'created_by'        => auth()->id(),
         ]);
 
