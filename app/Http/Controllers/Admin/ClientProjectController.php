@@ -59,7 +59,7 @@ class ClientProjectController extends Controller
         $project = ClientProject::create($this->validateData($request));
         LogActivity::record('project_created', $project, "Created project: {$project->title}");
 
-        return response()->json(['message' => 'Project created.', 'id' => $project->id]);
+        return response()->json(['message' => 'Project created.', 'id' => $project->id, 'stats' => $this->stats()]);
     }
 
     public function show(ClientProject $clientProject)
@@ -81,7 +81,7 @@ class ClientProjectController extends Controller
         $clientProject->update($this->validateData($request));
         LogActivity::record('project_updated', $clientProject, "Updated project: {$clientProject->title}");
 
-        return response()->json(['message' => 'Project updated.']);
+        return response()->json(['message' => 'Project updated.', 'stats' => $this->stats()]);
     }
 
     public function destroy(ClientProject $clientProject)
@@ -129,8 +129,24 @@ class ClientProjectController extends Controller
         return response()->json(['message' => 'Update deleted.']);
     }
 
+    protected function stats(): array
+    {
+        return [
+            'total'       => ClientProject::count(),
+            'received'    => ClientProject::where('status', 'received')->count(),
+            'in_progress' => ClientProject::where('status', 'in_progress')->count(),
+            'review'      => ClientProject::whereIn('status', ['review', 'revision'])->count(),
+            'delivered'   => ClientProject::where('status', 'delivered')->count(),
+        ];
+    }
+
     protected function validateData(Request $request): array
     {
+        // Convert empty assigned_to to null (passes nullable|exists).
+        if ($request->input('assigned_to') === '') {
+            $request->merge(['assigned_to' => null]);
+        }
+
         return $request->validate([
             'title'        => 'required|string|max:255',
             'client_name'  => 'required|string|max:255',

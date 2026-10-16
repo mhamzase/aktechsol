@@ -55,4 +55,17 @@
         </x-slot:filters>
     </x-admin.data-table>
 </div>
+
+@push('scripts')
+<script>
+// Refresh stat cards after create/update from the drawer (no page refresh).
+document.addEventListener('ajaxFormSuccess', (e) => {
+    const stats = e.detail?.stats;
+    if (!stats) return;
+    Object.entries(stats).forEach(([key, val]) => {
+        const el = document.querySelector(`#project-stats [data-stat="${key}"]`);
+        if (el) el.textContent = val;
+    });
+});
+</script>
 @endsection
