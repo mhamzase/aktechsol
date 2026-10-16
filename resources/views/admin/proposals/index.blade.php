@@ -51,40 +51,51 @@
 
 @push('scripts')
 <script>
-// Resend / Duplicate proposal (delegated, drawer-safe).
+// Resend / Duplicate proposal (delegated, drawer-safe) — with confirmation.
 document.addEventListener('click', async (e) => {
     const btn = e.target.closest('[data-resend-proposal], [data-duplicate-proposal]');
     if (!btn) return;
 
-    const url = btn.dataset.url;
-    btn.disabled = true;
-    const originalText = btn.textContent;
-    btn.textContent = 'Working...';
+    const isResend = btn.hasAttribute('data-resend-proposal');
 
-    try {
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
-        });
-        const data = await res.json().catch(() => ({}));
-        if (res.ok) {
-            window.notify.success(data.message || 'Done!');
-            if (data.drawer_url && window.openDrawer) {
-                // Close current drawer then open the duplicate in a drawer.
-                if (window.closeDrawer) window.closeDrawer();
-                setTimeout(() => window.openDrawer(data.drawer_url, 'Edit Proposal'), 300);
-            } else if (data.redirect) {
-                setTimeout(() => { window.location.href = data.redirect; }, 800);
+    window.confirmAction({
+        title: isResend ? 'Resend Email?' : 'Duplicate Proposal?',
+        message: isResend
+            ? 'This will email the proposal to the client again. Continue?'
+            : 'This will create a copy of this proposal as a new draft. Continue?',
+        confirmLabel: isResend ? 'Resend' : 'Duplicate',
+        onConfirm: async () => {
+            const url = btn.dataset.url;
+            btn.disabled = true;
+            const originalText = btn.textContent;
+            btn.textContent = 'Working...';
+
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': window.csrfToken, 'Accept': 'application/json' }
+                });
+                const data = await res.json().catch(() => ({}));
+                if (res.ok) {
+                    window.notify.success(data.message || 'Done!');
+                    if (data.drawer_url && window.openDrawer) {
+                        // Close current drawer then open the duplicate in a drawer.
+                        if (window.closeDrawer) window.closeDrawer();
+                        setTimeout(() => window.openDrawer(data.drawer_url, 'Edit Proposal'), 300);
+                    } else if (data.redirect) {
+                        setTimeout(() => { window.location.href = data.redirect; }, 800);
+                    }
+                } else {
+                    window.notify.error(data.message || 'Something went wrong.');
+                }
+            } catch (err) {
+                window.notify.error('Network error.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
             }
-        } else {
-            window.notify.error(data.message || 'Something went wrong.');
-        }
-    } catch (err) {
-        window.notify.error('Network error.');
-    } finally {
-        btn.disabled = false;
-        btn.textContent = originalText;
-    }
+        },
+    });
 });
 
 // Auto-open proposal drawer when landing via notification (?view=id).

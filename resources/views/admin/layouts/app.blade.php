@@ -71,6 +71,19 @@
         </div>
     </div>
 
+    {{-- Generic confirm-action modal (resend, duplicate, mark-as-sent, …) --}}
+    <div id="confirm-action-modal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60" onclick="closeConfirmAction()"></div>
+        <div class="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-sm w-full p-6">
+            <h3 id="confirm-action-title" class="font-bold text-slate-800 dark:text-slate-100 mb-2">Are you sure?</h3>
+            <p id="confirm-action-message" class="text-sm text-slate-500 dark:text-slate-400 mb-5"></p>
+            <div class="flex justify-end gap-2">
+                <button class="btn btn-ghost" onclick="closeConfirmAction()">Cancel</button>
+                <button id="confirm-action-btn" class="btn btn-primary" onclick="doConfirmAction()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
     <script src="{{ asset('assets/vendor/notyf/notyf.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/quill/quill.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>

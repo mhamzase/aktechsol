@@ -458,6 +458,22 @@
         const form = e.target.closest('form[data-ajax-form]');
         if (!form) return;
         e.preventDefault();
+
+        // ---- Confirmation (if the form declares one) ----
+        if (form.dataset.confirmTitle && !form.dataset.confirmDone) {
+            window.confirmAction({
+                title: form.dataset.confirmTitle,
+                message: form.dataset.confirmMessage || 'Are you sure?',
+                confirmLabel: form.dataset.confirmLabel || 'Confirm',
+                onConfirm: () => {
+                    form.dataset.confirmDone = '1';
+                    form.requestSubmit();
+                },
+            });
+            return;
+        }
+        delete form.dataset.confirmDone;
+
         const btn = form.querySelector('[type="submit"]');
         const original = btn ? btn.innerHTML : '';
         if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin inline-block">◌</span> Saving…'; }
@@ -592,6 +608,30 @@
     window.closeConfirmDelete = function () {
         pendingDelete = null;
         document.getElementById('confirm-delete-modal').classList.add('hidden');
+    };
+
+    /* ---------------- Generic confirm-action modal ---------------- */
+    let pendingAction = null;
+    window.confirmAction = function (opts) {
+        // opts: { title, message, confirmLabel, confirmClass, onConfirm }
+        pendingAction = opts;
+        document.getElementById('confirm-action-title').textContent = opts.title || 'Are you sure?';
+        document.getElementById('confirm-action-message').textContent = opts.message || '';
+        const btn = document.getElementById('confirm-action-btn');
+        btn.textContent = opts.confirmLabel || 'Confirm';
+        btn.className = 'btn ' + (opts.confirmClass || 'btn-primary');
+        document.getElementById('confirm-action-modal').classList.remove('hidden');
+    };
+    window.closeConfirmAction = function () {
+        pendingAction = null;
+        document.getElementById('confirm-action-modal').classList.add('hidden');
+    };
+    window.doConfirmAction = async function () {
+        const action = pendingAction;
+        window.closeConfirmAction();
+        if (action && typeof action.onConfirm === 'function') {
+            await action.onConfirm();
+        }
     };
     window.doDelete = async function () {
         if (!pendingDelete) return;

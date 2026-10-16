@@ -71,7 +71,10 @@
 
         <div class="flex flex-wrap gap-3 pt-2">
             @if($proposal->status === 'draft')
-            <form data-ajax-form data-reload-table="proposals-table" method="POST" action="{{ route('admin.proposals.send', $proposal) }}" class="w-full">
+            <form data-ajax-form data-reload-table="proposals-table" method="POST" action="{{ route('admin.proposals.send', $proposal) }}" class="w-full"
+                  data-confirm-title="Mark as Sent?"
+                  data-confirm-message="This will mark the proposal as sent and email it to {{ $proposal->client_email }}. Continue?"
+                  data-confirm-label="Send Proposal">
                 @csrf
                 <button type="submit"
                         class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 text-base font-extrabold text-white rounded-2xl transition shadow-lg"
