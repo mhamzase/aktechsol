@@ -646,32 +646,45 @@
         if (p >= 25) return '#f59e0b'; // amber
         return '#dc2626'; // red
     }
+    function paintSliderFill(slider) {
+        const pct = parseInt(slider.value, 10);
+        const color = progressColor(pct);
+        slider.style.background = `linear-gradient(to right, ${color} 0%, ${color} ${pct}%, #e2e8f0 ${pct}%, #e2e8f0 100%)`;
+        slider.style.color = color;
+    }
     function paintProgressBar(bar, pct) {
+        pct = parseInt(pct, 10);
         bar.style.width = pct + '%';
         bar.style.backgroundColor = progressColor(pct);
     }
     document.addEventListener('input', (e) => {
         const slider = e.target.closest('[data-progress-slider]');
         if (!slider) return;
+        paintSliderFill(slider);
         const label = slider.parentElement.querySelector('[data-progress-value]');
         if (label) {
             label.textContent = slider.value + '%';
             label.style.color = progressColor(slider.value);
         }
-        slider.style.accentColor = progressColor(slider.value);
     });
-    // Paint listing progress bars on load / after AJAX.
-    function paintAllProgressBars() {
+    // Paint listing progress bars + slider fills on load.
+    function paintAllProgress() {
         document.querySelectorAll('[data-progress-bar]').forEach(bar => {
             paintProgressBar(bar, bar.dataset.progressBar);
         });
+        document.querySelectorAll('[data-progress-slider]').forEach(paintSliderFill);
     }
-    document.addEventListener('DOMContentLoaded', paintAllProgressBars);
-    // Re-paint after table AJAX reloads.
+    document.addEventListener('DOMContentLoaded', paintAllProgress);
+    // Re-paint after drawer opens (form injected via AJAX) and table reloads.
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('[data-row-edit]') || e.target.closest('[data-add-milestone]')) {
+            setTimeout(paintAllProgress, 400);
+        }
+    });
     const _origReload = window.reloadAdminTable;
     window.reloadAdminTable = function (id) {
         _origReload(id);
-        setTimeout(paintAllProgressBars, 300);
+        setTimeout(paintAllProgress, 500);
     };
     document.addEventListener('click', (e) => {
         const addBtn = e.target.closest('[data-add-milestone]');
