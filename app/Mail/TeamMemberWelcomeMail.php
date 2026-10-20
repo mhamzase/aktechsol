@@ -12,8 +12,9 @@ use Illuminate\Queue\SerializesModels;
 
 /**
  * TeamMemberWelcomeMail — queued welcome email when an admin creates a
- * new team member account. The password is NOT included (the admin set
- * it); the email points the member to the login + forgot-password pages.
+ * new team member account. Includes the password the admin set (passed
+ * in plain text at creation time only) so the member can sign in right
+ * away; it is never stored or shown anywhere else.
  */
 class TeamMemberWelcomeMail extends Mailable implements ShouldQueue
 {
@@ -21,6 +22,7 @@ class TeamMemberWelcomeMail extends Mailable implements ShouldQueue
 
     public function __construct(
         public User $user,
+        public ?string $plainPassword = null,
     ) {}
 
     public function envelope(): Envelope
@@ -38,6 +40,7 @@ class TeamMemberWelcomeMail extends Mailable implements ShouldQueue
             view: 'emails.team-welcome',
             with: [
                 'user' => $this->user,
+                'password' => $this->plainPassword,
                 'subject' => 'Welcome to ' . $this->siteName(),
                 'preheader' => 'Your team account has been created',
             ],

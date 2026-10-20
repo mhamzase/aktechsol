@@ -116,12 +116,16 @@
                     headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
                 });
                 let data = {};
-                try { data = await res.json(); } catch (e) { /* non-JSON response */ }
-                if (res.ok) {
+                let isJson = false;
+                try { data = await res.json(); isJson = true; } catch (e) { /* non-JSON response (e.g. a redirect to login) */ }
+                if (res.ok && isJson) {
                     window.notify.success(data.message || 'Application submitted successfully!');
                     successBox.classList.remove('hidden');
                     form.reset();
                     successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else if (res.ok) {
+                    // 2xx but not JSON (e.g. redirected to login) — never fake a success.
+                    window.notify.error('Unexpected response — your session may have expired. Please refresh the page and try again.');
                 } else if (res.status === 422 && data.errors) {
                     Object.entries(data.errors).forEach(([field, msgs]) => {
                         const el = form.querySelector(`[data-err="${field}"]`);

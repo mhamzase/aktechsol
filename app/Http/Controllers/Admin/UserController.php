@@ -84,7 +84,7 @@ class UserController extends Controller
 
         // Welcome email (queued) — a mail failure never breaks user creation.
         try {
-            Mail::to($user->email)->queue(new TeamMemberWelcomeMail($user));
+            Mail::to($user->email)->queue(new TeamMemberWelcomeMail($user, $data['password']));
         } catch (\Throwable $e) {
             report($e);
         }

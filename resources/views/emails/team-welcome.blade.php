@@ -19,6 +19,12 @@
                         <td style="padding:4px 0; color:#94a3b8;">Email</td>
                         <td style="padding:4px 0;">{{ $user->email }}</td>
                     </tr>
+                    @if(!empty($password))
+                    <tr>
+                        <td style="padding:4px 0; color:#94a3b8;">Password</td>
+                        <td style="padding:4px 0; color:#0f172a; font-weight:600;">{{ $password }}</td>
+                    </tr>
+                    @endif
                     @if($user->roles->isNotEmpty())
                     <tr>
                         <td style="padding:4px 0; color:#94a3b8;">Role</td>
@@ -31,9 +37,15 @@
     </table>
 
     <p style="margin:0 0 16px; font-size:15px; color:#475569; line-height:1.7;">
+        @if(!empty($password))
+        Sign in with the email and password above. If you ever forget your password,
+        you can reset it anytime from the login page using
+        <strong style="color:#0f172a;">Forgot password</strong>.
+        @else
         Your password has been set by your administrator — please ask them for it.
         If you ever forget it, you can reset it anytime from the login page using
         <strong style="color:#0f172a;">Forgot password</strong>.
+        @endif
     </p>
 
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;">
