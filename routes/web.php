@@ -222,6 +222,8 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::put('chatbot/{chatbotQuery}', [\App\Http\Controllers\Admin\ChatbotController::class, 'update'])->middleware('can:manage chatbot')->name('chatbot.update');
     Route::delete('chatbot/{chatbotQuery}', [\App\Http\Controllers\Admin\ChatbotController::class, 'destroy'])->middleware('can:manage chatbot')->name('chatbot.destroy');
 
+    Route::get('newsletter-subscribers/compose', [NewsletterSubscriberController::class, 'compose'])->name('newsletter-subscribers.compose');
+    Route::post('newsletter-subscribers/send', [NewsletterSubscriberController::class, 'sendBulk'])->name('newsletter-subscribers.send');
     Route::get('newsletter-subscribers', [NewsletterSubscriberController::class, 'index'])->name('newsletter-subscribers.index');
     Route::delete('newsletter-subscribers/{newsletterSubscriber}', [NewsletterSubscriberController::class, 'destroy'])->name('newsletter-subscribers.destroy');
     Route::get('media', [MediaController::class, 'index'])->name('media.index');
