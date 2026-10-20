@@ -49,6 +49,7 @@
                 :editUrl="route('admin.client-projects.edit', $project)"
                 editTitle="Edit Project"
                 :editWide="true"
+                :revenueUrl="$project->status === 'delivered' ? route('admin.client-projects.revenue.edit', $project) : null"
                 :deleteUrl="route('admin.client-projects.destroy', $project)"
                 tableId="projects-table" />
         </td>
