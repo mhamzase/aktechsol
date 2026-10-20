@@ -102,6 +102,11 @@ class ClientProject extends Model
     /** Public secure tracking link for the client. */
     public function trackingUrl(): string
     {
+        // Self-heals legacy rows that have no token yet.
+        if (! $this->token) {
+            $this->forceFill(['token' => Str::random(48)])->saveQuietly();
+        }
+
         return route('projects.track', $this->token);
     }
 
