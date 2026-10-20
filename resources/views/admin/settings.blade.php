@@ -237,6 +237,13 @@
                     Payment Methods
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">Shown to clients on invoices (manual payments). Add each method with its account details.</p>
+                <div class="grid md:grid-cols-12 gap-4 mb-5">
+                    <div class="md:col-span-4">
+                        <x-ui.select name="default_currency" label="Default Currency" :value="$s->default_currency ?? 'PKR'"
+                                     :options="\App\Support\Money::options(true)"
+                                     hint="Pre-selected on new proposals, projects and invoices. Each deal keeps its own currency." />
+                    </div>
+                </div>
                 <div id="payment-methods" class="space-y-4">
                     @forelse (($s->payment_methods ?? []) as $idx => $pm)
                         <div class="pm-card" data-pm-index="{{ $idx }}">

@@ -21,11 +21,11 @@
             <p class="font-medium text-slate-800 dark:text-slate-100">{{ $invoice->clientName() }}</p>
             <p class="text-xs text-slate-400">{{ $invoice->clientEmail() ?? '—' }}</p>
         </td>
-        <td data-label="Amount" class="font-semibold text-slate-800 dark:text-slate-100 whitespace-nowrap">${{ number_format($invoice->amount, 2) }}</td>
+        <td data-label="Amount" class="font-semibold text-slate-800 dark:text-slate-100 whitespace-nowrap">{{ \App\Support\Money::format($invoice->amount, $invoice->currency) }}</td>
         <td data-label="Paid" class="whitespace-nowrap">
-            <p class="font-semibold text-green-600">${{ number_format($invoice->paid_amount, 2) }}</p>
+            <p class="font-semibold text-green-600">{{ \App\Support\Money::format($invoice->paid_amount, $invoice->currency) }}</p>
             @if($invoice->balance() > 0)
-            <p class="text-xs text-slate-400">Bal: ${{ number_format($invoice->balance(), 2) }}</p>
+            <p class="text-xs text-slate-400">Bal: {{ \App\Support\Money::format($invoice->balance(), $invoice->currency) }}</p>
             @endif
         </td>
         <td data-label="Due" class="text-slate-500 whitespace-nowrap">{{ $invoice->due_date?->format('M d, Y') ?? '—' }}</td>

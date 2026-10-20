@@ -132,8 +132,8 @@
                     <div class="min-w-0">
                         <p class="font-bold text-slate-900 text-sm truncate">{{ $invoice->invoice_no }}</p>
                         <p class="text-xs text-slate-400 truncate">{{ $invoice->title }}</p>
-                        <p class="text-xs font-bold text-slate-700 mt-1">${{ number_format($invoice->amount, 2) }}
-                            @if($invoice->balance() > 0)<span class="text-slate-400 font-medium">· Balance ${{ number_format($invoice->balance(), 2) }}</span>@endif
+                        <p class="text-xs font-bold text-slate-700 mt-1">{{ \App\Support\Money::format($invoice->amount, $invoice->currency) }}
+                            @if($invoice->balance() > 0)<span class="text-slate-400 font-medium">· Balance {{ \App\Support\Money::format($invoice->balance(), $invoice->currency) }}</span>@endif
                         </p>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">

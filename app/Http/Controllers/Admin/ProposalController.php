@@ -60,7 +60,9 @@ class ProposalController extends Controller
     public function create()
     {
         $quotes = QuoteRequest::where('status', 'quoted')->latest()->get(['id', 'name', 'email', 'subject']);
-        return view('admin.proposals.form', ['proposal' => new Proposal(), 'quotes' => $quotes]);
+        $proposal = new Proposal();
+        $proposal->currency = \App\Support\Money::code(app(\App\Settings\SiteSettings::class)->default_currency);
+        return view('admin.proposals.form', ['proposal' => $proposal, 'quotes' => $quotes]);
     }
 
     public function store(Request $request)
@@ -73,12 +75,14 @@ class ProposalController extends Controller
             'scope'            => 'required|string',
             'timeline'         => 'nullable|string|max:255',
             'amount'           => 'required|numeric|min:0',
+            'currency'         => 'nullable|in:' . implode(',', \App\Support\Money::codes()),
             'valid_until'      => 'nullable|date|after:today',
             'milestones'       => 'nullable|array',
             'milestones.*.title'  => 'required_with:milestones|string|max:255',
             'milestones.*.amount' => 'required_with:milestones|numeric|min:0',
         ]);
 
+        $validated['currency'] = \App\Support\Money::code($validated['currency'] ?? null);
         $proposal = Proposal::create($validated);
         LogActivity::record('proposal_created', $proposal, "Created proposal: {$proposal->title}");
 
@@ -121,12 +125,14 @@ class ProposalController extends Controller
             'scope'            => 'required|string',
             'timeline'         => 'nullable|string|max:255',
             'amount'           => 'required|numeric|min:0',
+            'currency'         => 'nullable|in:' . implode(',', \App\Support\Money::codes()),
             'valid_until'      => 'nullable|date|after:today',
             'milestones'       => 'nullable|array',
             'milestones.*.title'  => 'required_with:milestones|string|max:255',
             'milestones.*.amount' => 'required_with:milestones|numeric|min:0',
         ]);
 
+        $validated['currency'] = \App\Support\Money::code($validated['currency'] ?? $proposal->currency);
         $proposal->update($validated);
         LogActivity::record('proposal_updated', $proposal, "Updated proposal: {$proposal->title}");
 

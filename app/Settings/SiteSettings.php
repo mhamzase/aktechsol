@@ -75,6 +75,9 @@ class SiteSettings extends Settings
     // Payment methods (manual invoicing) — [{name, details}]
     public array $payment_methods = [];
 
+    // Default currency for new proposals/projects/invoices (PKR | USD)
+    public ?string $default_currency = 'PKR';
+
     // Announcement popup
     public bool $popup_enabled      = false;
     public ?string $popup_title    = null;

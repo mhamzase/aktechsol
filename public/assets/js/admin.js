@@ -600,7 +600,9 @@
         if (!form || form.dataset.revInit) return;
         form.dataset.revInit = '1';
         const base = parseFloat(form.dataset.base || '0');
-        const fmt = (n) => 'Rs ' + Math.round(n).toLocaleString('en-US');
+        const symbol = form.dataset.symbol || 'Rs ';
+        const decimals = parseInt(form.dataset.decimals || '0', 10);
+        const fmt = (n) => symbol + n.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
         const recalc = () => {
             let total = 0;
             form.querySelectorAll('[data-revenue-pct]').forEach((input) => {

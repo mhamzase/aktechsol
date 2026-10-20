@@ -20,8 +20,13 @@
                 <x-ui.select name="quote_request_id" label="Linked Quote (optional)" :value="$proposal->quote_request_id"
                              :options="$quotes->pluck('subject', 'id')->prepend('— None —', '')->toArray()" />
             </div>
-            <div class="md:col-span-6">
-                <x-ui.input name="amount" type="number" step="0.01" min="0" label="Amount ($)" :value="$proposal->amount" required placeholder="5000" />
+            <div class="md:col-span-4">
+                <x-ui.input name="amount" type="number" step="0.01" min="0" label="Amount" :value="$proposal->amount" required placeholder="5000" />
+            </div>
+            <div class="md:col-span-2">
+                <x-ui.select name="currency" label="Currency" :value="$proposal->currency ?? 'PKR'" required
+                             :options="\App\Support\Money::options()"
+                             hint="The whole project runs in this currency." />
             </div>
             <div class="md:col-span-6">
                 <x-ui.input name="timeline" label="Timeline" :value="$proposal->timeline" placeholder="4-6 weeks" />
@@ -42,7 +47,7 @@
                 @foreach(($proposal->milestones ?? []) as $i => $m)
                 <div class="milestone-row">
                     <input type="text" name="milestones[{{ $i }}][title]" value="{{ $m['title'] ?? '' }}" placeholder="Milestone title" class="ui-control milestone-title">
-                    <input type="number" name="milestones[{{ $i }}][amount]" value="{{ $m['amount'] ?? '' }}" placeholder="$ Amount" step="0.01" min="0" class="ui-control milestone-amount">
+                    <input type="number" name="milestones[{{ $i }}][amount]" value="{{ $m['amount'] ?? '' }}" placeholder="Amount" step="0.01" min="0" class="ui-control milestone-amount">
                     <button type="button" data-remove-milestone class="btn btn-secondary milestone-remove" title="Remove">×</button>
                 </div>
                 @endforeach

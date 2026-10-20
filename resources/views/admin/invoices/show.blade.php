@@ -10,15 +10,15 @@
             <div class="grid grid-cols-3 gap-3 mt-4">
                 <div class="bg-white/15 rounded-xl p-3">
                     <p class="text-[0.65rem] font-bold uppercase tracking-wider text-blue-100">Total</p>
-                    <p class="text-lg font-extrabold">${{ number_format($invoice->amount, 2) }}</p>
+                    <p class="text-lg font-extrabold">{{ \App\Support\Money::format($invoice->amount, $invoice->currency) }}</p>
                 </div>
                 <div class="bg-white/15 rounded-xl p-3">
                     <p class="text-[0.65rem] font-bold uppercase tracking-wider text-blue-100">Paid</p>
-                    <p class="text-lg font-extrabold">${{ number_format($invoice->paid_amount, 2) }}</p>
+                    <p class="text-lg font-extrabold">{{ \App\Support\Money::format($invoice->paid_amount, $invoice->currency) }}</p>
                 </div>
                 <div class="bg-white/15 rounded-xl p-3">
                     <p class="text-[0.65rem] font-bold uppercase tracking-wider text-blue-100">Balance</p>
-                    <p class="text-lg font-extrabold">${{ number_format($invoice->balance(), 2) }}</p>
+                    <p class="text-lg font-extrabold">{{ \App\Support\Money::format($invoice->balance(), $invoice->currency) }}</p>
                 </div>
             </div>
         </div>
@@ -95,7 +95,7 @@
                     </a>
                     @endif
                     <div class="flex-1 min-w-[140px]">
-                        <p class="font-bold text-slate-800 dark:text-slate-100">${{ number_format($payment->amount, 2) }}</p>
+                        <p class="font-bold text-slate-800 dark:text-slate-100">{{ \App\Support\Money::format($payment->amount, $invoice->currency) }}</p>
                         <p class="text-xs text-slate-400">{{ $payment->method }}@if($payment->reference) · {{ $payment->reference }}@endif</p>
                         <p class="text-xs text-slate-400">{{ $payment->created_at->format('M d, Y h:i A') }}</p>
                     </div>
@@ -124,7 +124,7 @@
             <form data-manual-payment data-url="{{ route('admin.invoices.payments.manual', $invoice) }}" class="grid grid-cols-1 md:grid-cols-12 gap-3">
                 @csrf
                 <div class="md:col-span-4">
-                    <x-ui.input name="amount" type="number" step="0.01" min="0.01" max="{{ $invoice->balance() }}" label="Amount ($)" required placeholder="0.00" />
+                    <x-ui.input name="amount" type="number" step="0.01" min="0.01" max="{{ $invoice->balance() }}" label="Amount" required placeholder="0.00" />
                 </div>
                 <div class="md:col-span-4">
                     <x-ui.input name="method" label="Method" required placeholder="Bank transfer" />

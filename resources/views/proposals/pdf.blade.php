@@ -118,7 +118,7 @@
             <tr>
                 <td class="stat-box">
                     <div class="lbl">Total Investment</div>
-                    <div class="val">${{ number_format($proposal->amount, 2) }}</div>
+                    <div class="val">{{ \App\Support\Money::format($proposal->amount, $proposal->currency) }}</div>
                 </td>
                 <td class="stat-gap"></td>
                 @if($proposal->timeline)
@@ -153,7 +153,7 @@
             <tr class="ms-row">
                 <td><span class="ms-num">{{ $i + 1 }}</span></td>
                 <td><span class="ms-title">{{ $m['title'] }}</span></td>
-                <td><span class="ms-amount">${{ number_format($m['amount'], 2) }}</span></td>
+                <td><span class="ms-amount">{{ \App\Support\Money::format($m['amount'], $proposal->currency) }}</span></td>
             </tr>
             @endforeach
         </table>

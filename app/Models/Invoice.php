@@ -22,7 +22,7 @@ class Invoice extends Model
 
     protected $fillable = [
         'client_project_id', 'invoice_no', 'token', 'title',
-        'amount', 'paid_amount', 'due_date', 'status', 'notes',
+        'amount', 'currency', 'paid_amount', 'due_date', 'status', 'notes',
     ];
 
     protected $casts = [

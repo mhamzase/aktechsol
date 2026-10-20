@@ -3,7 +3,7 @@
      (admin.js) and Save only enables at exactly 100%. --}}
 <form data-ajax-form data-reload-table="projects-table" method="POST"
       action="{{ route('admin.client-projects.revenue.update', $project) }}"
-      data-revenue-form data-base="{{ $received }}"
+      data-revenue-form data-base="{{ $received }}" data-symbol="{{ \App\Support\Money::symbol($project->currency) }}" data-decimals="{{ \App\Support\Money::decimals($project->currency) }}"
       data-reopen-drawer="{{ route('admin.client-projects.show', $project) }}" data-reopen-title="Project Details">
     @csrf
     @method('PUT')
@@ -21,7 +21,7 @@
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     Received Payment
                 </div>
-                <p class="text-xl font-black text-green-700 dark:text-green-300 mt-1.5">Rs {{ number_format($received) }}</p>
+                <p class="text-xl font-black text-green-700 dark:text-green-300 mt-1.5">{{ \App\Support\Money::format($received, $project->currency) }}</p>
                 @if($pct !== null)
                     <div class="h-1.5 bg-green-100 dark:bg-green-500/20 rounded-full mt-3 overflow-hidden">
                         <div class="h-full bg-green-500 rounded-full" style="width: {{ $pct }}%"></div>
@@ -35,7 +35,7 @@
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         Agreed Price
                     </div>
-                    <p class="text-xl font-black text-slate-800 dark:text-slate-100 mt-1.5">Rs {{ number_format($agreed) }}</p>
+                    <p class="text-xl font-black text-slate-800 dark:text-slate-100 mt-1.5">{{ \App\Support\Money::format($agreed, $project->currency) }}</p>
                     <p class="text-[0.7rem] font-semibold text-slate-400 mt-1.5">Total project value (as per proposal)</p>
                 </div>
             @endif
@@ -43,7 +43,7 @@
         @if($received <= 0)
             <p class="text-xs text-red-500 mt-3">No payment has been received for this project yet. Once an invoice payment is received, its total becomes the amount you can distribute here.</p>
         @elseif($hasShares && abs($distributed - $received) > 0.01)
-            <p class="text-xs text-amber-600 dark:text-amber-400 mt-3">Heads up: Rs {{ number_format($distributed) }} was distributed earlier, but the received total is now Rs {{ number_format($received) }}. Saving will rebuild the split on the new amount.</p>
+            <p class="text-xs text-amber-600 dark:text-amber-400 mt-3">Heads up: {{ \App\Support\Money::format($distributed, $project->currency) }} was distributed earlier, but the received total is now {{ \App\Support\Money::format($received, $project->currency) }}. Saving will rebuild the split on the new amount.</p>
         @endif
     </div>
 
@@ -80,7 +80,7 @@
                            class="w-20 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 px-2.5 py-2 text-sm font-bold text-right focus:border-[#1d4ed8] focus:outline-none disabled:opacity-50">
                     <span class="text-sm font-bold text-slate-400">%</span>
                 </div>
-                <span class="w-24 text-right text-sm font-extrabold text-slate-700 dark:text-slate-200 shrink-0" data-revenue-amt>Rs 0</span>
+                <span class="w-24 text-right text-sm font-extrabold text-slate-700 dark:text-slate-200 shrink-0" data-revenue-amt>{{ \App\Support\Money::format(0, $project->currency) }}</span>
             </div>
         @endforeach
     </div>

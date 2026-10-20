@@ -13,7 +13,7 @@
         <tr>
             <td style="padding:20px;">
                 <div style="font-size:16px; font-weight:700; color:#0f172a; margin-bottom:8px;">{{ $proposal->title }}</div>
-                <div style="font-size:14px; color:#475569;">Amount: <strong>${{ number_format($proposal->amount, 2) }}</strong></div>
+                <div style="font-size:14px; color:#475569;">Amount: <strong>{{ \App\Support\Money::format($proposal->amount, $proposal->currency) }}</strong></div>
                 @if($proposal->client_note)
                 <div style="margin-top:12px; padding:12px; background:#ffffff; border-radius:8px; font-size:14px; color:#475569;">
                     <strong>Client note:</strong><br>{{ $proposal->client_note }}

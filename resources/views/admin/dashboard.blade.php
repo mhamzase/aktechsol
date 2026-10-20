@@ -24,13 +24,56 @@
 
     {{-- Stat cards --}}
     @php
-        $revNow = (float) $stats['revenue_month'];
-        $revLast = (float) $trends['revenue_last_month'];
-        $revTrend = $revLast > 0
-            ? ['dir' => $revNow >= $revLast ? 'up' : 'down',
-               'text' => abs(round(($revNow - $revLast) / $revLast * 100)) . '% vs last month']
-            : ['dir' => $revNow > 0 ? 'up' : 'flat',
-               'text' => $revNow > 0 ? 'first revenue this month' : 'no revenue yet'];
+        // Revenue is kept SEPARATE per currency (never mixed): the card
+        // shows one amount per active currency, trends computed per currency.
+        $revNowByCur = is_array($stats['revenue_month'] ?? null) ? $stats['revenue_month'] : ['PKR' => (float) ($stats['revenue_month'] ?? 0), 'USD' => 0];
+        $revLastByCur = is_array($trends['revenue_last_month'] ?? null) ? $trends['revenue_last_month'] : ['PKR' => (float) ($trends['revenue_last_month'] ?? 0), 'USD' => 0];
+        $revParts = [];
+        $revTrendParts = [];
+        $revDir = 'flat';
+        foreach (\App\Support\Money::codes() as $cur) {
+            $now = (float) ($revNowByCur[$cur] ?? 0);
+            $last = (float) ($revLastByCur[$cur] ?? 0);
+            if ($now > 0) {
+                $revParts[] = \App\Support\Money::format($now, $cur);
+            }
+            if ($now > 0 || $last > 0) {
+                if ($last > 0) {
+                    $pct = abs(round(($now - $last) / $last * 100));
+                    $revTrendParts[] = $cur . ' ' . $pct . '%';
+                    if (count($revTrendParts) === 1) {
+                        $revDir = $now >= $last ? 'up' : 'down';
+                    }
+                } else {
+                    $revTrendParts[] = $cur . ' first revenue';
+                    if (count($revTrendParts) === 1) {
+                        $revDir = 'up';
+                    }
+                }
+            }
+        }
+        $revValue = $revParts ? implode(' · ', $revParts) : \App\Support\Money::format(0, 'PKR');
+
+        // Chart series: one per currency that actually has revenue in the
+        // window (PKR always, as the baseline), each with its own scale.
+        $revPalette = ['#f59e0b', '#10b981', '#8b5cf6', '#06b6d4', '#ef4444', '#ec4899', '#84cc16', '#f97316', '#64748b'];
+        $revChartSeries = [];
+        foreach (\App\Support\Money::codes() as $cur) {
+            $data = ($revenueByMonth[$cur] ?? collect())->values()->all();
+            if ($cur !== 'PKR' && collect($data)->sum() <= 0) {
+                continue;
+            }
+            $revChartSeries[] = [
+                'code' => $cur,
+                'name' => 'Revenue (' . $cur . ')',
+                'data' => $data,
+                'color' => $revPalette[count($revChartSeries) % count($revPalette)],
+                'symbol' => \App\Support\Money::symbol($cur),
+                'decimals' => \App\Support\Money::decimals($cur),
+            ];
+        }
+        $revTrend = ['dir' => $revDir,
+                     'text' => $revTrendParts ? implode(' · ', $revTrendParts) . (str_contains(implode('', $revTrendParts), '%') ? ' vs last month' : '') : 'no revenue yet'];
 
         $cards = [
             ['label' => 'New Quotes', 'value' => $stats['quotes_new'],
@@ -42,7 +85,7 @@
              'tile' => 'bg-blue-100 text-blue-600', 'accent' => '#1d4ed8',
              'icon' => 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10',
              'trend' => ['dir' => 'flat', 'text' => 'in pipeline']],
-            ['label' => 'Revenue · this month', 'value' => 'PKR ' . number_format($stats['revenue_month']),
+            ['label' => 'Revenue · this month', 'value' => $revValue,
              'tile' => 'bg-emerald-100 text-emerald-600', 'accent' => '#10b981',
              'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
              'trend' => $revTrend],
@@ -84,7 +127,7 @@
             <div id="chart-quotes-revenue"
                  data-labels='@json($quotesByMonth->keys())'
                  data-quotes='@json($quotesByMonth->values())'
-                 data-revenue='@json($revenueByMonth->values())'></div>
+                 data-revenue-series='@json($revChartSeries)'></div>
         </div>
         <div class="admin-card p-5">
             <div class="flex items-start justify-between mb-3">
@@ -124,7 +167,7 @@
                 ['title' => 'Unpaid Invoices', 'items' => $attention['invoices'], 'route' => 'admin.invoices.index',
                  'color' => '#f59e0b', 'tint' => '#fef5e3',
                  'icon' => 'M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z',
-                 'line' => fn($i) => $i->invoice_no . ' — PKR ' . number_format($i->balance(), 0)],
+                 'line' => fn($i) => $i->invoice_no . ': ' . \App\Support\Money::format($i->balance(), $i->currency)],
                 ['title' => 'New Demo Requests', 'items' => $attention['demos'], 'route' => 'admin.demo-bookings.index',
                  'color' => '#10b981', 'tint' => '#e6f9f1',
                  'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',

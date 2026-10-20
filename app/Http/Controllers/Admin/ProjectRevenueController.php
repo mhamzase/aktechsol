@@ -128,7 +128,7 @@ class ProjectRevenueController extends Controller
             }
         });
 
-        LogActivity::record('revenue_distributed', $clientProject, "Revenue distribution saved for {$clientProject->title} (" . number_format($base) . ' PKR)');
+        LogActivity::record('revenue_distributed', $clientProject, "Revenue distribution saved for {$clientProject->title} (" . \App\Support\Money::format($base, $clientProject->currency) . ')');
 
         return response()->json(['message' => 'Revenue distribution saved.']);
     }
@@ -158,7 +158,7 @@ class ProjectRevenueController extends Controller
         $share->addMediaFromRequest('proof')->toMediaCollection('payment_proof');
         $share->update(['status' => 'paid', 'paid_at' => now()]);
 
-        LogActivity::record('revenue_share_paid', $clientProject, "Paid {$share->member_name} " . number_format((float) $share->amount) . " PKR for {$clientProject->title}");
+        LogActivity::record('revenue_share_paid', $clientProject, "Paid {$share->member_name} " . \App\Support\Money::format($share->amount, $clientProject->currency) . " for {$clientProject->title}");
 
         return response()->json(['message' => "{$share->member_name}'s share marked as paid."]);
     }

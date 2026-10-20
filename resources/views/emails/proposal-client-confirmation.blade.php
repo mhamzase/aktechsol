@@ -16,7 +16,7 @@
                     </tr>
                     <tr>
                         <td style="font-size:14px; color:#64748b; padding:6px 0;">Amount</td>
-                        <td align="right" style="font-size:14px; font-weight:700; color:#0f172a; padding:6px 0;">${{ number_format($proposal->amount, 2) }}</td>
+                        <td align="right" style="font-size:14px; font-weight:700; color:#0f172a; padding:6px 0;">{{ \App\Support\Money::format($proposal->amount, $proposal->currency) }}</td>
                     </tr>
                     @if($proposal->timeline)
                     <tr>

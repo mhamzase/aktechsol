@@ -28,7 +28,7 @@ class ClientProject extends Model
 
     protected $fillable = [
         'proposal_id', 'title', 'client_name', 'client_email',
-        'status', 'progress', 'token',
+        'status', 'progress', 'currency', 'token',
         'started_at', 'deadline',
     ];
 

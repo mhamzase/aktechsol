@@ -114,17 +114,17 @@
             <tr>
                 <td class="stat-box">
                     <div class="lbl">Total</div>
-                    <div class="val">${{ number_format($invoice->amount, 2) }}</div>
+                    <div class="val">{{ \App\Support\Money::format($invoice->amount, $invoice->currency) }}</div>
                 </td>
                 <td class="stat-gap"></td>
                 <td class="stat-box">
                     <div class="lbl">Paid</div>
-                    <div class="val">${{ number_format($invoice->paid_amount, 2) }}</div>
+                    <div class="val">{{ \App\Support\Money::format($invoice->paid_amount, $invoice->currency) }}</div>
                 </td>
                 <td class="stat-gap"></td>
                 <td class="stat-box">
                     <div class="lbl">Balance Due</div>
-                    <div class="val">${{ number_format($invoice->balance(), 2) }}</div>
+                    <div class="val">{{ \App\Support\Money::format($invoice->balance(), $invoice->currency) }}</div>
                 </td>
             </tr>
         </table>
@@ -156,15 +156,15 @@
         <table class="bd-table" cellpadding="0" cellspacing="0">
             <tr>
                 <td class="lbl">Invoice total</td>
-                <td class="val">${{ number_format($invoice->amount, 2) }}</td>
+                <td class="val">{{ \App\Support\Money::format($invoice->amount, $invoice->currency) }}</td>
             </tr>
             <tr>
                 <td class="lbl">Paid to date</td>
-                <td class="val">${{ number_format($invoice->paid_amount, 2) }}</td>
+                <td class="val">{{ \App\Support\Money::format($invoice->paid_amount, $invoice->currency) }}</td>
             </tr>
             <tr class="total">
                 <td class="lbl"><strong>Balance due</strong></td>
-                <td class="val">${{ number_format($invoice->balance(), 2) }}</td>
+                <td class="val">{{ \App\Support\Money::format($invoice->balance(), $invoice->currency) }}</td>
             </tr>
         </table>
     </div>

@@ -66,7 +66,7 @@
                             <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">
                                 {{ $share->member_name }}@if($share->isCompany()) <span class="text-xs font-semibold text-slate-400">(Company)</span>@endif
                             </p>
-                            <p class="text-xs text-slate-400">{{ rtrim(rtrim(number_format((float) $share->percentage, 2), '0'), '.') }}% · Rs {{ number_format((float) $share->amount) }}</p>
+                            <p class="text-xs text-slate-400">{{ rtrim(rtrim(number_format((float) $share->percentage, 2), '0'), '.') }}% · {{ \App\Support\Money::format($share->amount, $project->currency) }}</p>
                         </div>
                         <div class="ml-auto flex items-center gap-2 shrink-0">
                             @if($share->isPaid())

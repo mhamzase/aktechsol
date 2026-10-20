@@ -22,7 +22,7 @@ class Proposal extends Model
 
     protected $fillable = [
         'quote_request_id', 'title', 'client_name', 'client_email',
-        'scope', 'timeline', 'amount', 'milestones', 'valid_until',
+        'scope', 'timeline', 'amount', 'currency', 'milestones', 'valid_until',
         'status', 'token', 'sent_at', 'viewed_at', 'responded_at', 'client_note',
     ];
 

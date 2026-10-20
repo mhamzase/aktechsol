@@ -62,7 +62,7 @@ class ClientInvoiceController extends Controller
             \App\Support\NotifyAdmins::send(
                 'payment',
                 'Payment proof submitted',
-                "{$invoice->clientName()} submitted \${$payment->amount} for {$invoice->invoice_no}.",
+                "{$invoice->clientName()} submitted " . \App\Support\Money::format($payment->amount, $invoice->currency) . " for {$invoice->invoice_no}.",
                 route('admin.invoices.show', $invoice)
             );
 
