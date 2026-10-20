@@ -204,19 +204,6 @@
         </div>
     </section>
 
-    {{-- ============ PRICING ============ --}}
-    <section class="py-20 bg-slate-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <span class="text-sm font-bold text-[#1d4ed8] uppercase tracking-widest">Pricing</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">Simple, Transparent Pricing</h2>
-                <p class="mt-4 text-slate-500 max-w-2xl mx-auto">Choose the package that fits your stage — every project starts with a free consultation.</p>
-            </div>
-            @include('partials.pricing-cards', ['packages' => $packages])
-            <p class="text-center text-sm text-slate-500 mt-10">Need something custom? <a href="{{ route('quote.create') }}" class="text-[#1d4ed8] font-bold hover:underline">Get a free quote</a> tailored to your project, or <a href="{{ route('pricing') }}" class="text-[#1d4ed8] font-bold hover:underline">see full pricing</a>.</p>
-        </div>
-    </section>
-
     {{-- ============ TESTIMONIALS ============ --}}
     <section class="py-20 bg-gradient-to-br from-[#0a1f44] to-[#12307e] text-white relative overflow-hidden">
         <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(rgba(255,255,255,0.6) 1px, transparent 1px); background-size: 24px 24px;"></div>

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\BlogPost;
 use App\Models\Project;
 use App\Models\Service;
-use App\Models\ServicePackage;
 use App\Models\Testimonial;
 
 class HomeController extends Controller
@@ -30,8 +29,6 @@ class HomeController extends Controller
 
         $posts = BlogPost::published()->with('category')->latest('published_at')->take(6)->get();
 
-        $packages = ServicePackage::visible()->get();
-
-        return view('home', compact('services', 'projects', 'testimonials', 'posts', 'packages'));
+        return view('home', compact('services', 'projects', 'testimonials', 'posts'));
     }
 }

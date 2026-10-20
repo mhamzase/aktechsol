@@ -25,7 +25,6 @@ use App\Http\Controllers\Admin\UserPermissionController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DemoBookingController;
-use App\Http\Controllers\PricingController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\ClientProposalController;
@@ -64,8 +63,6 @@ Route::post('/get-a-quote', [QuoteController::class, 'store'])->name('quote.stor
 
 Route::get('/book-a-demo', [DemoBookingController::class, 'create'])->name('demo.create');
 Route::post('/book-a-demo', [DemoBookingController::class, 'store'])->middleware('throttle:10,1')->name('demo.store');
-
-Route::get('/pricing', [PricingController::class, 'index'])->name('pricing');
 
 Route::post('/chatbot/message', [ChatbotController::class, 'message'])->name('chatbot.message');
 
@@ -267,7 +264,6 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::put('demo-bookings/{demoBooking}/status', [\App\Http\Controllers\Admin\DemoBookingController::class, 'updateStatus'])->middleware('can:manage demo bookings')->name('demo-bookings.update-status');
     Route::delete('demo-bookings/{demoBooking}', [\App\Http\Controllers\Admin\DemoBookingController::class, 'destroy'])->middleware('can:manage demo bookings')->name('demo-bookings.destroy');
     $soon('job-applications', 'Job Applications', 'Phase 6', 'job-applications.index', 'manage job applications');
-    // Packages (Phase 6).
-    Route::resource('packages', \App\Http\Controllers\Admin\PackageController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->middleware('can:manage packages');
+    $soon('packages', 'Packages', 'Phase 6', 'packages.index', 'manage packages');
     $soon('jobs', 'Jobs', 'Phase 6', 'jobs.index', 'manage jobs');
 });
