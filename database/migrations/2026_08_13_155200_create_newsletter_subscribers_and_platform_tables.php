@@ -98,8 +98,6 @@ return new class extends Migration {
             $table->string('title');
             $table->string('client_name');
             $table->string('client_email');
-            $table->foreignId('assigned_to')->nullable()->constrained('users')->nullOnDelete()
-                ->comment('Team member responsible (AK Tech Sol side)');
             // received | in_progress | review | revision | delivered
             $table->string('status')->default('received')->index();
             $table->unsignedTinyInteger('progress')->default(0)->comment('0-100 percent');
@@ -108,6 +106,18 @@ return new class extends Migration {
             $table->date('deadline')->nullable();
             $table->timestamps();
             $table->softDeletes();
+        });
+
+        /* ------------------------------------------------------------------
+         | 4b. Client project team — members assigned to a project
+         |     (a project can have a whole team, not just one assignee).
+         | ------------------------------------------------------------------ */
+        Schema::create('client_project_team', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('client_project_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->unique(['client_project_id', 'user_id']);
+            $table->timestamps();
         });
 
         /* ------------------------------------------------------------------
@@ -304,6 +314,7 @@ return new class extends Migration {
         Schema::dropIfExists('invoice_payments');
         Schema::dropIfExists('invoices');
         Schema::dropIfExists('project_updates');
+        Schema::dropIfExists('client_project_team');
         Schema::dropIfExists('client_projects');
         Schema::dropIfExists('proposals');
         Schema::dropIfExists('quote_requests');
