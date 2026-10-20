@@ -20,7 +20,7 @@
             @else
                 <span class="h-9 w-9 rounded-lg bg-white text-[#12307e] font-extrabold flex items-center justify-center text-lg">A</span>
             @endif
-            <span class="text-white font-bold text-[0.95rem] leading-tight">AK Tech Sol<br><span class="text-[0.65rem] font-medium text-white/50 tracking-widest">ADMIN PANEL</span></span>
+            <span class="text-white font-bold text-[0.95rem] leading-tight">{{ $siteSettings->site_name ?: 'AK Tech SOL' }}<br><span class="text-[0.65rem] font-medium text-white/50 tracking-widest">ADMIN PANEL</span></span>
         </a>
         <button class="lg:hidden text-white/70 hover:text-white" onclick="toggleSidebar()" aria-label="Close menu">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>

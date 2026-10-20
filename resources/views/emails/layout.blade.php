@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $subject ?? 'AK Tech SOL' }}</title>
+    <title>{{ $subject ?? ($siteSettings->site_name ?: 'AK Tech SOL') }}</title>
     <!--[if !mso]><!-->
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!--<![endif]-->
@@ -19,7 +19,7 @@
                     {{-- Header --}}
                     <tr>
                         <td style="background:linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 60%, #2f6fed 100%); padding:32px; text-align:center;">
-                            <div style="font-size:24px; font-weight:800; color:#ffffff; letter-spacing:-0.5px;">AK Tech SOL</div>
+                            <div style="font-size:24px; font-weight:800; color:#ffffff; letter-spacing:-0.5px;">{{ $siteSettings->site_name ?: 'AK Tech SOL' }}</div>
                             <div style="font-size:13px; color:rgba(255,255,255,0.75); margin-top:4px;">{{ $preheader ?? 'Digital Services Agency' }}</div>
                         </td>
                     </tr>
@@ -32,7 +32,7 @@
                     {{-- Footer --}}
                     <tr>
                         <td style="padding:24px 32px; background:#f8fafc; border-top:1px solid #e2e8f0; text-align:center;">
-                            <p style="margin:0; font-size:12px; color:#94a3b8;">© {{ date('Y') }} AK Tech SOL. All rights reserved.</p>
+                            <p style="margin:0; font-size:12px; color:#94a3b8;">© {{ date('Y') }} {{ $siteSettings->site_name ?: 'AK Tech SOL' }}. All rights reserved.</p>
                             <p style="margin:8px 0 0; font-size:12px; color:#94a3b8;">This is an automated email — please do not reply directly.</p>
                         </td>
                     </tr>

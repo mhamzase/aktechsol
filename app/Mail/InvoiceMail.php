@@ -32,8 +32,18 @@ class InvoiceMail extends Mailable implements ShouldQueue
             with: [
                 'invoice'   => $this->invoice,
                 'subject'   => 'Invoice ' . $this->invoice->invoice_no,
-                'preheader' => 'New invoice from AK Tech SOL',
+                'preheader' => 'New invoice from ' . $this->siteName(),
             ],
         );
+    }
+
+    /** Brand name from Settings → General (falls back to the default). */
+    protected function siteName(): string
+    {
+        try {
+            return app(\App\Settings\SiteSettings::class)->site_name ?: 'AK Tech SOL';
+        } catch (\Throwable $e) {
+            return 'AK Tech SOL';
+        }
     }
 }

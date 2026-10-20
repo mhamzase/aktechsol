@@ -21,12 +21,12 @@
     <div class="pl-box">
         <div class="pl-ring"></div>
         @if(!empty($logoUrl ?? null))
-            <img src="{{ $logoUrl }}" alt="AK Tech Sol" class="pl-logo-img">
+            <img src="{{ $logoUrl }}" alt="{{ $siteSettings->site_name ?: 'AK Tech SOL' }}" class="pl-logo-img">
         @else
             <div class="pl-logo">A</div>
         @endif
     </div>
-    <p class="pl-brand">AK Tech Sol</p>
+    <p class="pl-brand">{{ $siteSettings->site_name ?: 'AK Tech SOL' }}</p>
 </div>
 <style>
     #page-loader {

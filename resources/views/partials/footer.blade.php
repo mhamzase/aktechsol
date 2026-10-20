@@ -11,7 +11,7 @@
                         </span>
                     @else
                         <span class="h-10 w-10 rounded-xl bg-gradient-to-br from-[#1d4ed8] to-[#2f6fed] text-white font-extrabold flex items-center justify-center text-lg">A</span>
-                        <span class="font-extrabold text-lg text-white">AK Tech SOL</span>
+                        <span class="font-extrabold text-lg text-white">{{ $siteSettings->site_name ?: 'AK Tech SOL' }}</span>
                     @endif
                 </a>
                 <p class="text-sm text-slate-400 mt-4 leading-relaxed">{{ $siteSettings->footer_text ?? 'Professional software & freelancing agency delivering top-notch digital solutions.' }}</p>

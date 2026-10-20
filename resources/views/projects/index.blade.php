@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Our Portfolio — Recent Projects & Case Studies | ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
-@section('meta_description', 'Browse AK Tech SOL portfolio: real projects, case studies and client work across web development, mobile apps, UI/UX design and more.')
+@section('meta_description', 'Browse ' . ($siteSettings->site_name ?? 'AK Tech SOL') . ' portfolio: real projects, case studies and client work across web development, mobile apps, UI/UX design and more.')
 
 @section('content')
     <x-frontend.page-banner

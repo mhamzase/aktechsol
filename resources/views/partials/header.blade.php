@@ -42,7 +42,7 @@
                 @else
                     <span class="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#1d4ed8] to-[#12307e] text-white font-extrabold flex items-center justify-center text-xl shadow-lg shadow-blue-600/25">A</span>
                     <span class="leading-tight">
-                        <span class="block font-extrabold text-[1.05rem] text-slate-900">AK Tech SOL</span>
+                        <span class="block font-extrabold text-[1.05rem] text-slate-900">{{ $siteSettings->site_name ?: 'AK Tech SOL' }}</span>
                         <span class="block text-[0.65rem] font-semibold text-slate-400 tracking-[0.18em] uppercase">Digital Agency</span>
                     </span>
                 @endif

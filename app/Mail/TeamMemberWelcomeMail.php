@@ -26,7 +26,7 @@ class TeamMemberWelcomeMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to AK Tech SOL — your account is ready',
+            subject: 'Welcome to ' . $this->siteName() . ' — your account is ready',
         );
     }
 
@@ -38,9 +38,19 @@ class TeamMemberWelcomeMail extends Mailable implements ShouldQueue
             view: 'emails.team-welcome',
             with: [
                 'user' => $this->user,
-                'subject' => 'Welcome to AK Tech SOL',
+                'subject' => 'Welcome to ' . $this->siteName(),
                 'preheader' => 'Your team account has been created',
             ],
         );
+    }
+
+    /** Brand name from Settings → General (falls back to the default). */
+    protected function siteName(): string
+    {
+        try {
+            return app(\App\Settings\SiteSettings::class)->site_name ?: 'AK Tech SOL';
+        } catch (\Throwable $e) {
+            return 'AK Tech SOL';
+        }
     }
 }

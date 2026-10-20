@@ -57,7 +57,7 @@ class ProposalClientConfirmationMail extends Mailable implements ShouldQueue
             'rejected' => [
                 'heading' => 'Response Recorded — Thank You',
                 'intro' => 'You have declined the proposal below. This email confirms your response has been recorded.',
-                'next' => 'Thank you for considering AK Tech SOL. If your plans change, we would be happy to put together a fresh proposal anytime.',
+                'next' => 'Thank you for considering ' . $this->siteName() . '. If your plans change, we would be happy to put together a fresh proposal anytime.',
                 'preheader' => 'Your response to the proposal has been recorded',
             ],
         ][$this->action] ?? [];
@@ -71,5 +71,15 @@ class ProposalClientConfirmationMail extends Mailable implements ShouldQueue
                 'preheader' => $copy['preheader'] ?? 'An update on your proposal',
             ],
         );
+    }
+
+    /** Brand name from Settings → General (falls back to the default). */
+    protected function siteName(): string
+    {
+        try {
+            return app(\App\Settings\SiteSettings::class)->site_name ?: 'AK Tech SOL';
+        } catch (\Throwable $e) {
+            return 'AK Tech SOL';
+        }
     }
 }

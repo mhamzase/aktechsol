@@ -75,7 +75,7 @@
         @endif
 
         <p class="text-center text-xs text-slate-400">
-            Thank you for choosing AK Tech SOL.
+            Thank you for choosing {{ $siteSettings->site_name ?: 'AK Tech SOL' }}.
         </p>
     </div>
 </div>

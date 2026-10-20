@@ -2,7 +2,7 @@
 @php
     $s = $siteSettings ?? app(\App\Settings\SiteSettings::class);
     $showChatbot = !empty($s->chatbot_enabled);
-    $teamName = $s->chatbot_team_name ?: 'AK Tech SOL Team';
+    $teamName = $s->chatbot_team_name ?: (($s->site_name ?? 'AK Tech SOL') . ' Team');
     $greeting = $s->chatbot_greeting ?: 'Hi! How can we help you today?';
 @endphp
 

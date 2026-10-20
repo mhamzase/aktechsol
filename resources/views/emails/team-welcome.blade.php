@@ -3,7 +3,7 @@
 @section('content')
     <h1 style="margin:0 0 16px; font-size:22px; font-weight:800; color:#0f172a;">Welcome to the Team, {{ $user->name }}!</h1>
     <p style="margin:0 0 16px; font-size:15px; color:#475569; line-height:1.7;">
-        An AK Tech SOL admin account has been created for you. You can now sign in to the admin panel
+        An admin account has been created for you at {{ $siteSettings->site_name ?: 'AK Tech SOL' }}. You can now sign in to the admin panel
         with the details below.
     </p>
 

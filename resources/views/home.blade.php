@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('title', ($siteSettings->site_name ?? 'AK Tech SOL') . ' — Web Development, Mobile Apps & Digital Services Agency')
-@section('meta_description', 'AK Tech SOL is a full-service digital agency offering web development, mobile app development, UI/UX design, and cloud solutions. 50+ projects delivered with 5-star client ratings. Get a free quote today.')
+@section('meta_description', ($siteSettings->site_name ?? 'AK Tech SOL') . ' is a full-service digital agency offering web development, mobile app development, UI/UX design, and cloud solutions. 50+ projects delivered with 5-star client ratings. Get a free quote today.')
 
 @push('seo')
 <meta property="og:title" content="{{ ($siteSettings->site_name ?? 'AK Tech SOL') . ' — Web Development, Mobile Apps & Digital Services Agency' }}">
-<meta property="og:description" content="AK Tech SOL is a full-service digital agency offering web development, mobile app development, UI/UX design, and cloud solutions. Trusted by clients worldwide.">
+<meta property="og:description" content="{{ $siteSettings->site_name ?: 'AK Tech SOL' }} is a full-service digital agency offering web development, mobile app development, UI/UX design, and cloud solutions. Trusted by clients worldwide.">
 <meta property="og:url" content="{{ url('/') }}">
 <meta property="og:type" content="website">
 <script type="application/ld+json">
@@ -43,7 +43,7 @@
                     We Build <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-300">Digital Products</span> That Matter
                 </h1>
                 <p class="mt-6 text-lg sm:text-xl text-blue-100/80 max-w-2xl leading-relaxed">
-                    AK Tech SOL is a full-service software agency helping startups and businesses <strong class="text-white">worldwide</strong> design, develop, and launch exceptional web and mobile experiences.
+                    {{ $siteSettings->site_name ?: 'AK Tech SOL' }} is a full-service software agency helping startups and businesses <strong class="text-white">worldwide</strong> design, develop, and launch exceptional web and mobile experiences.
                 </p>
                 <div class="mt-8 flex flex-wrap gap-4">
                     <a href="{{ url('/services') }}" class="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-[#12307e] font-bold hover:bg-blue-50 transition shadow-xl shadow-blue-900/30">

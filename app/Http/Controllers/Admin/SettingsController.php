@@ -237,9 +237,10 @@ class SettingsController extends Controller
         $request->validate(['email' => 'required|email']);
 
         try {
+            $siteName = $settings->site_name ?: config('app.name', 'AK Tech SOL');
             Mail::raw(
-                'This is a test email from AK Tech Sol admin settings. Your SMTP configuration works.',
-                fn ($m) => $m->to($request->email)->subject('AK Tech Sol — SMTP test')
+                'This is a test email from ' . $siteName . ' admin settings. Your SMTP configuration works.',
+                fn ($m) => $m->to($request->email)->subject($siteName . ' — SMTP test')
             );
 
             return response()->json(['message' => 'Test email sent to ' . $request->email]);

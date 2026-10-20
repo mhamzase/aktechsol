@@ -27,6 +27,6 @@
     </table>
 
     <p style="margin:0; font-size:13px; color:#94a3b8; line-height:1.6;">
-        It takes less than a minute. Thank you for choosing AK Tech SOL.
+        It takes less than a minute. Thank you for choosing {{ $siteSettings->site_name ?: 'AK Tech SOL' }}.
     </p>
 @endsection
