@@ -76,7 +76,13 @@ class ClientProjectController extends Controller
     {
         $clientProject->load(['team', 'proposal', 'updates.author', 'revenueShares']);
         $project = $clientProject;
-        return view('admin.client-projects.show', compact('project'));
+
+        if (request()->ajax() || request()->expectsJson()) {
+            return view('admin.client-projects.show', compact('project'));
+        }
+
+        // Direct landing (email / notification link): listing auto-opens the drawer.
+        return redirect()->route('admin.client-projects.index', ['view' => $project->id]);
     }
 
     public function edit(ClientProject $clientProject)

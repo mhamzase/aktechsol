@@ -56,7 +56,13 @@ class ReviewController extends Controller
     public function show(Review $review)
     {
         $review->load(['project']);
-        return view('admin.reviews.show', compact('review'));
+
+        if (request()->ajax() || request()->expectsJson()) {
+            return view('admin.reviews.show', compact('review'));
+        }
+
+        // Direct landing (email / notification link): listing auto-opens the drawer.
+        return redirect()->route('admin.reviews.index', ['view' => $review->id]);
     }
 
     /** Approve (publish) a review — auto-creates a homepage testimonial for client reviews. */

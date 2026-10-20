@@ -66,6 +66,22 @@ function refreshReviewStats(stats) {
 }
 document.addEventListener('ajaxFormSuccess', (e) => refreshReviewStats(e.detail?.stats));
 document.addEventListener('rowDeleted', (e) => refreshReviewStats(e.detail?.stats));
+
+// Auto-open review drawer when landing via email / notification (?view=id).
+(function () {
+    const viewId = new URLSearchParams(location.search).get('view');
+    if (viewId && window.openDrawer) {
+        const tryOpen = () => {
+            if (window.openDrawer) {
+                window.openDrawer(`/admin/reviews/${viewId}`, 'Review Details');
+                history.replaceState(null, '', location.pathname);
+            } else {
+                setTimeout(tryOpen, 100);
+            }
+        };
+        tryOpen();
+    }
+})();
 </script>
 @endpush
 @endsection
