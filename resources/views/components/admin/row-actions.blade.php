@@ -17,7 +17,7 @@
     'permissionsUrl' => null,
     'permissionsTitle' => 'Permissions',
     'revenueUrl' => null,
-    'revenueTitle' => 'Distribute Revenue',
+    'revenueTitle' => 'Distribution Setting',
     'deleteUrl' => null,
     'tableId' => null,
 ])
