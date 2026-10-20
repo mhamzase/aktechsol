@@ -55,8 +55,9 @@
                     </a>
                 </div>
 
-                {{-- Stats --}}
-                <div class="mt-10 grid grid-cols-3 gap-4 sm:gap-6 max-w-lg">
+                {{-- Stats: slots 1-3 are editable in Settings; the Avg. Rating
+                     is ALWAYS static (4.9) and never settings-driven. --}}
+                <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-2xl">
                     <div>
                         <p class="text-2xl sm:text-3xl font-extrabold">{{ $siteSettings->stat1_value ?? '50+' }}</p>
                         <p class="text-xs sm:text-sm text-blue-200/70 mt-1">{{ $siteSettings->stat1_label ?? 'Projects Done' }}</p>
@@ -66,8 +67,12 @@
                         <p class="text-xs sm:text-sm text-blue-200/70 mt-1">{{ $siteSettings->stat2_label ?? 'Countries Served' }}</p>
                     </div>
                     <div>
-                        <p class="text-2xl sm:text-3xl font-extrabold">{{ $siteSettings->stat3_value ?? '5★' }}</p>
-                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">{{ $siteSettings->stat3_label ?? 'Avg. Rating' }}</p>
+                        <p class="text-2xl sm:text-3xl font-extrabold">{{ $siteSettings->stat3_value ?? '100+' }}</p>
+                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">{{ $siteSettings->stat3_label ?? 'Happy Clients' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl sm:text-3xl font-extrabold">4.9★</p>
+                        <p class="text-xs sm:text-sm text-blue-200/70 mt-1">Avg. Rating</p>
                     </div>
                 </div>
             </div>
