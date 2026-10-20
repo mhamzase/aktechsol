@@ -77,15 +77,17 @@ class PlatformSeeder extends Seeder
             'responded_at' => now()->subDays(5), 'token' => Str::random(48),
         ]);
 
-        // Client project from the accepted proposal
+        // Client project from the accepted proposal, with a demo team
+        // (the admin + the first team member) assigned to it.
         $admin = User::first();
         $project = ClientProject::firstOrCreate(['proposal_id' => $proposal->id], [
             'title' => 'Ecommerce Website — Demo Co', 'client_name' => 'Demo Client',
-            'client_email' => 'client@test.com', 'assigned_to' => $admin?->id,
+            'client_email' => 'client@test.com',
             'status' => 'in_progress', 'progress' => 40,
             'started_at' => now()->subDays(4), 'deadline' => now()->addDays(17),
             'token' => Str::random(48),
         ]);
+        $project->team()->sync(User::orderBy('id')->limit(2)->pluck('id'));
 
         ProjectUpdate::firstOrCreate(
             ['client_project_id' => $project->id, 'title' => 'Design approved'],

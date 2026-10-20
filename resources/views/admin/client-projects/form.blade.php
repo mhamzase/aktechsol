@@ -16,10 +16,12 @@
             <div class="md:col-span-6">
                 <x-ui.input name="client_email" type="email" label="Client Email" :value="$project->client_email" required placeholder="john@example.com" />
             </div>
-            <div class="md:col-span-6">
-                <x-ui.search-select name="assigned_to" label="Assigned To" :value="$project->assigned_to"
-                                    placeholder="— Unassigned —"
-                                    :options="$users->pluck('name', 'id')->prepend('— Unassigned —', '')->toArray()" />
+            <div class="md:col-span-12">
+                <x-ui.multi-select name="team[]" label="Assign Team"
+                                   :options="$users->pluck('name', 'id')->toArray()"
+                                   :selected="$project->exists ? $project->team->pluck('id')->all() : []"
+                                   placeholder="Select team members…"
+                                   hint="Assign one or more team members to this project." />
             </div>
             <div class="md:col-span-6">
                 <x-ui.select name="status" label="Status" :value="$project->status ?? 'received'" required

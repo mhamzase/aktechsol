@@ -10,7 +10,7 @@ class ClientProjectTrackingController extends Controller
     public function show(string $token)
     {
         $project = ClientProject::where('token', $token)
-            ->with(['visibleUpdates.author', 'assignee', 'invoices' => fn($q) => $q->latest()])
+            ->with(['visibleUpdates.author', 'team', 'invoices' => fn($q) => $q->latest()])
             ->firstOrFail();
 
         // Backfill tokens for invoices created before the token column existed.

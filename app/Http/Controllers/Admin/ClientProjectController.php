@@ -17,7 +17,7 @@ class ClientProjectController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ClientProject::with(['assignee', 'proposal'])->latest();
+        $query = ClientProject::with(['team', 'proposal'])->latest();
 
         if ($request->filled('search')) {
             $s = $request->search;
@@ -61,7 +61,12 @@ class ClientProjectController extends Controller
 
     public function store(Request $request)
     {
-        $project = ClientProject::create($this->validateData($request));
+        $data = $this->validateData($request);
+        $teamIds = $data['team'] ?? [];
+        unset($data['team']);
+
+        $project = ClientProject::create($data);
+        $project->team()->sync($teamIds);
         LogActivity::record('project_created', $project, "Created project: {$project->title}");
 
         return response()->json(['message' => 'Project created.', 'id' => $project->id]);
@@ -69,7 +74,7 @@ class ClientProjectController extends Controller
 
     public function show(ClientProject $clientProject)
     {
-        $clientProject->load(['assignee', 'proposal', 'updates.author']);
+        $clientProject->load(['team', 'proposal', 'updates.author']);
         $project = $clientProject;
         return view('admin.client-projects.show', compact('project'));
     }
@@ -84,7 +89,12 @@ class ClientProjectController extends Controller
     public function update(Request $request, ClientProject $clientProject)
     {
         $wasDelivered = $clientProject->status === 'delivered';
-        $clientProject->update($this->validateData($request));
+        $data = $this->validateData($request);
+        $teamIds = $data['team'] ?? [];
+        unset($data['team']);
+
+        $clientProject->update($data);
+        $clientProject->team()->sync($teamIds);
         LogActivity::record('project_updated', $clientProject, "Updated project: {$clientProject->title}");
 
         // Auto-send a review request when the project is newly delivered.
@@ -163,7 +173,8 @@ class ClientProjectController extends Controller
             'title'        => 'required|string|max:255',
             'client_name'  => 'required|string|max:255',
             'client_email' => 'required|email|max:255',
-            'assigned_to'  => 'nullable|exists:users,id',
+            'team'         => 'nullable|array',
+            'team.*'       => 'exists:users,id',
             'status'       => 'required|in:received,in_progress,review,revision,delivered',
             'progress'     => 'required|integer|min:0|max:100',
             'started_at'   => 'nullable|date',
