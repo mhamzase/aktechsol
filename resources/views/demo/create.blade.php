@@ -3,12 +3,7 @@
 @section('title', 'Book a Free Demo | ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
 @section('meta_description', 'Book a free live demo with ' . ($siteSettings->site_name ?? 'AK Tech SOL') . '. Pick a date and time that suits you and our team will walk you through everything.')
 
-@push('seo')
-<meta property="og:title" content="Book a Free Demo | {{ $siteSettings->site_name ?? 'AK Tech SOL' }}">
-<meta property="og:description" content="See our work in action — book a free, no-obligation live demo at a time that suits you.">
-<meta property="og:url" content="{{ url()->current() }}">
-<meta property="og:type" content="website">
-@endpush
+{{-- Open Graph / Twitter tags come from the layout (title + description above) — no per-page duplicates. --}}
 
 @section('content')
     <x-frontend.page-banner

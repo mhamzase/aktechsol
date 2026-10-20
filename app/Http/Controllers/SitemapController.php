@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BlogPost;
+use App\Models\Job;
 use App\Models\Project;
 use App\Models\Service;
 use Illuminate\Http\Response;
@@ -14,6 +15,7 @@ class SitemapController extends Controller
         $services = Service::active()->orderBy('sort_order')->get();
         $projects = Project::active()->orderBy('sort_order')->get();
         $posts = BlogPost::published()->latest('published_at')->get();
+        $jobs = Job::visible()->get();
 
         $staticPages = [
             url('/'),
@@ -23,6 +25,9 @@ class SitemapController extends Controller
             url('/blog'),
             url('/faqs'),
             url('/contact'),
+            url('/get-a-quote'),
+            url('/book-a-demo'),
+            url('/careers'),
             url('/privacy-policy'),
             url('/terms-conditions'),
         ];
@@ -48,6 +53,11 @@ class SitemapController extends Controller
         // Blog Posts
         foreach ($posts as $post) {
             $content .= '<url><loc>' . route('blog.show', $post->slug) . '</loc></url>';
+        }
+
+        // Open job listings
+        foreach ($jobs as $job) {
+            $content .= '<url><loc>' . route('careers.show', $job->slug) . '</loc></url>';
         }
 
         $content .= '</urlset>';

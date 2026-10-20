@@ -4,10 +4,44 @@
 @section('meta_description', \Illuminate\Support\Str::limit(strip_tags($job->description), 155))
 
 @push('seo')
-<meta property="og:title" content="{{ $job->title }} | {{ $siteSettings->site_name ?? 'AK Tech SOL' }}">
-<meta property="og:description" content="{{ \Illuminate\Support\Str::limit(strip_tags($job->description), 155) }}">
-<meta property="og:url" content="{{ url()->current() }}">
-<meta property="og:type" content="website">
+{{-- Structured data: JobPosting (eligible for Google Jobs) + breadcrumbs.
+     (Open Graph / Twitter tags come from the layout — no duplicates.) --}}
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "JobPosting",
+    "title": {!! json_encode($job->title) !!},
+    "description": {!! json_encode(strip_tags($job->description)) !!},
+    "datePosted": "{{ $job->created_at->toIso8601String() }}",
+    "employmentType": "{{ $job->type === 'internship' ? 'INTERN' : 'FULL_TIME' }}",
+    "hiringOrganization": {
+        "@@type": "Organization",
+        "name": {!! json_encode($siteSettings->site_name ?: 'AK Tech SOL') !!},
+        "sameAs": "{{ url('/') }}"
+    },
+    @if($job->location_type === 'remote')
+    "jobLocationType": "TELECOMMUTE",
+    "applicantLocationRequirements": { "@@type": "Country", "name": "Pakistan" },
+    @else
+    "jobLocation": {
+        "@@type": "Place",
+        "address": { "@@type": "PostalAddress", "addressCountry": "PK" }
+    },
+    @endif
+    "directApply": true
+}
+</script>
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "BreadcrumbList",
+    "itemListElement": [
+        { "@@type": "ListItem", "position": 1, "name": "Home", "item": "{{ url('/') }}" },
+        { "@@type": "ListItem", "position": 2, "name": "Careers", "item": "{{ route('careers.index') }}" },
+        { "@@type": "ListItem", "position": 3, "name": {!! json_encode($job->title) !!}, "item": "{{ url()->current() }}" }
+    ]
+}
+</script>
 @endpush
 
 @section('content')
@@ -26,11 +60,11 @@
             {{-- Description --}}
             <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-100 shadow-sm">
                 <h2 class="text-lg font-extrabold text-slate-900 mb-4">About this role</h2>
-                <div class="prose prose-slate max-w-none leading-relaxed">{!! $job->description !!}</div>
+                <div class="prose prose-slate max-w-none leading-relaxed break-words">{!! $job->description !!}</div>
 
                 @if($job->requirements)
                     <h2 class="text-lg font-extrabold text-slate-900 mt-8 mb-4">Requirements</h2>
-                    <div class="prose prose-slate max-w-none leading-relaxed">{!! $job->requirements !!}</div>
+                    <div class="prose prose-slate max-w-none leading-relaxed break-words">{!! $job->requirements !!}</div>
                 @endif
             </div>
 

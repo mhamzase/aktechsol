@@ -4,10 +4,39 @@
 @section('meta_description', 'Join the ' . ($siteSettings->site_name ?? 'AK Tech SOL') . ' team — see open jobs and internships and apply with your portfolio.')
 
 @push('seo')
-<meta property="og:title" content="Careers | {{ $siteSettings->site_name ?? 'AK Tech SOL' }}">
-<meta property="og:description" content="Open jobs and internships — apply with your portfolio and grow with our team.">
-<meta property="og:url" content="{{ url()->current() }}">
-<meta property="og:type" content="website">
+{{-- Structured data: the open positions as an ItemList + breadcrumbs.
+     (Open Graph / Twitter tags come from the layout — no duplicates.) --}}
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "CollectionPage",
+    "name": "Careers | {{ $siteSettings->site_name ?? 'AK Tech SOL' }}",
+    "url": "{{ url()->current() }}",
+    "mainEntity": {
+        "@@type": "ItemList",
+        "itemListElement": [
+            @foreach($jobs as $i => $job)
+            {
+                "@@type": "ListItem",
+                "position": {{ $i + 1 }},
+                "name": {!! json_encode($job->title) !!},
+                "url": "{{ route('careers.show', $job->slug) }}"
+            }{{ !$loop->last ? ',' : '' }}
+            @endforeach
+        ]
+    }
+}
+</script>
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "BreadcrumbList",
+    "itemListElement": [
+        { "@@type": "ListItem", "position": 1, "name": "Home", "item": "{{ url('/') }}" },
+        { "@@type": "ListItem", "position": 2, "name": "Careers", "item": "{{ url()->current() }}" }
+    ]
+}
+</script>
 @endpush
 
 @section('content')
