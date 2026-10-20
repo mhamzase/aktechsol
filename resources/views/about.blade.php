@@ -109,6 +109,19 @@
         </div>
     </section>
 
+    {{-- Join the team --}}
+    <section class="py-14 bg-slate-50">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <span class="text-sm font-bold text-[#1d4ed8] uppercase tracking-widest">Careers</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Want to Join Our Team?</h2>
+            <p class="mt-3 text-slate-500">We're always looking for talented designers, editors and developers. See what's open and apply with your portfolio.</p>
+            <a href="{{ route('careers.index') }}" class="mt-6 inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-gradient-to-r from-[#1d4ed8] to-[#2f6fed] text-white font-bold hover:shadow-xl hover:shadow-blue-600/25 transition">
+                See Open Positions
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+        </div>
+    </section>
+
     {{-- CTA --}}
     <section class="relative py-16 sm:py-20 bg-gradient-to-r from-[#1d4ed8] to-[#12307e] text-white overflow-hidden">
         <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1px); background-size: 26px 26px;"></div>
