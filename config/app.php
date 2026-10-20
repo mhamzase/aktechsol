@@ -17,6 +17,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Version
+    |--------------------------------------------------------------------------
+    | Shown in the admin sidebar and the public footer (always in sync —
+    | both read this single value). Bump the patch number on every
+    | dev -> master release merge.
+    */
+
+    'version' => env('APP_VERSION', '1.0.0'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |
