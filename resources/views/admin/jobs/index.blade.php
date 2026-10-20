@@ -54,6 +54,22 @@
 
 @push('scripts')
 <script>
+// Auto-open job view drawer when landing with ?view=id.
+(function () {
+    const viewId = new URLSearchParams(location.search).get('view');
+    if (viewId) {
+        const tryOpen = () => {
+            if (window.openDrawer) {
+                window.openDrawer(`/admin/jobs/${viewId}`, 'Job Details');
+                history.replaceState(null, '', location.pathname);
+            } else {
+                setTimeout(tryOpen, 100);
+            }
+        };
+        tryOpen();
+    }
+})();
+
 // Update stats cards when a job is saved (no page refresh).
 document.addEventListener('ajaxFormSuccess', function(e) {
     const stats = e.detail?.stats;

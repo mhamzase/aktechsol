@@ -59,6 +59,18 @@ class JobController extends Controller
         ]);
     }
 
+    /** Drawer: view the listing exactly as formatted (rich HTML). */
+    public function show(Job $job)
+    {
+        $job->loadCount('applications');
+
+        if (request()->ajax() || request()->expectsJson()) {
+            return view('admin.jobs.show', compact('job'));
+        }
+
+        return redirect()->route('admin.jobs.index', ['view' => $job->id]);
+    }
+
     public function store(Request $request)
     {
         $job = Job::create($this->validated($request) + [
