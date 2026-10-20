@@ -8,19 +8,42 @@
     @csrf
     @method('PUT')
 
-    {{-- Summary --}}
-    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 mb-5">
-        <p class="font-bold text-slate-800 dark:text-slate-100">{{ $project->title }}</p>
-        <div class="flex flex-wrap gap-x-6 gap-y-1 mt-1.5 text-sm">
-            <span class="text-slate-500 dark:text-slate-400">Received payment: <strong class="text-slate-800 dark:text-slate-100">Rs {{ number_format($received) }}</strong></span>
-            @if($project->proposal)
-                <span class="text-slate-500 dark:text-slate-400">Agreed price: <strong class="text-slate-800 dark:text-slate-100">Rs {{ number_format((float) $project->proposal->amount) }}</strong></span>
+    {{-- Summary: received vs agreed as two clear tiles --}}
+    <div class="mb-5">
+        <p class="font-bold text-slate-800 dark:text-slate-100 mb-3">{{ $project->title }}</p>
+        @php
+            $agreed = $project->proposal ? (float) $project->proposal->amount : null;
+            $pct = ($agreed && $agreed > 0) ? min(100, (int) round($received / $agreed * 100)) : null;
+        @endphp
+        <div class="grid {{ $agreed ? 'grid-cols-2' : 'grid-cols-1' }} gap-3 items-stretch">
+            <div class="rounded-2xl border border-green-200 dark:border-green-500/25 bg-green-50 dark:bg-green-500/10 p-4">
+                <div class="flex items-center gap-1.5 text-[0.65rem] font-bold uppercase tracking-wider text-green-600 dark:text-green-400">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    Received Payment
+                </div>
+                <p class="text-xl font-black text-green-700 dark:text-green-300 mt-1.5">Rs {{ number_format($received) }}</p>
+                @if($pct !== null)
+                    <div class="h-1.5 bg-green-100 dark:bg-green-500/20 rounded-full mt-3 overflow-hidden">
+                        <div class="h-full bg-green-500 rounded-full" style="width: {{ $pct }}%"></div>
+                    </div>
+                    <p class="text-[0.7rem] font-semibold text-green-600 dark:text-green-400 mt-1.5">{{ $pct }}% of agreed price collected</p>
+                @endif
+            </div>
+            @if($agreed)
+                <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 p-4">
+                    <div class="flex items-center gap-1.5 text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Agreed Price
+                    </div>
+                    <p class="text-xl font-black text-slate-800 dark:text-slate-100 mt-1.5">Rs {{ number_format($agreed) }}</p>
+                    <p class="text-[0.7rem] font-semibold text-slate-400 mt-1.5">Total project value (as per proposal)</p>
+                </div>
             @endif
         </div>
         @if($received <= 0)
-            <p class="text-xs text-red-500 mt-2">No payment has been received for this project yet. Once an invoice payment is received, its total becomes the amount you can distribute here.</p>
+            <p class="text-xs text-red-500 mt-3">No payment has been received for this project yet. Once an invoice payment is received, its total becomes the amount you can distribute here.</p>
         @elseif($hasShares && abs($distributed - $received) > 0.01)
-            <p class="text-xs text-amber-600 dark:text-amber-400 mt-2">Heads up: Rs {{ number_format($distributed) }} was distributed earlier, but the received total is now Rs {{ number_format($received) }}. Saving will rebuild the split on the new amount.</p>
+            <p class="text-xs text-amber-600 dark:text-amber-400 mt-3">Heads up: Rs {{ number_format($distributed) }} was distributed earlier, but the received total is now Rs {{ number_format($received) }}. Saving will rebuild the split on the new amount.</p>
         @endif
     </div>
 
