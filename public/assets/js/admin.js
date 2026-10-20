@@ -534,7 +534,14 @@
                 body: new FormData(form),
                 headers: { 'X-Requested-With': 'XMLHttpRequest', Accept: 'application/json', 'X-CSRF-TOKEN': csrfToken },
             });
-            const data = await res.json().catch(() => ({}));
+            const data = await res.json().catch(() => null);
+            // A redirected or non-JSON 200 (e.g. session expired -> login page)
+            // is NOT a success — the record was never saved. Never fake it.
+            if (res.ok && (!data || res.redirected)) {
+                window.notify?.error('Session expired or unexpected response — nothing was saved. Please refresh the page and try again.');
+                console.error('[AJAX form] Non-JSON response from', form.action);
+                return;
+            }
             if (!res.ok) {
                 if (res.status === 422 && data.errors) {
                     Object.entries(data.errors).forEach(([field, msgs]) => {
