@@ -63,11 +63,7 @@ class ClientInvoiceController extends Controller
                 route('admin.invoices.show', $invoice)
             );
 
-            $notifyEmail = app(\App\Settings\SiteSettings::class)->notification_email ?? null;
-            if ($notifyEmail) {
-                \Illuminate\Support\Facades\Mail::to($notifyEmail)
-                    ->queue(new \App\Mail\PaymentProofMail($invoice, $payment));
-            }
+            \App\Support\AdminMail::queue(new \App\Mail\PaymentProofMail($invoice, $payment));
         } catch (\Throwable $e) {
             report($e);
         }

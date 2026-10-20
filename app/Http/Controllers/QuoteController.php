@@ -5,10 +5,9 @@ namespace App\Http\Controllers;
 use App\Mail\QuoteRequestMail;
 use App\Models\QuoteRequest;
 use App\Models\Service;
-use App\Settings\SiteSettings;
+use App\Support\AdminMail;
 use App\Support\NotifyAdmins;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 
 class QuoteController extends Controller
 {
@@ -45,11 +44,9 @@ class QuoteController extends Controller
         );
 
         // Also email the admins (queued) so leads are not missed when the
-        // panel is not open.
-        $notifyEmail = app(SiteSettings::class)->notification_email ?? null;
-        if ($notifyEmail) {
-            Mail::to($notifyEmail)->queue(new QuoteRequestMail($quote));
-        }
+        // panel is not open. AdminMail falls back to Administrator users
+        // when the settings notification email is empty.
+        AdminMail::queue(new QuoteRequestMail($quote));
 
         // Activity log (admin context only — LogActivity skips guests)
         \App\Support\LogActivity::record('quote_request_created', $quote, "New quote request from {$quote->name}");
