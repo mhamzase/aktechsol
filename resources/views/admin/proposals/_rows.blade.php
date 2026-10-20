@@ -9,7 +9,7 @@
     <tr>
         <td data-label="Title">
             <p class="font-medium text-slate-800">{{ $proposal->title }}</p>
-            <p class="text-xs text-slate-400">{{ Str::limit($proposal->scope, 60) }}</p>
+            <p class="text-xs text-slate-400">{{ Str::limit(strip_tags($proposal->scope), 60) }}</p>
         </td>
         <td data-label="Client">
             <p class="font-medium text-slate-800">{{ $proposal->client_name }}</p>

@@ -77,7 +77,7 @@ class ClientProposalController extends Controller
                 'project',
                 'New project created',
                 "Project '{$project->title}' created from accepted proposal.",
-                route('admin.projects.show', $project),
+                route('admin.client-projects.show', $project),
             );
         }
 
@@ -89,14 +89,23 @@ class ClientProposalController extends Controller
             route('admin.proposals.show', $proposal),
         );
 
-        // Email the admin (settings notification email, queued).
+        // Email the admins (queued; settings notification email, falling
+        // back to Administrator users when it is not set).
         try {
-            $adminEmail = app(SiteSettings::class)->notification_email;
-            if ($adminEmail) {
-                Mail::to($adminEmail)->queue(new ProposalResponseMail($proposal, $validated['action']));
-            }
+            \App\Support\AdminMail::queue(new ProposalResponseMail($proposal, $validated['action']));
         } catch (\Throwable $e) {
             report($e);
+        }
+
+        // Confirmation email to the client (queued) — mirrors the response
+        // they just submitted.
+        if ($proposal->client_email) {
+            try {
+                Mail::to($proposal->client_email)
+                    ->queue(new \App\Mail\ProposalClientConfirmationMail($proposal, $validated['action']));
+            } catch (\Throwable $e) {
+                report($e);
+            }
         }
 
         $messages = [

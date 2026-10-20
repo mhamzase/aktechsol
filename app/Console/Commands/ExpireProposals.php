@@ -2,9 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\InvoiceOverdueMail;
+use App\Mail\ProposalExpiringMail;
 use App\Models\Proposal;
 use App\Support\NotifyAdmins;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Mail;
 
 class ExpireProposals extends Command
 {
@@ -32,15 +35,41 @@ class ExpireProposals extends Command
                 "Proposal '{$proposal->title}' for {$proposal->client_name} expires on {$proposal->valid_until->format('M d, Y')}.",
                 route('admin.proposals.show', $proposal),
             );
+
+            // Remind the client too (queued) — exact-date match above means
+            // this fires exactly once, 3 days before expiry.
+            if ($proposal->client_email) {
+                Mail::to($proposal->client_email)->queue(new ProposalExpiringMail($proposal));
+            }
         }
 
         if ($upcoming->count()) {
             $this->info("Sent {$upcoming->count()} expiry reminder(s).");
         }
 
-        // Flip invoices past their due date to overdue.
-        $overdue = \App\Models\Invoice::needsOverdue()->update(['status' => 'overdue']);
-        $this->info("Marked {$overdue} invoice(s) as overdue.");
+        // Flip invoices past their due date to overdue — one by one so each
+        // client gets exactly one overdue reminder (queued) on the day the
+        // status flips; the scope excludes already-overdue invoices.
+        $overdueInvoices = \App\Models\Invoice::needsOverdue()->get();
+
+        foreach ($overdueInvoices as $invoice) {
+            $invoice->update(['status' => 'overdue']);
+
+            $clientEmail = $invoice->clientEmail();
+            if ($clientEmail) {
+                Mail::to($clientEmail)->queue(new InvoiceOverdueMail($invoice));
+            }
+        }
+
+        if ($overdueInvoices->count()) {
+            NotifyAdmins::send(
+                'invoice',
+                'Invoices became overdue',
+                "{$overdueInvoices->count()} invoice(s) just flipped to overdue.",
+                route('admin.invoices.index'),
+            );
+            $this->info("Marked {$overdueInvoices->count()} invoice(s) as overdue.");
+        }
 
         return self::SUCCESS;
     }

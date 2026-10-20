@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ContactFormRequest;
+use App\Mail\ContactMessageMail;
 use App\Models\ContactMessage;
+use App\Support\AdminMail;
 use App\Support\NotifyAdmins;
 
 class ContactController extends Controller
@@ -23,6 +25,11 @@ class ContactController extends Controller
             "{$message->name} sent a message: " . str($message->message)->limit(80),
             route('admin.contact-messages.show', $message),
         );
+
+        // Also email the admins (queued) so leads are not missed when the
+        // panel is not open. AdminMail falls back to Administrator users
+        // when the settings notification email is empty.
+        AdminMail::queue(new ContactMessageMail($message));
 
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json(['message' => 'Your message has been sent successfully. We\'ll get back to you soon.']);

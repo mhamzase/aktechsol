@@ -66,10 +66,7 @@ class ClientReviewController extends Controller
                 route('admin.reviews.show', $review)
             );
 
-            $notifyEmail = app(\App\Settings\SiteSettings::class)->notification_email ?? null;
-            if ($notifyEmail) {
-                Mail::to($notifyEmail)->queue(new ReviewSubmittedMail($review));
-            }
+            \App\Support\AdminMail::queue(new ReviewSubmittedMail($review));
         } catch (\Throwable $e) {
             report($e);
         }

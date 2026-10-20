@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\TeamMemberWelcomeMail;
 use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 
@@ -79,6 +81,13 @@ class UserController extends Controller
         $user->syncRoles($data['roles'] ?? []);
 
         ActivityLog::record('user.created', $user, "User {$user->email} created.");
+
+        // Welcome email (queued) — a mail failure never breaks user creation.
+        try {
+            Mail::to($user->email)->queue(new TeamMemberWelcomeMail($user));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         return response()->json(['message' => 'User created successfully.']);
     }

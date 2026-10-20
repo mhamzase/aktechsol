@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\QuoteRequestMail;
 use App\Models\QuoteRequest;
 use App\Models\Service;
+use App\Support\AdminMail;
 use App\Support\NotifyAdmins;
 use Illuminate\Http\Request;
 
@@ -40,6 +42,11 @@ class QuoteController extends Controller
             "{$quote->name} requested a quote" . ($quote->service ? " for {$quote->service->title}" : ''),
             route('admin.quotes.show', $quote),
         );
+
+        // Also email the admins (queued) so leads are not missed when the
+        // panel is not open. AdminMail falls back to Administrator users
+        // when the settings notification email is empty.
+        AdminMail::queue(new QuoteRequestMail($quote));
 
         // Activity log (admin context only — LogActivity skips guests)
         \App\Support\LogActivity::record('quote_request_created', $quote, "New quote request from {$quote->name}");

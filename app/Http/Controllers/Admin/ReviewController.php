@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ReviewApprovedMail;
 use App\Mail\ReviewRequestMail;
 use App\Models\ClientProject;
 use App\Models\Review;
@@ -61,12 +62,19 @@ class ReviewController extends Controller
     /** Approve (publish) a review — auto-creates a homepage testimonial for client reviews. */
     public function approve(Review $review)
     {
+        $wasApproved = $review->status === 'approved';
+
         $review->update(['status' => 'approved', 'is_published' => true]);
         LogActivity::record('review_approved', $review, "Approved review by {$review->reviewer_name}");
 
         $message = $this->syncTestimonial($review)
             ? 'Review approved, published & added as a testimonial.'
             : 'Review approved and published.';
+
+        // Tell the client their review is live — once, on the transition.
+        if (! $wasApproved) {
+            $this->mailClientReviewLive($review);
+        }
 
         return response()->json(['message' => $message, 'stats' => $this->stats()]);
     }
@@ -87,6 +95,8 @@ class ReviewController extends Controller
             'status'        => 'required|in:' . implode(',', Review::STATUSES),
         ]);
 
+        $wasApproved = $review->status === 'approved';
+
         $review->update($validated + ['is_published' => $validated['status'] === 'approved']);
         LogActivity::record('review_updated', $review, "Updated review by {$review->reviewer_name}");
 
@@ -95,7 +105,34 @@ class ReviewController extends Controller
             $message = 'Review updated & added as a testimonial.';
         }
 
+        // Tell the client their review is live — once, on the transition.
+        if ($validated['status'] === 'approved' && ! $wasApproved) {
+            $this->mailClientReviewLive($review);
+        }
+
         return response()->json(['message' => $message, 'stats' => $this->stats()]);
+    }
+
+    /**
+     * Email the client that their review is now live (queued). Client
+     * reviews only; a mail failure never breaks moderation.
+     */
+    protected function mailClientReviewLive(Review $review): void
+    {
+        if ($review->reviewer_type !== 'client') {
+            return;
+        }
+
+        $email = $review->project?->client_email;
+        if (! $email) {
+            return;
+        }
+
+        try {
+            Mail::to($email)->queue(new ReviewApprovedMail($review));
+        } catch (\Throwable $e) {
+            report($e);
+        }
     }
 
     /**

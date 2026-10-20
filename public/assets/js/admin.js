@@ -534,7 +534,14 @@
                 body: new FormData(form),
                 headers: { 'X-Requested-With': 'XMLHttpRequest', Accept: 'application/json', 'X-CSRF-TOKEN': csrfToken },
             });
-            const data = await res.json().catch(() => ({}));
+            const data = await res.json().catch(() => null);
+            // A redirected or non-JSON 200 (e.g. session expired -> login page)
+            // is NOT a success — the record was never saved. Never fake it.
+            if (res.ok && (!data || res.redirected)) {
+                window.notify?.error('Session expired or unexpected response — nothing was saved. Please refresh the page and try again.');
+                console.error('[AJAX form] Non-JSON response from', form.action);
+                return;
+            }
             if (!res.ok) {
                 if (res.status === 422 && data.errors) {
                     Object.entries(data.errors).forEach(([field, msgs]) => {
@@ -1211,21 +1218,28 @@
     setInterval(poll, 30000);
 })();
 
-// Global notification confirm helpers (used by topbar bell dropdown).
-window.confirmMarkAllRead = function () {
-    if (!confirm('Mark all notifications as read?')) return;
-    fetch('/admin/notifications/read-all', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            'Accept': 'application/json',
+// Global notification helper (used by the topbar bell dropdown's
+// "Mark all read" button) — branded confirmation, never native confirm().
+window.markAllNotificationsRead = function () {
+    window.confirmAction({
+        title: 'Mark all as read?',
+        message: 'All notifications will be marked as read.',
+        confirmLabel: 'Mark all read',
+        onConfirm: () => {
+            fetch('/admin/notifications/read-all', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                },
+            }).then(() => {
+                document.querySelector('.bell-dot')?.remove();
+                document.getElementById('topbar-notifications-list')?.querySelectorAll('a').forEach((a) => {
+                    a.querySelector('.bg-\\[\\#1d4ed8\\]')?.classList.replace('bg-[#1d4ed8]', 'bg-slate-300');
+                });
+                window.notify?.success('All notifications marked as read.');
+            });
         },
-    }).then(() => {
-        document.querySelector('.bell-dot')?.remove();
-        document.getElementById('topbar-notifications-list')?.querySelectorAll('a').forEach((a) => {
-            a.querySelector('.bg-\\[\\#1d4ed8\\]')?.classList.replace('bg-[#1d4ed8]', 'bg-slate-300');
-        });
-        window.notify?.success('All notifications marked as read.');
     });
 };
 
