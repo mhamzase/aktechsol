@@ -579,6 +579,11 @@
             window.closeDrawer();
             if (form.dataset.reloadTable) window.reloadAdminTable(form.dataset.reloadTable);
             document.dispatchEvent(new CustomEvent('ajaxFormSuccess', { detail: data }));
+            // Forms may ask to reopen a drawer with fresh content (e.g. back
+            // to a project's details after saving its revenue distribution).
+            if (form.dataset.reopenDrawer && window.openDrawer) {
+                window.openDrawer(form.dataset.reopenDrawer, form.dataset.reopenTitle || 'Details');
+            }
             if (data.redirect) window.location.href = data.redirect;
         } catch (err) {
             window.notify.error('Network error. Please try again.');
@@ -586,6 +591,46 @@
             if (btn) { btn.disabled = false; btn.innerHTML = original; }
         }
     });
+
+    /* ---------------- Revenue distribution live calculator ----------------
+       The distribution drawer (delivered projects) recalculates each
+       share's amount + the allocated/remaining totals as percentages
+       are typed, and only enables Save at exactly 100%. */
+    function initRevenueForm(form) {
+        if (!form || form.dataset.revInit) return;
+        form.dataset.revInit = '1';
+        const base = parseFloat(form.dataset.base || '0');
+        const fmt = (n) => 'Rs ' + Math.round(n).toLocaleString('en-US');
+        const recalc = () => {
+            let total = 0;
+            form.querySelectorAll('[data-revenue-pct]').forEach((input) => {
+                const pct = parseFloat(input.value || '0') || 0;
+                total += pct;
+                const amtEl = input.closest('[data-revenue-row]')?.querySelector('[data-revenue-amt]');
+                if (amtEl) amtEl.textContent = fmt(base * pct / 100);
+            });
+            total = Math.round(total * 100) / 100;
+            const remaining = Math.round((100 - total) * 100) / 100;
+            const allocEl = form.querySelector('[data-revenue-allocated]');
+            const remEl = form.querySelector('[data-revenue-remaining]');
+            const barEl = form.querySelector('[data-revenue-bar]');
+            if (allocEl) allocEl.textContent = total + '%';
+            if (remEl) remEl.textContent = remaining + '%';
+            if (barEl) {
+                barEl.style.width = Math.min(Math.max(total, 0), 100) + '%';
+                barEl.style.backgroundColor = total === 100 ? '#16a34a' : (total > 100 ? '#ef4444' : '#3b82f6');
+            }
+            const saveBtn = form.querySelector('button[type="submit"]');
+            if (saveBtn) saveBtn.disabled = Math.abs(total - 100) > 0.009;
+        };
+        form.addEventListener('input', (e) => { if (e.target.matches('[data-revenue-pct]')) recalc(); });
+        recalc();
+    }
+    // Drawer content is injected dynamically, so watch for the form.
+    new MutationObserver(() => {
+        document.querySelectorAll('form[data-revenue-form]:not([data-rev-init])').forEach(initRevenueForm);
+    }).observe(document.body, { childList: true, subtree: true });
+    document.querySelectorAll('form[data-revenue-form]').forEach(initRevenueForm);
 
     /* ---------------- Searchable select (x-ui.search-select) ---------------- */
     document.addEventListener('click', (e) => {

@@ -249,6 +249,10 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     // Client projects (Phase 3).
     Route::resource('client-projects', \App\Http\Controllers\Admin\ClientProjectController::class)->middleware('can:manage proposals');
     Route::post('client-projects/{clientProject}/updates', [\App\Http\Controllers\Admin\ClientProjectController::class, 'addUpdate'])->middleware('can:manage proposals')->name('client-projects.updates.store');
+    Route::get('client-projects/{clientProject}/revenue', [\App\Http\Controllers\Admin\ProjectRevenueController::class, 'edit'])->middleware('can:manage proposals')->name('client-projects.revenue.edit');
+    Route::put('client-projects/{clientProject}/revenue', [\App\Http\Controllers\Admin\ProjectRevenueController::class, 'update'])->middleware('can:manage proposals')->name('client-projects.revenue.update');
+    Route::get('client-projects/{clientProject}/revenue/{share}/paid', [\App\Http\Controllers\Admin\ProjectRevenueController::class, 'paidForm'])->middleware('can:manage proposals')->name('client-projects.revenue.paid-form');
+    Route::post('client-projects/{clientProject}/revenue/{share}/paid', [\App\Http\Controllers\Admin\ProjectRevenueController::class, 'markPaid'])->middleware('can:manage proposals')->name('client-projects.revenue.paid');
     Route::delete('client-projects/{clientProject}/updates/{updateId}', [\App\Http\Controllers\Admin\ClientProjectController::class, 'deleteUpdate'])->middleware('can:manage proposals')->name('client-projects.updates.destroy');
     // Invoices (Phase 4).
     Route::resource('invoices', \App\Http\Controllers\Admin\InvoiceController::class)->middleware('can:manage invoices');

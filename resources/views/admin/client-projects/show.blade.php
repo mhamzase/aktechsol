@@ -56,8 +56,44 @@
             @endforelse
         </div>
 
+        {{-- Revenue distribution (delivered projects with shares saved) --}}
+        @if($project->revenueShares->isNotEmpty())
+            <div>
+                <p class="text-[0.7rem] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Revenue Distribution</p>
+                @foreach($project->revenueShares as $share)
+                    <div class="flex items-center gap-3 py-2.5 {{ !$loop->last ? 'border-b border-slate-100 dark:border-slate-700/60' : '' }}">
+                        <div class="min-w-0">
+                            <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">
+                                {{ $share->member_name }}@if($share->isCompany()) <span class="text-xs font-semibold text-slate-400">(Company)</span>@endif
+                            </p>
+                            <p class="text-xs text-slate-400">{{ rtrim(rtrim(number_format((float) $share->percentage, 2), '0'), '.') }}% · Rs {{ number_format((float) $share->amount) }}</p>
+                        </div>
+                        <div class="ml-auto flex items-center gap-2 shrink-0">
+                            @if($share->isPaid())
+                                <span class="badge badge-green">Paid · {{ optional($share->paid_at)->format('d M Y') }}</span>
+                                @if($proof = $share->getFirstMediaUrl('payment_proof'))
+                                    <a href="{{ $proof }}" target="_blank" class="text-xs font-bold text-[#1d4ed8] dark:text-blue-400 hover:underline">View Proof</a>
+                                @endif
+                            @else
+                                <span class="badge badge-amber">Pending</span>
+                                <button type="button" onclick="openDrawer('{{ route('admin.client-projects.revenue.paid-form', [$project, $share]) }}', 'Mark Share Paid')"
+                                        class="text-xs font-bold text-white bg-green-600 hover:bg-green-700 px-2.5 py-1.5 rounded-lg transition">Mark Paid</button>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+
         {{-- Actions --}}
         <div class="flex flex-wrap gap-2.5">
+            @if($project->status === 'delivered')
+                <button type="button" onclick="openDrawer('{{ route('admin.client-projects.revenue.edit', $project) }}', 'Distribute Revenue')"
+                        class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold text-white bg-green-600 rounded-xl hover:bg-green-700 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    {{ $project->revenueShares->isNotEmpty() ? 'Edit Distribution' : 'Distribute Revenue' }}
+                </button>
+            @endif
             <button type="button" onclick="navigator.clipboard.writeText('{{ $project->trackingUrl() }}'); window.notify.success('Tracking link copied!')"
                     class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
