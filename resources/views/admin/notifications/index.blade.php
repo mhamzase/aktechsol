@@ -46,7 +46,7 @@
             <h3 class="font-bold text-slate-800 dark:text-slate-100" id="notif-confirm-title">Are you sure?</h3>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-2" id="notif-confirm-message"></p>
             <div id="notif-confirm-input-wrap" class="hidden mt-3">
-                <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Type <span class="font-mono font-bold text-red-600">DELETE</span> to confirm</label>
+                <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">Type <span id="notif-confirm-word" class="font-mono font-bold text-red-600">DELETE</span> to confirm</label>
                 <input type="text" id="notif-confirm-input" class="ui-control mt-1" placeholder="DELETE" autocomplete="off">
             </div>
             <div class="flex justify-end gap-2 mt-5">
@@ -61,17 +61,24 @@
 <script>
 let notifConfirmAction = null;
 let notifConfirmNeedsTyping = false;
+let notifConfirmTypeWord = 'DELETE';
 
-function openNotifConfirm(title, message, action, needsTyping = false, danger = false) {
+function openNotifConfirm(title, message, action, needsTyping = false, danger = false, typeWord = 'DELETE') {
     document.getElementById('notif-confirm-title').textContent = title;
     document.getElementById('notif-confirm-message').textContent = message;
     notifConfirmAction = action;
     notifConfirmNeedsTyping = needsTyping;
+    notifConfirmTypeWord = typeWord;
     const wrap = document.getElementById('notif-confirm-input-wrap');
     const input = document.getElementById('notif-confirm-input');
     if (needsTyping) {
         wrap.classList.remove('hidden');
         input.value = '';
+        input.placeholder = typeWord;
+        const wordEl = document.getElementById('notif-confirm-word');
+        wordEl.textContent = typeWord;
+        wordEl.classList.toggle('text-red-600', danger);
+        wordEl.classList.toggle('text-blue-600', !danger);
         setTimeout(() => input.focus(), 100);
     } else {
         wrap.classList.add('hidden');
@@ -85,12 +92,13 @@ function closeNotifConfirm() {
     document.getElementById('notif-confirm-modal').classList.add('hidden');
     notifConfirmAction = null;
     notifConfirmNeedsTyping = false;
+    notifConfirmTypeWord = 'DELETE';
 }
 function doNotifConfirm() {
     if (notifConfirmNeedsTyping) {
         const val = document.getElementById('notif-confirm-input').value.trim();
-        if (val !== 'DELETE') {
-            window.notify?.error('Please type DELETE to confirm.');
+        if (val !== notifConfirmTypeWord) {
+            window.notify?.error(`Please type ${notifConfirmTypeWord} to confirm.`);
             return;
         }
     }
@@ -118,21 +126,29 @@ function confirmMarkRead(id) {
 }
 
 function confirmMarkAllRead() {
-    openNotifConfirm('Mark all as read?', 'All notifications will be marked as read.', () => {
-        fetch(`{{ route('admin.notifications.read-all') }}`, {
-            method: 'POST',
-            headers: { 'X-CSRF-TOKEN': notifCsrf, 'Accept': 'application/json' },
-        }).then(() => {
-            document.querySelectorAll('.notif-row').forEach((row) => {
-                row.classList.remove('bg-blue-50/70', 'dark:bg-blue-500/10');
-                row.classList.add('bg-white', 'dark:bg-slate-800');
-                row.querySelector('.notif-dot')?.classList.replace('bg-[#1d4ed8]', 'bg-slate-300');
-                row.querySelector('.notif-read-btn')?.remove();
+    // Same pattern as Delete all: type READ to confirm.
+    openNotifConfirm(
+        'Mark all as read?',
+        'All notifications will be marked as read. To confirm, type READ below.',
+        () => {
+            fetch(`{{ route('admin.notifications.read-all') }}`, {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': notifCsrf, 'Accept': 'application/json' },
+            }).then(() => {
+                document.querySelectorAll('.notif-row').forEach((row) => {
+                    row.classList.remove('bg-blue-50/70', 'dark:bg-blue-500/10');
+                    row.classList.add('bg-white', 'dark:bg-slate-800');
+                    row.querySelector('.notif-dot')?.classList.replace('bg-[#1d4ed8]', 'bg-slate-300');
+                    row.querySelector('.notif-read-btn')?.remove();
+                });
+                updateBellCount(0, true);
+                window.notify?.success('All notifications marked as read.');
             });
-            updateBellCount(0, true);
-            window.notify?.success('All notifications marked as read.');
-        });
-    });
+        },
+        true, // needsTyping
+        false, // not danger
+        'READ'
+    );
 }
 
 function confirmDeleteNotification(id) {
