@@ -76,9 +76,11 @@
     <div class="border-t border-white/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
             <p>{{ $siteSettings->copyright_text ?? '© ' . date('Y') . ' AK Tech SOL. All rights reserved.' }}</p>
-            <div class="flex gap-5">
+            <div class="flex items-center gap-5">
                 <a href="{{ url('/privacy-policy') }}" class="hover:text-white transition">Privacy Policy</a>
                 <a href="{{ url('/terms-conditions') }}" class="hover:text-white transition">Terms & Conditions</a>
+                {{-- App version — same value as the admin sidebar (config). --}}
+                <span class="text-slate-600">v{{ config('app.version', '1.0.0') }}</span>
             </div>
         </div>
     </div>
