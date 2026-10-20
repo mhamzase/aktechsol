@@ -52,6 +52,7 @@
             <nav class="hidden lg:flex items-center gap-0.5 bg-slate-50/80 rounded-2xl px-2 py-1.5 border border-slate-100">
                 <a href="{{ url('/') }}" class="{{ $navLink($isActive('/')) }}">Home</a>
                 <a href="{{ url('/services') }}" class="{{ $navLink($isActive('services*')) }}">Services</a>
+                <a href="{{ route('pricing') }}" class="{{ $navLink($isActive('pricing')) }}">Pricing</a>
                 <a href="{{ url('/portfolio') }}" class="{{ $navLink($isActive('portfolio*')) }}">Portfolio</a>
                 <a href="{{ url('/blog') }}" class="{{ $navLink($isActive('blog*')) }}">Blog</a>
                 <a href="{{ url('/about') }}" class="{{ $navLink($isActive('about')) }}">About</a>
@@ -76,6 +77,7 @@
         @foreach([
             ['/', 'Home', $isActive('/')],
             ['/services', 'Services', $isActive('services*')],
+            ['/pricing', 'Pricing', $isActive('pricing')],
             ['/portfolio', 'Portfolio', $isActive('portfolio*')],
             ['/blog', 'Blog', $isActive('blog*')],
             ['/about', 'About', $isActive('about')],

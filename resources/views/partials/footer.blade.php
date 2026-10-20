@@ -36,7 +36,7 @@
             <div>
                 <h4 class="text-white font-bold text-sm uppercase tracking-widest mb-5">Company</h4>
                 <ul class="space-y-3 text-sm">
-                    @foreach([['/', 'Home'], ['/about', 'About Us'], ['/portfolio', 'Portfolio'], ['/blog', 'Blog'], ['/faqs', 'FAQs']] as [$href, $label])
+                    @foreach([['/', 'Home'], ['/about', 'About Us'], ['/pricing', 'Pricing'], ['/portfolio', 'Portfolio'], ['/blog', 'Blog'], ['/faqs', 'FAQs']] as [$href, $label])
                         <li><a href="{{ url($href) }}" class="hover:text-white transition inline-flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-[#2f6fed]"></span>{{ $label }}</a></li>
                     @endforeach
                 </ul>
