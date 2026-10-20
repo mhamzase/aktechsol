@@ -175,6 +175,11 @@ class ProposalController extends Controller
     /** Resend the proposal email to the client. */
     public function resend(Proposal $proposal)
     {
+        // Accepted proposals are final — no resends.
+        if ($proposal->status === 'accepted') {
+            return response()->json(['message' => 'This proposal has already been accepted.'], 422);
+        }
+
         if (! $proposal->client_email) {
             return response()->json(['message' => 'No client email on this proposal.'], 422);
         }
