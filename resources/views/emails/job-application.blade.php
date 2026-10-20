@@ -44,7 +44,7 @@
                 </div>
                 @endif
                 @if($application->getFirstMediaUrl('resume'))
-                <p style="margin:16px 0 0; font-size:13px; color:#94a3b8;">The candidate also uploaded a CV — open the application in the admin panel to download it.</p>
+                <p style="margin:16px 0 0; font-size:13px; color:#94a3b8;">The candidate also uploaded a CV. Open the application in the admin panel to download it.</p>
                 @endif
             </td>
         </tr>

@@ -82,7 +82,7 @@
             <form id="apply-form" action="{{ route('careers.apply', $job->slug) }}" method="POST" enctype="multipart/form-data" class="mt-6 bg-white rounded-3xl p-6 sm:p-10 border border-slate-100 shadow-sm">
                 @csrf
                 <h2 class="text-lg font-extrabold text-slate-900 mb-1.5">Apply for this position</h2>
-                <p class="text-sm text-slate-500 mb-6">Your portfolio matters more than your resume — applications without work samples are not reviewed.</p>
+                <p class="text-sm text-slate-500 mb-6">Your portfolio matters more than your resume. Applications without work samples are not reviewed.</p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                         <label for="name" class="block text-sm font-semibold text-slate-700 mb-1.5">Full Name <span class="text-red-500">*</span></label>
@@ -170,7 +170,7 @@
                     // 2xx but not JSON (e.g. redirected to another page) — never fake a success.
                     let landed = '';
                     try { landed = new URL(res.url).pathname; } catch (e) { /* ignore */ }
-                    window.notify.error('Unexpected response — the form landed on ' + (landed || 'an unknown page') + '. Please refresh the page and try again.');
+                    window.notify.error('Unexpected response: the form landed on ' + (landed || 'an unknown page') + '. Please refresh the page and try again.');
                 } else if (res.status === 422 && data.errors) {
                     Object.entries(data.errors).forEach(([field, msgs]) => {
                         const el = form.querySelector(`[data-err="${field}"]`);

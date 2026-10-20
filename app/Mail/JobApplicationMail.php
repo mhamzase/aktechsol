@@ -22,7 +22,7 @@ class JobApplicationMail extends Mailable implements ShouldQueue
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: 'New Job Application — ' . $this->application->name);
+        return new Envelope(subject: 'New Job Application: ' . $this->application->name);
     }
 
     public function content(): Content

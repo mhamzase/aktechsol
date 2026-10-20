@@ -22,7 +22,7 @@ class DemoBookingMail extends Mailable implements ShouldQueue
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: 'New Demo Booking — ' . $this->booking->name);
+        return new Envelope(subject: 'New Demo Booking: ' . $this->booking->name);
     }
 
     public function content(): Content

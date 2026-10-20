@@ -8,7 +8,7 @@
             <p class="text-sm text-slate-500 mt-2">Try a different keyword, or clear the search to see all open positions.</p>
         @else
             <p class="text-lg font-bold text-slate-800">No open positions right now</p>
-            <p class="text-sm text-slate-500 mt-2">We're not hiring at the moment, but new roles open up regularly — check back soon, or <a href="{{ route('contact') }}" class="text-[#1d4ed8] font-bold hover:underline">say hello anyway</a>.</p>
+            <p class="text-sm text-slate-500 mt-2">We're not hiring at the moment, but new roles open up regularly. Check back soon, or <a href="{{ route('contact') }}" class="text-[#1d4ed8] font-bold hover:underline">say hello anyway</a>.</p>
         @endif
     </div>
 @endforelse

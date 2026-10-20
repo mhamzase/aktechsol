@@ -8,7 +8,7 @@
 @section('content')
     <x-frontend.page-banner
         title="Book a Free Demo"
-        subtitle="Pick a date and time — our team will walk you through everything, live."
+        subtitle="Pick a date and time: our team will walk you through everything, live."
     />
 
     <section class="py-12 sm:py-16 bg-slate-50/60">
@@ -18,7 +18,7 @@
                     <svg class="w-6 h-6 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <div>
                         <p class="font-bold">Demo booked!</p>
-                        <p class="text-sm mt-1">Thank you — your demo request is in. Our team will confirm your slot by email shortly.</p>
+                        <p class="text-sm mt-1">Thank you. Your demo request is in. Our team will confirm your slot by email shortly.</p>
                     </div>
                 </div>
             </div>
@@ -118,7 +118,7 @@
                     successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 } else if (res.ok) {
                     // 2xx but not JSON (e.g. redirected to login) — never fake a success.
-                    window.notify.error('Unexpected response — your session may have expired. Please refresh the page and try again.');
+                    window.notify.error('Unexpected response: your session may have expired. Please refresh the page and try again.');
                 } else if (res.status === 422 && data.errors) {
                     Object.entries(data.errors).forEach(([field, msgs]) => {
                         const el = form.querySelector(`[data-err="${field}"]`);

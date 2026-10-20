@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Careers | ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
-@section('meta_description', 'Join the ' . ($siteSettings->site_name ?? 'AK Tech SOL') . ' team — see open jobs and internships and apply with your portfolio.')
+@section('meta_description', 'Join the ' . ($siteSettings->site_name ?? 'AK Tech SOL') . ' team: see open jobs and internships and apply with your portfolio.')
 
 @push('seo')
 {{-- Structured data: the open positions as an ItemList + breadcrumbs.
@@ -42,7 +42,7 @@
 @section('content')
     <x-frontend.page-banner
         title="Careers"
-        subtitle="Join our team — work on real projects for clients worldwide, from anywhere."
+        subtitle="Join our team: work on real projects for clients worldwide, from anywhere."
     />
 
     <section class="py-12 sm:py-16 bg-slate-50/60">
@@ -51,7 +51,7 @@
             <form id="careers-search-form" action="{{ route('careers.index') }}" method="GET" class="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
                 <div class="relative flex-1">
                     <svg class="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 10.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"/></svg>
-                    <input type="text" id="careers-search" name="search" value="{{ $search }}" placeholder="Search positions — e.g. video editor, designer…"
+                    <input type="text" id="careers-search" name="search" value="{{ $search }}" placeholder="Search positions, e.g. video editor, designer…"
                            class="w-full rounded-2xl border border-slate-200 bg-white pl-12 pr-11 py-3.5 text-sm shadow-sm focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#1d4ed8]/20 focus:outline-none transition">
                     @if($search)
                         <a href="{{ route('careers.index') }}" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600" title="Clear search">
