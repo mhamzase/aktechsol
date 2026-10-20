@@ -34,10 +34,13 @@ class ClientInvoiceController extends Controller
 
         $validated = $request->validate([
             'amount'     => 'required|numeric|min:0.01|max:' . max(round($invoice->balance(), 2), 0.01),
-            'method'     => 'required|string|max:100',
+            'method'     => 'nullable|string|max:100',
             'reference'  => 'nullable|string|max:255',
             'screenshot' => 'required|image|mimes:jpeg,png,webp|max:5120',
         ]);
+
+        // A proof must never be blocked by a missing method label.
+        $validated['method'] = $validated['method'] ?? 'Bank Transfer';
 
         // Store the exact amount the client typed (rounded to 2 decimals).
         $validated['amount'] = round((float) $validated['amount'], 2);

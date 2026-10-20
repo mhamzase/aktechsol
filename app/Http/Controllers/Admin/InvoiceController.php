@@ -68,7 +68,14 @@ class InvoiceController extends Controller
     public function show(Invoice $invoice)
     {
         $invoice->load(['project', 'payments.verifier']);
-        return view('admin.invoices.show', compact('invoice'));
+
+        if (request()->ajax() || request()->expectsJson()) {
+            return view('admin.invoices.show', compact('invoice'));
+        }
+
+        // Direct landing (email / notification link): go to the listing
+        // and let it auto-open this invoice in the drawer.
+        return redirect()->route('admin.invoices.index', ['view' => $invoice->id]);
     }
 
     public function edit(Invoice $invoice)

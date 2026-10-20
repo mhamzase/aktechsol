@@ -66,6 +66,22 @@ document.addEventListener('ajaxFormSuccess', (e) => {
         if (el) el.textContent = val;
     });
 });
+
+// Auto-open project drawer when landing via email / notification (?view=id).
+(function () {
+    const viewId = new URLSearchParams(location.search).get('view');
+    if (viewId && window.openDrawer) {
+        const tryOpen = () => {
+            if (window.openDrawer) {
+                window.openDrawer(`/admin/client-projects/${viewId}`, 'Project Details');
+                history.replaceState(null, '', location.pathname);
+            } else {
+                setTimeout(tryOpen, 100);
+            }
+        };
+        tryOpen();
+    }
+})();
 </script>
 @endpush
 @endsection

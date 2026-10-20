@@ -39,7 +39,7 @@
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;">
         <tr>
             <td align="center">
-                <a href="{{ route('invoices.show', $invoice->token) }}"
+                <a href="{{ $invoice->invoiceUrl() }}"
                    style="display:inline-block; padding:14px 40px; background:linear-gradient(135deg, #1d4ed8, #2f6fed); color:#ffffff; font-size:15px; font-weight:700; text-decoration:none; border-radius:12px;">
                     View Invoice
                 </a>

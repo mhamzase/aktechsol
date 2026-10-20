@@ -81,9 +81,13 @@ class Invoice extends Model
             && ! in_array($this->status, ['paid', 'cancelled']);
     }
 
-    /** Secure client URL. */
+    /** Secure client URL (self-heals legacy rows that have no token). */
     public function invoiceUrl(): string
     {
+        if (! $this->token) {
+            $this->forceFill(['token' => Str::random(48)])->saveQuietly();
+        }
+
         return route('invoices.show', $this->token);
     }
 

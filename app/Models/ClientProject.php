@@ -75,6 +75,24 @@ class ClientProject extends Model
         return $this->hasMany(Invoice::class);
     }
 
+    /** Revenue shares recorded for this project's received payment. */
+    public function revenueShares(): HasMany
+    {
+        return $this->hasMany(ProjectRevenueShare::class, 'client_project_id');
+    }
+
+    /** Total actually received for this project (paid invoice amounts). */
+    public function receivedAmount(): float
+    {
+        return (float) $this->invoices()->sum('paid_amount');
+    }
+
+    /** True once any share is paid: the percentages are then locked. */
+    public function revenueLocked(): bool
+    {
+        return $this->revenueShares()->where('status', 'paid')->exists();
+    }
+
     /** Reviews collected after delivery. */
     public function reviews(): HasMany
     {
@@ -84,6 +102,11 @@ class ClientProject extends Model
     /** Public secure tracking link for the client. */
     public function trackingUrl(): string
     {
+        // Self-heals legacy rows that have no token yet.
+        if (! $this->token) {
+            $this->forceFill(['token' => Str::random(48)])->saveQuietly();
+        }
+
         return route('projects.track', $this->token);
     }
 

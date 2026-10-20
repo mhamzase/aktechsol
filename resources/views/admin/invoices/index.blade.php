@@ -126,6 +126,22 @@ document.addEventListener('click', async (e) => {
         });
     }
 });
+
+// Auto-open invoice drawer when landing via email / notification (?view=id).
+(function () {
+    const viewId = new URLSearchParams(location.search).get('view');
+    if (viewId && window.openDrawer) {
+        const tryOpen = () => {
+            if (window.openDrawer) {
+                window.openDrawer(`/admin/invoices/${viewId}`, 'Invoice Details');
+                history.replaceState(null, '', location.pathname);
+            } else {
+                setTimeout(tryOpen, 100);
+            }
+        };
+        tryOpen();
+    }
+})();
 </script>
 @endpush
 @endsection

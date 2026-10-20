@@ -127,7 +127,7 @@
             <div class="space-y-3">
                 @foreach($project->invoices as $invoice)
                 @if($invoice->token)
-                <a href="{{ route('invoices.show', $invoice->token) }}"
+                <a href="{{ $invoice->invoiceUrl() }}"
                    class="flex items-center justify-between gap-3 p-4 rounded-2xl border border-slate-100 hover:border-blue-300 hover:shadow-md transition">
                     <div class="min-w-0">
                         <p class="font-bold text-slate-900 text-sm truncate">{{ $invoice->invoice_no }}</p>

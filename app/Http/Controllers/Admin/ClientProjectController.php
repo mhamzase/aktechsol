@@ -17,7 +17,7 @@ class ClientProjectController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ClientProject::with(['team', 'proposal'])->latest();
+        $query = ClientProject::with(['team', 'proposal', 'revenueShares'])->latest();
 
         if ($request->filled('search')) {
             $s = $request->search;
@@ -74,9 +74,15 @@ class ClientProjectController extends Controller
 
     public function show(ClientProject $clientProject)
     {
-        $clientProject->load(['team', 'proposal', 'updates.author']);
+        $clientProject->load(['team', 'proposal', 'updates.author', 'revenueShares']);
         $project = $clientProject;
-        return view('admin.client-projects.show', compact('project'));
+
+        if (request()->ajax() || request()->expectsJson()) {
+            return view('admin.client-projects.show', compact('project'));
+        }
+
+        // Direct landing (email / notification link): listing auto-opens the drawer.
+        return redirect()->route('admin.client-projects.index', ['view' => $project->id]);
     }
 
     public function edit(ClientProject $clientProject)

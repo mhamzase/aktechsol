@@ -33,7 +33,7 @@
                 <span class="text-slate-400 text-sm">Unassigned</span>
             @endif
         </td>
-        <td data-label="Status"><span class="badge {{ $statusBadges[$project->status] ?? 'badge-gray' }}">{{ $project->statusLabel() }}</span></td>
+        <td data-label="Status"><span class="badge {{ $statusBadges[$project->status] ?? 'badge-gray' }}">{{ $project->statusLabel() }}</span>@if($project->revenueShares->isNotEmpty())<span class="badge badge-green ml-1">Revenue Shared</span>@endif</td>
         <td data-label="Progress" class="whitespace-nowrap">
             <div class="flex items-center gap-2 min-w-[110px]">
                 <div class="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
@@ -49,6 +49,7 @@
                 :editUrl="route('admin.client-projects.edit', $project)"
                 editTitle="Edit Project"
                 :editWide="true"
+                :revenueUrl="$project->status === 'delivered' ? route('admin.client-projects.revenue.edit', $project) : null"
                 :deleteUrl="route('admin.client-projects.destroy', $project)"
                 tableId="projects-table" />
         </td>

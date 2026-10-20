@@ -135,7 +135,25 @@
                            class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
                     <p class="text-xs text-slate-400 mt-1">Max: ${{ number_format($invoice->balance(), 2) }}</p>
                 </div>
-                <input type="hidden" name="method" id="proof-method" value="">
+                @if(empty($paymentMethods))
+                    {{-- No methods configured in Settings: let the client pick
+                         one, otherwise the hidden method stays empty and the
+                         submission can never validate. --}}
+                    <div class="md:col-span-6">
+                        <label class="block text-sm font-bold text-slate-700 mb-1.5">Payment Method <span class="text-red-500">*</span></label>
+                        <select name="method" required
+                                class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                            <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="JazzCash">JazzCash</option>
+                            <option value="EasyPaisa">EasyPaisa</option>
+                            <option value="Raast">Raast</option>
+                            <option value="PayPal">PayPal</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                @else
+                    <input type="hidden" name="method" id="proof-method" value="">
+                @endif
                 <div class="md:col-span-6">
                     <label class="block text-sm font-bold text-slate-700 mb-1.5">Transaction Reference</label>
                     <input type="text" name="reference" placeholder="TXN-123456"

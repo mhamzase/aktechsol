@@ -96,8 +96,9 @@ class PlatformSeeder extends Seeder
 
         // Invoice + payment proof
         $invoice = Invoice::firstOrCreate(['invoice_no' => 'INV-' . now()->format('Ym') . '-0001'], [
-            'client_project_id' => $project->id, 'title' => 'Milestone 1 — Design',
+            'client_project_id' => $project->id, 'title' => 'Milestone 1: Design',
             'amount' => 15000, 'paid_amount' => 0, 'due_date' => now()->addDays(7), 'status' => 'unpaid',
+            'token' => Str::random(48),
         ]);
         InvoicePayment::firstOrCreate(
             ['invoice_id' => $invoice->id, 'reference' => 'TRX123456'],

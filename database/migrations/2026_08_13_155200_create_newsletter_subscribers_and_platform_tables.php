@@ -121,6 +121,24 @@ return new class extends Migration {
         });
 
         /* ------------------------------------------------------------------
+         | 4c. Project revenue shares — how a delivered project's received
+         |     payment is split: one company row (user_id null) plus one
+         |     row per assigned team member. member_name is a snapshot so
+         |     the record survives the user being deleted later.
+         | ------------------------------------------------------------------ */
+        Schema::create('project_revenue_shares', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('client_project_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('member_name');
+            $table->decimal('percentage', 5, 2);
+            $table->decimal('amount', 12, 2);
+            $table->string('status')->default('pending')->index(); // pending | paid
+            $table->timestamp('paid_at')->nullable();
+            $table->timestamps();
+        });
+
+        /* ------------------------------------------------------------------
          | 5. Project updates — timeline entries for the tracking link.
          | ------------------------------------------------------------------ */
         Schema::create('project_updates', function (Blueprint $table) {
@@ -314,6 +332,7 @@ return new class extends Migration {
         Schema::dropIfExists('invoice_payments');
         Schema::dropIfExists('invoices');
         Schema::dropIfExists('project_updates');
+        Schema::dropIfExists('project_revenue_shares');
         Schema::dropIfExists('client_project_team');
         Schema::dropIfExists('client_projects');
         Schema::dropIfExists('proposals');
