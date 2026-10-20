@@ -15,7 +15,7 @@
             <p class="font-medium text-slate-800">{{ $proposal->client_name }}</p>
             <p class="text-xs text-slate-400">{{ $proposal->client_email }}</p>
         </td>
-        <td data-label="Amount" class="font-semibold text-slate-800 whitespace-nowrap">${{ number_format($proposal->amount, 2) }}</td>
+        <td data-label="Amount" class="font-semibold text-slate-800 whitespace-nowrap">{{ \App\Support\Money::format($proposal->amount, $proposal->currency) }}</td>
         <td data-label="Status"><span class="badge {{ $statusBadges[$proposal->status] ?? 'badge-gray' }}">{{ ucfirst(str_replace('_', ' ', $proposal->status)) }}</span></td>
         <td data-label="Sent" class="text-slate-500 whitespace-nowrap">{{ $proposal->sent_at?->format('M d, Y') ?? '—' }}</td>
         <td data-label="Actions" class="no-label whitespace-nowrap">

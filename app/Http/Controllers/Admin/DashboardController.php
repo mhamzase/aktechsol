@@ -26,10 +26,11 @@ class DashboardController extends Controller
             $stats = [
                 'quotes_new'      => QuoteRequest::where('status', 'new')->count(),
                 'projects_active' => ClientProject::whereIn('status', ['received', 'in_progress', 'review', 'revision'])->count(),
-                'revenue_month'   => InvoicePayment::where('status', 'verified')
-                    ->whereMonth('created_at', now()->month)
-                    ->whereYear('created_at', now()->year)
-                    ->sum('amount'),
+                'revenue_month'   => $this->revenueByCurrency(
+                    InvoicePayment::where('invoice_payments.status', 'verified')
+                        ->whereMonth('invoice_payments.created_at', now()->month)
+                        ->whereYear('invoice_payments.created_at', now()->year)
+                ),
                 'chats_unanswered'=> ChatbotQuery::where('is_answered', false)->count(),
             ];
 
@@ -49,16 +50,24 @@ class DashboardController extends Controller
                 ->pluck('total', 'month');
             $quotesByMonth = $months->mapWithKeys(fn ($m) => [$m => (int) ($quotesRaw[$m] ?? 0)]);
 
-            // Revenue per month (last 6 months) — from verified payments.
-            $revenueRaw = InvoicePayment::select(
-                    DB::raw("DATE_FORMAT(created_at, '%b') as month"),
-                    DB::raw('SUM(amount) as total')
+            // Revenue per month (last 6 months) — from verified payments,
+            // kept SEPARATE per currency (amounts are never mixed).
+            $revenueRaw = InvoicePayment::query()
+                ->join('invoices', 'invoices.id', '=', 'invoice_payments.invoice_id')
+                ->select(
+                    DB::raw("DATE_FORMAT(invoice_payments.created_at, '%b') as month"),
+                    'invoices.currency',
+                    DB::raw('SUM(invoice_payments.amount) as total')
                 )
-                ->where('status', 'verified')
-                ->where('created_at', '>=', now()->subMonths(6))
-                ->groupBy('month')
-                ->pluck('total', 'month');
-            $revenueByMonth = $months->mapWithKeys(fn ($m) => [$m => (float) ($revenueRaw[$m] ?? 0)]);
+                ->where('invoice_payments.status', 'verified')
+                ->where('invoice_payments.created_at', '>=', now()->subMonths(6))
+                ->groupBy('month', 'invoices.currency')
+                ->get();
+            $revenueByMonth = collect();
+            foreach (\App\Support\Money::CURRENCIES as $cur) {
+                $byMonth = $revenueRaw->where('currency', $cur)->pluck('total', 'month');
+                $revenueByMonth[$cur] = $months->mapWithKeys(fn ($m) => [$m => (float) ($byMonth[$m] ?? 0)]);
+            }
 
             // Project pipeline counts — pie chart.
             $projectPipeline = ClientProject::select('status', DB::raw('COUNT(*) as total'))
@@ -75,27 +84,47 @@ class DashboardController extends Controller
             ];
 
             // Trends for the stat cards.
-            $revenueLastMonth = InvoicePayment::where('status', 'verified')
-                ->whereMonth('created_at', now()->subMonth()->month)
-                ->whereYear('created_at', now()->subMonth()->year)
-                ->sum('amount');
+            $revenueLastMonth = $this->revenueByCurrency(
+                InvoicePayment::where('invoice_payments.status', 'verified')
+                    ->whereMonth('invoice_payments.created_at', now()->subMonth()->month)
+                    ->whereYear('invoice_payments.created_at', now()->subMonth()->year)
+            );
             $trends = [
                 'quotes_week'        => QuoteRequest::where('created_at', '>=', now()->startOfWeek())->count(),
-                'revenue_last_month' => (float) $revenueLastMonth,
+                'revenue_last_month' => $revenueLastMonth,
             ];
         } catch (\Throwable $e) {
             $stats = array_fill_keys(
-                ['quotes_new', 'projects_active', 'revenue_month', 'chats_unanswered'], 0
+                ['quotes_new', 'projects_active', 'chats_unanswered'], 0
             );
+            $stats['revenue_month'] = ['PKR' => 0.0, 'USD' => 0.0];
             $quotesByMonth = collect();
-            $revenueByMonth = collect();
+            $revenueByMonth = collect(['PKR' => collect(), 'USD' => collect()]);
             $projectPipeline = collect();
             $attention = ['quotes' => collect(), 'chats' => collect(), 'invoices' => collect(), 'demos' => collect(), 'jobs' => collect()];
-            $trends = ['quotes_week' => 0, 'revenue_last_month' => 0];
+            $trends = ['quotes_week' => 0, 'revenue_last_month' => ['PKR' => 0.0, 'USD' => 0.0]];
         }
 
         return view('admin.dashboard', compact(
             'stats', 'quotesByMonth', 'revenueByMonth', 'projectPipeline', 'attention', 'trends'
         ));
+    }
+
+    /**
+     * Sum a verified-payments query per currency (via the invoice's
+     * currency). Always returns both keys: ['PKR' => x, 'USD' => y].
+     */
+    protected function revenueByCurrency($query): array
+    {
+        $rows = $query
+            ->join('invoices', 'invoices.id', '=', 'invoice_payments.invoice_id')
+            ->select('invoices.currency', DB::raw('SUM(invoice_payments.amount) as total'))
+            ->groupBy('invoices.currency')
+            ->pluck('total', 'currency');
+
+        return [
+            'PKR' => (float) ($rows['PKR'] ?? 0),
+            'USD' => (float) ($rows['USD'] ?? 0),
+        ];
     }
 }

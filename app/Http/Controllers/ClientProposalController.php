@@ -63,6 +63,7 @@ class ClientProposalController extends Controller
                 'client_name'  => $proposal->client_name,
                 'client_email' => $proposal->client_email,
                 'status'       => 'received',
+                'currency'     => $proposal->currency ?? 'PKR',
                 'started_at'   => today(),
             ]);
 

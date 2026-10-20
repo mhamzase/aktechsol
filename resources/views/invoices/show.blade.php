@@ -39,15 +39,15 @@
             <div class="grid grid-cols-3 gap-2 md:gap-3 mt-6">
                 <div class="bg-white/10 rounded-2xl p-3 md:p-4">
                     <p class="text-[0.65rem] font-bold uppercase tracking-wider text-blue-200/70">Total</p>
-                    <p class="text-base md:text-xl font-extrabold mt-1 break-all">${{ number_format($invoice->amount, 2) }}</p>
+                    <p class="text-base md:text-xl font-extrabold mt-1 break-all">{{ \App\Support\Money::format($invoice->amount, $invoice->currency) }}</p>
                 </div>
                 <div class="bg-white/10 rounded-2xl p-3 md:p-4">
                     <p class="text-[0.65rem] font-bold uppercase tracking-wider text-blue-200/70">Paid</p>
-                    <p class="text-base md:text-xl font-extrabold mt-1 break-all">${{ number_format($invoice->paid_amount, 2) }}</p>
+                    <p class="text-base md:text-xl font-extrabold mt-1 break-all">{{ \App\Support\Money::format($invoice->paid_amount, $invoice->currency) }}</p>
                 </div>
                 <div class="bg-white/10 rounded-2xl p-3 md:p-4">
                     <p class="text-[0.65rem] font-bold uppercase tracking-wider text-blue-200/70">Balance</p>
-                    <p class="text-base md:text-xl font-extrabold mt-1 break-all">${{ number_format($invoice->balance(), 2) }}</p>
+                    <p class="text-base md:text-xl font-extrabold mt-1 break-all">{{ \App\Support\Money::format($invoice->balance(), $invoice->currency) }}</p>
                 </div>
             </div>
 
@@ -130,10 +130,10 @@
             <form id="proof-form" action="{{ route('invoices.proof', $invoice->token) }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-12 gap-4">
                 @csrf
                 <div class="md:col-span-12">
-                    <label class="block text-sm font-bold text-slate-700 mb-1.5">Amount ($) <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-bold text-slate-700 mb-1.5">Amount ({{ $invoice->currency }}) <span class="text-red-500">*</span></label>
                     <input type="number" name="amount" step="0.01" min="0.01" max="{{ $invoice->balance() }}" required placeholder="0.00"
                            class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
-                    <p class="text-xs text-slate-400 mt-1">Max: ${{ number_format($invoice->balance(), 2) }}</p>
+                    <p class="text-xs text-slate-400 mt-1">Max: {{ \App\Support\Money::format($invoice->balance(), $invoice->currency) }}</p>
                 </div>
                 @if(empty($paymentMethods))
                     {{-- No methods configured in Settings: let the client pick
@@ -186,7 +186,7 @@
                 </a>
                 @endif
                 <div class="flex-1">
-                    <p class="font-bold text-slate-900">${{ number_format($payment->amount, 2) }}</p>
+                    <p class="font-bold text-slate-900">{{ \App\Support\Money::format($payment->amount, $invoice->currency) }}</p>
                     <p class="text-xs text-slate-400">{{ $payment->method }}@if($payment->reference) · {{ $payment->reference }}@endif</p>
                     <p class="text-xs text-slate-400">{{ $payment->created_at->format('M d, Y h:i A') }}</p>
                 </div>

@@ -14,7 +14,7 @@
                 <div class="flex flex-wrap gap-4 mt-5 text-sm">
                     <div class="bg-white/10 rounded-xl px-4 py-2.5">
                         <p class="text-blue-200/70 text-xs">Total Investment</p>
-                        <p class="font-extrabold text-lg">${{ number_format($proposal->amount, 2) }}</p>
+                        <p class="font-extrabold text-lg">{{ \App\Support\Money::format($proposal->amount, $proposal->currency) }}</p>
                     </div>
                     @if($proposal->timeline)
                     <div class="bg-white/10 rounded-xl px-4 py-2.5">
@@ -66,7 +66,7 @@
                             <span class="w-8 h-8 rounded-xl bg-[#1d4ed8]/10 text-[#1d4ed8] font-bold text-sm flex items-center justify-center">{{ $i + 1 }}</span>
                             <span class="font-semibold text-slate-800">{{ $m['title'] }}</span>
                         </div>
-                        <span class="font-extrabold text-slate-900">${{ number_format($m['amount'], 2) }}</span>
+                        <span class="font-extrabold text-slate-900">{{ \App\Support\Money::format($m['amount'], $proposal->currency) }}</span>
                     </div>
                     @endforeach
                 </div>

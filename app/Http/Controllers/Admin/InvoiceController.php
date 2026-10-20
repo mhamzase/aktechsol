@@ -53,6 +53,7 @@ class InvoiceController extends Controller
     public function create()
     {
         $invoice = new Invoice();
+        $invoice->currency = \App\Support\Money::code(app(\App\Settings\SiteSettings::class)->default_currency);
         $projects = ClientProject::orderBy('title')->get(['id', 'title', 'client_name']);
         return view('admin.invoices.form', compact('invoice', 'projects'));
     }
@@ -186,7 +187,7 @@ class InvoiceController extends Controller
         $invoice->refresh();
         $invoice->refreshPaymentStatus();
 
-        LogActivity::record('payment_recorded', $invoice, "Manual payment of {$validated['amount']} on {$invoice->invoice_no}");
+        LogActivity::record('payment_recorded', $invoice, "Manual payment of " . \App\Support\Money::format($validated['amount'], $invoice->currency) . " on {$invoice->invoice_no}");
 
         // Email the client (queued).
         try {
@@ -263,13 +264,23 @@ class InvoiceController extends Controller
             $request->merge(['client_project_id' => null]);
         }
 
-        return $request->validate([
+        $data = $request->validate([
             'client_project_id' => 'nullable|exists:client_projects,id',
             'title'             => 'required|string|max:255',
             'amount'            => 'required|numeric|min:0.01',
+            'currency'          => 'nullable|in:PKR,USD',
             'due_date'          => 'nullable|date',
             'status'            => 'required|in:' . implode(',', Invoice::STATUSES),
             'notes'             => 'nullable|string|max:2000',
         ]);
+
+        // A linked invoice always follows its project's currency.
+        if (! empty($data['client_project_id'])) {
+            $data['currency'] = \App\Models\ClientProject::find($data['client_project_id'])?->currency ?? 'PKR';
+        } else {
+            $data['currency'] = \App\Support\Money::code($data['currency'] ?? null);
+        }
+
+        return $data;
     }
 }

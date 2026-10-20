@@ -16,8 +16,13 @@
             <div class="md:col-span-12">
                 <x-ui.input name="title" label="Invoice Title" :value="$invoice->title" required placeholder="Website development — Milestone 2" />
             </div>
-            <div class="md:col-span-6">
-                <x-ui.input name="amount" type="number" step="0.01" min="0.01" label="Amount ($)" :value="$invoice->amount" required placeholder="1500.00" />
+            <div class="md:col-span-4">
+                <x-ui.input name="amount" type="number" step="0.01" min="0.01" label="Amount" :value="$invoice->amount" required placeholder="1500.00" />
+            </div>
+            <div class="md:col-span-2">
+                <x-ui.select name="currency" label="Currency" :value="$invoice->currency ?? 'PKR'" required
+                             :options="['PKR' => 'PKR (Rs)', 'USD' => 'USD ($)']"
+                             hint="A linked invoice follows its project's currency." />
             </div>
             <div class="md:col-span-6">
                 <x-ui.date name="due_date" label="Due Date" :value="$invoice->due_date?->format('Y-m-d')" />

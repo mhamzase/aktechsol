@@ -12,12 +12,12 @@
     </p>
     @if($verified)
     <p style="margin:0 0 16px; font-size:15px; color:#475569; line-height:1.7;">
-        Your payment of <strong style="color:#0f172a;">${{ number_format($payment->amount, 2) }}</strong>
+        Your payment of <strong style="color:#0f172a;">{{ \App\Support\Money::format($payment->amount, $invoice->currency) }}</strong>
         for invoice <strong style="color:#0f172a;">{{ $invoice->invoice_no }}</strong> has been verified. Thank you!
     </p>
     @else
     <p style="margin:0 0 16px; font-size:15px; color:#475569; line-height:1.7;">
-        We could not verify your payment of <strong style="color:#0f172a;">${{ number_format($payment->amount, 2) }}</strong>
+        We could not verify your payment of <strong style="color:#0f172a;">{{ \App\Support\Money::format($payment->amount, $invoice->currency) }}</strong>
         for invoice <strong style="color:#0f172a;">{{ $invoice->invoice_no }}</strong>.
         Please check your payment details and submit a new proof.
     </p>
@@ -29,7 +29,7 @@
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                     <tr>
                         <td style="font-size:14px; color:#475569;">Invoice Balance</td>
-                        <td style="font-size:16px; font-weight:800; color:{{ $color }}; text-align:right;">${{ number_format($invoice->balance(), 2) }}</td>
+                        <td style="font-size:16px; font-weight:800; color:{{ $color }}; text-align:right;">{{ \App\Support\Money::format($invoice->balance(), $invoice->currency) }}</td>
                     </tr>
                 </table>
             </td>

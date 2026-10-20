@@ -15,7 +15,7 @@
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                     <tr>
                         <td style="padding:6px 0; font-size:14px; color:#64748b;">Total Investment</td>
-                        <td align="right" style="padding:6px 0; font-size:16px; font-weight:800; color:#1d4ed8;">${{ number_format($proposal->amount, 2) }}</td>
+                        <td align="right" style="padding:6px 0; font-size:16px; font-weight:800; color:#1d4ed8;">{{ \App\Support\Money::format($proposal->amount, $proposal->currency) }}</td>
                     </tr>
                     @if($proposal->timeline)
                     <tr>

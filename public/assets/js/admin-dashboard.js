@@ -52,13 +52,15 @@
             const monthLabels = readJson(el, 'labels', []);
             const quotesData = readJson(el, 'quotes', []).map(Number);
             const revenueData = readJson(el, 'revenue', []).map(Number);
+            const revenueUsdData = readJson(el, 'revenue-usd', []).map(Number);
             return {
             chart: { type: 'area', height: 300, toolbar: { show: false }, fontFamily: FONT, zoom: { enabled: false } },
             series: [
                 { name: 'Quotes', data: quotesData },
                 { name: 'Revenue (PKR)', data: revenueData },
+                { name: 'Revenue (USD)', data: revenueUsdData },
             ],
-            colors: ['#1d4ed8', '#f59e0b'],
+            colors: ['#1d4ed8', '#f59e0b', '#10b981'],
             stroke: { curve: 'smooth', width: 3 },
             fill: {
                 type: 'gradient',
@@ -79,10 +81,12 @@
                     const label = monthLabels[i] || '';
                     const q = quotesData[i] ?? 0;
                     const r = revenueData[i] ?? 0;
+                    const ru = revenueUsdData[i] ?? 0;
                     return '<div class="apex-custom-tip">' +
                         '<div class="apex-custom-title">' + label + '</div>' +
                         '<div class="apex-custom-row"><span class="dot" style="background:#1d4ed8"></span>Quotes<b>' + q + '</b></div>' +
-                        '<div class="apex-custom-row"><span class="dot" style="background:#f59e0b"></span>Revenue (PKR)<b>PKR ' + Number(r).toLocaleString('en-PK') + '</b></div>' +
+                        '<div class="apex-custom-row"><span class="dot" style="background:#f59e0b"></span>Revenue (PKR)<b>Rs ' + Number(r).toLocaleString('en-PK') + '</b></div>' +
+                        '<div class="apex-custom-row"><span class="dot" style="background:#10b981"></span>Revenue (USD)<b>$' + Number(ru).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</b></div>' +
                         '</div>';
                 },
             },
@@ -110,6 +114,12 @@
                         style: { fontFamily: FONT, colors: axisColor() },
                         formatter: (v) => v >= 1000 ? Math.round(v / 1000) + 'k' : v,
                     },
+                },
+                {
+                    // USD scales on its OWN hidden axis (never mixed with PKR).
+                    seriesName: 'Revenue (USD)',
+                    show: false,
+                    min: 0, forceNiceScale: true,
                 },
             ],
             states: {

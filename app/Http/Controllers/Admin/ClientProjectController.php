@@ -55,6 +55,7 @@ class ClientProjectController extends Controller
     public function create()
     {
         $project = new ClientProject();
+        $project->currency = \App\Support\Money::code(app(\App\Settings\SiteSettings::class)->default_currency);
         $users = User::orderBy('name')->get(['id', 'name']);
         return view('admin.client-projects.form', compact('project', 'users'));
     }
@@ -175,10 +176,11 @@ class ClientProjectController extends Controller
 
     protected function validateData(Request $request): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'title'        => 'required|string|max:255',
             'client_name'  => 'required|string|max:255',
             'client_email' => 'required|email|max:255',
+            'currency'     => 'nullable|in:PKR,USD',
             'team'         => 'nullable|array',
             'team.*'       => 'exists:users,id',
             'status'       => 'required|in:received,in_progress,review,revision,delivered',
@@ -186,5 +188,9 @@ class ClientProjectController extends Controller
             'started_at'   => 'nullable|date',
             'deadline'     => 'nullable|date|after_or_equal:started_at',
         ]);
+
+        $data['currency'] = \App\Support\Money::code($data['currency'] ?? null);
+
+        return $data;
     }
 }

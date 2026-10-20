@@ -23,9 +23,14 @@
                                    placeholder="Select team members…"
                                    hint="Assign one or more team members to this project." />
             </div>
-            <div class="md:col-span-6">
+            <div class="md:col-span-3">
                 <x-ui.select name="status" label="Status" :value="$project->status ?? 'received'" required
                              :options="['received' => 'Received', 'in_progress' => 'In Progress', 'review' => 'In Review', 'revision' => 'Revision', 'delivered' => 'Delivered']" />
+            </div>
+            <div class="md:col-span-3">
+                <x-ui.select name="currency" label="Currency" :value="$project->currency ?? 'PKR'" required
+                             :options="['PKR' => 'PKR (Rs)', 'USD' => 'USD ($)']"
+                             hint="Invoices + revenue follow this." />
             </div>
             <div class="md:col-span-6">
                 <span class="ui-label">Progress (%)<span class="ui-required">*</span></span>

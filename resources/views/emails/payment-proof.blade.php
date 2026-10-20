@@ -13,7 +13,7 @@
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                     <tr>
                         <td style="font-size:14px; color:#64748b; padding:4px 0;">Amount</td>
-                        <td style="font-size:14px; font-weight:700; color:#0f172a; text-align:right; padding:4px 0;">${{ number_format($payment->amount, 2) }}</td>
+                        <td style="font-size:14px; font-weight:700; color:#0f172a; text-align:right; padding:4px 0;">{{ \App\Support\Money::format($payment->amount, $invoice->currency) }}</td>
                     </tr>
                     <tr>
                         <td style="font-size:14px; color:#64748b; padding:4px 0;">Method</td>
@@ -27,7 +27,7 @@
                     @endif
                     <tr>
                         <td style="font-size:14px; color:#64748b; padding:4px 0;">Invoice Balance</td>
-                        <td style="font-size:14px; font-weight:700; color:#0f172a; text-align:right; padding:4px 0;">${{ number_format($invoice->balance(), 2) }}</td>
+                        <td style="font-size:14px; font-weight:700; color:#0f172a; text-align:right; padding:4px 0;">{{ \App\Support\Money::format($invoice->balance(), $invoice->currency) }}</td>
                     </tr>
                 </table>
             </td>

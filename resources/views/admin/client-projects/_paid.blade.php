@@ -10,7 +10,7 @@
         <p class="font-bold text-slate-800 dark:text-slate-100 mt-1">{{ $share->member_name }}@if($share->isCompany()) (Company)@endif</p>
         <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
             {{ rtrim(rtrim(number_format((float) $share->percentage, 2), '0'), '.') }}% of {{ $project->title }} =
-            <strong class="text-slate-800 dark:text-slate-100">Rs {{ number_format((float) $share->amount) }}</strong>
+            <strong class="text-slate-800 dark:text-slate-100">{{ \App\Support\Money::format($share->amount, $project->currency) }}</strong>
         </p>
     </div>
 

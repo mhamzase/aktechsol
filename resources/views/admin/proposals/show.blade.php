@@ -23,7 +23,7 @@
         <div class="grid grid-cols-2 gap-4">
             <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3.5">
                 <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-wider">Amount</p>
-                <p class="text-lg font-extrabold text-slate-800 dark:text-slate-100 mt-1">${{ number_format($proposal->amount, 2) }}</p>
+                <p class="text-lg font-extrabold text-slate-800 dark:text-slate-100 mt-1">{{ \App\Support\Money::format($proposal->amount, $proposal->currency) }}</p>
             </div>
             <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3.5">
                 <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-wider">Timeline</p>
@@ -55,7 +55,7 @@
                 @foreach($proposal->milestones as $m)
                 <div class="flex justify-between bg-slate-50 dark:bg-slate-800/60 rounded-xl px-4 py-2.5 text-sm">
                     <span class="font-medium text-slate-700 dark:text-slate-200">{{ $m['title'] }}</span>
-                    <span class="font-bold text-slate-800 dark:text-slate-100">${{ number_format($m['amount'], 2) }}</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-100">{{ \App\Support\Money::format($m['amount'], $proposal->currency) }}</span>
                 </div>
                 @endforeach
             </div>

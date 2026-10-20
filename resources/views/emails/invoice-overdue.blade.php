@@ -21,15 +21,15 @@
                     </tr>
                     <tr>
                         <td style="font-size:14px; color:#64748b; padding:6px 0;">Total</td>
-                        <td align="right" style="font-size:14px; font-weight:700; color:#0f172a; padding:6px 0;">${{ number_format($invoice->amount, 2) }}</td>
+                        <td align="right" style="font-size:14px; font-weight:700; color:#0f172a; padding:6px 0;">{{ \App\Support\Money::format($invoice->amount, $invoice->currency) }}</td>
                     </tr>
                     <tr>
                         <td style="font-size:14px; color:#64748b; padding:6px 0;">Paid</td>
-                        <td align="right" style="font-size:14px; font-weight:700; color:#047857; padding:6px 0;">${{ number_format($invoice->paid_amount, 2) }}</td>
+                        <td align="right" style="font-size:14px; font-weight:700; color:#047857; padding:6px 0;">{{ \App\Support\Money::format($invoice->paid_amount, $invoice->currency) }}</td>
                     </tr>
                     <tr>
                         <td style="font-size:16px; font-weight:800; color:#0f172a; padding:6px 0; border-top:1px solid #e2e8f0;">Balance due</td>
-                        <td align="right" style="font-size:16px; font-weight:800; color:#dc2626; padding:6px 0; border-top:1px solid #e2e8f0;">${{ number_format($invoice->balance(), 2) }}</td>
+                        <td align="right" style="font-size:16px; font-weight:800; color:#dc2626; padding:6px 0; border-top:1px solid #e2e8f0;">{{ \App\Support\Money::format($invoice->balance(), $invoice->currency) }}</td>
                     </tr>
                 </table>
             </td>
