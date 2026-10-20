@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ProjectUpdateMail;
 use App\Mail\ReviewRequestMail;
 use App\Models\ClientProject;
 use App\Models\Review;
@@ -137,6 +138,13 @@ class ClientProjectController extends Controller
             'is_client_visible' => $request->boolean('is_client_visible'),
             'created_by'        => auth()->id(),
         ]);
+
+        // Email the client about client-visible updates (queued). Internal
+        // updates never leave the admin panel.
+        if ($update->is_client_visible && $clientProject->client_email) {
+            Mail::to($clientProject->client_email)
+                ->queue(new ProjectUpdateMail($clientProject, $update));
+        }
 
         return response()->json(['message' => 'Update added.']);
     }
