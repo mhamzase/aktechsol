@@ -21,7 +21,7 @@
             </div>
             <div class="md:col-span-2">
                 <x-ui.select name="currency" label="Currency" :value="$invoice->currency ?? 'PKR'" required
-                             :options="['PKR' => 'PKR (Rs)', 'USD' => 'USD ($)']"
+                             :options="['PKR' => 'PKR', 'USD' => 'USD']"
                              hint="A linked invoice follows its project's currency." />
             </div>
             <div class="md:col-span-6">
