@@ -156,7 +156,7 @@
                                 <p class="text-xs text-slate-400">Track everything live</p>
                             </div>
                         </div>
-                        @foreach([['Planning', 100], ['Design', 85], ['Development', 60], ['Testing', 30]] as [$label, $pct])
+                        @foreach([['Planning', 99], ['Design', 99], ['Development', 99], ['Testing', 99]] as [$label, $pct])
                             <div class="mb-4">
                                 <div class="flex justify-between text-sm mb-1.5">
                                     <span class="font-medium text-slate-700">{{ $label }}</span>
