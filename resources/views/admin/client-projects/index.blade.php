@@ -40,7 +40,7 @@
 
     <x-admin.data-table id="projects-table"
                         :ajax-url="route('admin.client-projects.index')"
-                        :columns="['Project', 'Client', 'Assigned To', 'Status', 'Progress', 'Actions']"
+                        :columns="['Project', 'Client', 'Team', 'Status', 'Progress', 'Actions']"
                         search-placeholder="Search projects…">
         <x-slot:filters>
             <select data-table-filter="status" class="form-control table-select !w-auto !py-1.5 text-sm">

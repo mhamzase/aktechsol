@@ -179,7 +179,7 @@
 
     {{-- ============ FOOTER ============ --}}
     <div class="foot">
-        <strong>AK Tech SOL</strong> &nbsp;·&nbsp; Generated on {{ date('M d, Y') }}
+        <strong>{{ $siteSettings->site_name ?: 'AK Tech SOL' }}</strong> &nbsp;·&nbsp; Generated on {{ date('M d, Y') }}
     </div>
 
 </body>

@@ -11,7 +11,7 @@
                         </span>
                     @else
                         <span class="h-10 w-10 rounded-xl bg-gradient-to-br from-[#1d4ed8] to-[#2f6fed] text-white font-extrabold flex items-center justify-center text-lg">A</span>
-                        <span class="font-extrabold text-lg text-white">AK Tech SOL</span>
+                        <span class="font-extrabold text-lg text-white">{{ $siteSettings->site_name ?: 'AK Tech SOL' }}</span>
                     @endif
                 </a>
                 <p class="text-sm text-slate-400 mt-4 leading-relaxed">{{ $siteSettings->footer_text ?? 'Professional software & freelancing agency delivering top-notch digital solutions.' }}</p>
@@ -36,7 +36,7 @@
             <div>
                 <h4 class="text-white font-bold text-sm uppercase tracking-widest mb-5">Company</h4>
                 <ul class="space-y-3 text-sm">
-                    @foreach([['/', 'Home'], ['/about', 'About Us'], ['/portfolio', 'Portfolio'], ['/blog', 'Blog'], ['/faqs', 'FAQs']] as [$href, $label])
+                    @foreach([['/', 'Home'], ['/about', 'About Us'], ['/careers', 'Careers'], ['/portfolio', 'Portfolio'], ['/blog', 'Blog'], ['/faqs', 'FAQs']] as [$href, $label])
                         <li><a href="{{ url($href) }}" class="hover:text-white transition inline-flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-[#2f6fed]"></span>{{ $label }}</a></li>
                     @endforeach
                 </ul>

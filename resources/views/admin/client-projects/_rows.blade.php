@@ -17,7 +17,22 @@
             <p class="font-medium text-slate-800 dark:text-slate-100">{{ $project->client_name }}</p>
             <p class="text-xs text-slate-400">{{ $project->client_email }}</p>
         </td>
-        <td data-label="Assigned To" class="text-slate-500">{{ $project->assignee?->name ?? '—' }}</td>
+        <td data-label="Team">
+            @if($project->team->isNotEmpty())
+                <div class="flex -space-x-2">
+                    @foreach($project->team->take(3) as $member)
+                        @php $parts = preg_split('/\s+/', trim($member->name)); $initials = strtoupper(substr($parts[0], 0, 1) . (count($parts) > 1 ? substr(end($parts), 0, 1) : '')); @endphp
+                        <span class="w-8 h-8 rounded-full ring-2 ring-white dark:ring-slate-800 bg-gradient-to-br from-[#1d4ed8] to-[#12307e] text-white text-[0.65rem] font-bold flex items-center justify-center shrink-0" title="{{ $member->name }}">{{ $initials }}</span>
+                    @endforeach
+                    @if($project->team->count() > 3)
+                        <span class="w-8 h-8 rounded-full ring-2 ring-white dark:ring-slate-800 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[0.65rem] font-bold flex items-center justify-center shrink-0" title="{{ $project->team->skip(3)->pluck('name')->join(', ') }}">+{{ $project->team->count() - 3 }}</span>
+                    @endif
+                </div>
+                <p class="text-xs text-slate-400 mt-1.5">{{ $project->team->pluck('name')->take(2)->join(', ') }}{{ $project->team->count() > 2 ? ' +' . ($project->team->count() - 2) . ' more' : '' }}</p>
+            @else
+                <span class="text-slate-400 text-sm">Unassigned</span>
+            @endif
+        </td>
         <td data-label="Status"><span class="badge {{ $statusBadges[$project->status] ?? 'badge-gray' }}">{{ $project->statusLabel() }}</span></td>
         <td data-label="Progress" class="whitespace-nowrap">
             <div class="flex items-center gap-2 min-w-[110px]">

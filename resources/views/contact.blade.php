@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Contact Us | ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
-@section('meta_description', 'Get in touch with ' . ($siteSettings->site_name ?? 'AK Tech SOL') . ' — we respond within 24 hours.')
+@section('meta_description', 'Get in touch with ' . ($siteSettings->site_name ?? 'AK Tech SOL') . ': we respond within 24 hours.')
 
 @section('content')
     <x-frontend.page-banner
@@ -18,7 +18,7 @@
                 <div class="lg:col-span-2">
                     <div class="bg-gradient-to-br from-[#0a1f44] to-[#1d4ed8] rounded-3xl p-8 text-white">
                         <h2 class="text-2xl font-extrabold">Get in Touch</h2>
-                        <p class="text-blue-100/70 text-sm mt-2">We work with clients worldwide — fill out the form and our team will get back to you within 24 hours, wherever you are.</p>
+                        <p class="text-blue-100/70 text-sm mt-2">We work with clients worldwide. Fill out the form and our team will get back to you within 24 hours, wherever you are.</p>
 
                         <div class="mt-8 space-y-5">
                             @if($siteSettings->site_email)
@@ -58,7 +58,7 @@
 
                         <div class="mt-6 pt-6 border-t border-white/15 flex items-center gap-2.5 text-sm text-blue-100/70">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span>Available across all timezones — we reply within 24 hours.</span>
+                            <span>Available across all timezones: we reply within 24 hours.</span>
                         </div>
 
                         {{-- Book a Demo --}}
@@ -132,7 +132,7 @@
 
 @push('seo')
 <meta property="og:title" content="Contact Us | {{ $siteSettings->site_name ?? 'AK Tech SOL' }}">
-<meta property="og:description" content="Get in touch with {{ $siteSettings->site_name ?? 'AK Tech SOL' }} — we work with clients worldwide and reply within 24 hours.">
+<meta property="og:description" content="Get in touch with {{ $siteSettings->site_name ?? 'AK Tech SOL' }}: we work with clients worldwide and reply within 24 hours.">
 <meta property="og:url" content="{{ url()->current() }}">
 <meta property="og:type" content="website">
 <script type="application/ld+json">

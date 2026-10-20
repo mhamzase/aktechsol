@@ -12,7 +12,6 @@ use App\Models\JobApplication;
 use App\Models\ProjectUpdate;
 use App\Models\Proposal;
 use App\Models\QuoteRequest;
-use App\Models\ServicePackage;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -25,24 +24,6 @@ class PlatformSeeder extends Seeder
 {
     public function run(): void
     {
-        // Pricing packages
-        foreach ([
-            ['name' => 'Starter', 'slug' => 'starter', 'description' => 'For small businesses getting started online.',
-             'price' => 15000, 'price_label' => 'Starting from', 'turnaround' => '7 days',
-             'features' => ['5-page website', 'Mobile responsive', 'Basic SEO', '1 revision round'],
-             'is_popular' => false, 'sort_order' => 1],
-            ['name' => 'Growth', 'slug' => 'growth', 'description' => 'For growing brands that need more firepower.',
-             'price' => 35000, 'price_label' => 'Starting from', 'turnaround' => '14 days',
-             'features' => ['10-page website', 'Blog setup', 'Advanced SEO', 'Social media kit', '3 revision rounds'],
-             'is_popular' => true, 'sort_order' => 2],
-            ['name' => 'Pro', 'slug' => 'pro', 'description' => 'Full digital presence, done for you.',
-             'price' => 75000, 'price_label' => 'Starting from', 'turnaround' => '30 days',
-             'features' => ['Custom web app', 'Brand identity', 'SEO + content', 'Priority support', 'Unlimited revisions'],
-             'is_popular' => false, 'sort_order' => 3],
-        ] as $pkg) {
-            ServicePackage::firstOrCreate(['slug' => $pkg['slug']], $pkg);
-        }
-
         // Jobs
         $job = Job::firstOrCreate(['slug' => 'video-editor-remote'], [
             'title' => 'Video Editor (Remote)', 'type' => 'job', 'location_type' => 'remote',
@@ -65,7 +46,7 @@ class PlatformSeeder extends Seeder
         // Chatbot Q&A
         foreach ([
             ['What services do you offer?', 'We offer web development, graphic design, video editing, UGC content and eCommerce listing services.'],
-            ['What are your prices?', 'Our packages start from PKR 15,000. Share your requirements through the Get a Quote form for an exact price.'],
+            ['What are your prices?', 'Every project is priced individually after we understand your requirements. Share the details through the Get a Quote form or book a free demo — our team will give you an exact price.'],
             ['How long does a project take?', 'Most projects take 7–30 days depending on scope. You will see live progress on your tracking link.'],
             ['Do you work with international clients?', 'Yes! We work with clients worldwide and communicate over WhatsApp, email and video calls.'],
             ['How do I pay?', 'We accept JazzCash, Easypaisa and bank transfer. You upload the payment screenshot and we verify it.'],
@@ -96,15 +77,17 @@ class PlatformSeeder extends Seeder
             'responded_at' => now()->subDays(5), 'token' => Str::random(48),
         ]);
 
-        // Client project from the accepted proposal
+        // Client project from the accepted proposal, with a demo team
+        // (the admin + the first team member) assigned to it.
         $admin = User::first();
         $project = ClientProject::firstOrCreate(['proposal_id' => $proposal->id], [
             'title' => 'Ecommerce Website — Demo Co', 'client_name' => 'Demo Client',
-            'client_email' => 'client@test.com', 'assigned_to' => $admin?->id,
+            'client_email' => 'client@test.com',
             'status' => 'in_progress', 'progress' => 40,
             'started_at' => now()->subDays(4), 'deadline' => now()->addDays(17),
             'token' => Str::random(48),
         ]);
+        $project->team()->sync(User::orderBy('id')->limit(2)->pluck('id'));
 
         ProjectUpdate::firstOrCreate(
             ['client_project_id' => $project->id, 'title' => 'Design approved'],

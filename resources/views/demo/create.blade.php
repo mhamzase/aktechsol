@@ -3,17 +3,12 @@
 @section('title', 'Book a Free Demo | ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
 @section('meta_description', 'Book a free live demo with ' . ($siteSettings->site_name ?? 'AK Tech SOL') . '. Pick a date and time that suits you and our team will walk you through everything.')
 
-@push('seo')
-<meta property="og:title" content="Book a Free Demo | {{ $siteSettings->site_name ?? 'AK Tech SOL' }}">
-<meta property="og:description" content="See our work in action — book a free, no-obligation live demo at a time that suits you.">
-<meta property="og:url" content="{{ url()->current() }}">
-<meta property="og:type" content="website">
-@endpush
+{{-- Open Graph / Twitter tags come from the layout (title + description above) — no per-page duplicates. --}}
 
 @section('content')
     <x-frontend.page-banner
         title="Book a Free Demo"
-        subtitle="Pick a date and time — our team will walk you through everything, live."
+        subtitle="Pick a date and time: our team will walk you through everything, live."
     />
 
     <section class="py-12 sm:py-16 bg-slate-50/60">
@@ -23,7 +18,7 @@
                     <svg class="w-6 h-6 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <div>
                         <p class="font-bold">Demo booked!</p>
-                        <p class="text-sm mt-1">Thank you — your demo request is in. Our team will confirm your slot by email shortly.</p>
+                        <p class="text-sm mt-1">Thank you. Your demo request is in. Our team will confirm your slot by email shortly.</p>
                     </div>
                 </div>
             </div>
@@ -114,12 +109,16 @@
                     headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
                 });
                 let data = {};
-                try { data = await res.json(); } catch (e) { /* non-JSON response (e.g. 500 page) */ }
-                if (res.ok) {
+                let isJson = false;
+                try { data = await res.json(); isJson = true; } catch (e) { /* non-JSON response (e.g. a redirect to login) */ }
+                if (res.ok && isJson) {
                     window.notify.success(data.message || 'Demo booked successfully!');
                     successBox.classList.remove('hidden');
                     form.reset();
                     successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else if (res.ok) {
+                    // 2xx but not JSON (e.g. redirected to login) — never fake a success.
+                    window.notify.error('Unexpected response: your session may have expired. Please refresh the page and try again.');
                 } else if (res.status === 422 && data.errors) {
                     Object.entries(data.errors).forEach(([field, msgs]) => {
                         const el = form.querySelector(`[data-err="${field}"]`);

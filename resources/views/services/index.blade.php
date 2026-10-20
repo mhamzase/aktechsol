@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Our Services — Web Development, Mobile Apps, UI/UX Design | ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
-@section('meta_description', 'Explore AK Tech SOL services: web development, mobile app development, UI/UX design, cloud solutions and more. Professional digital services tailored for your business growth.')
+@section('title', 'Our Services: Web Development, Mobile Apps, UI/UX Design | ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
+@section('meta_description', 'Explore ' . ($siteSettings->site_name ?? 'AK Tech SOL') . ' services: web development, mobile app development, UI/UX design, cloud solutions and more. Professional digital services tailored for your business growth.')
 
 @push('seo')
 <script type="application/ld+json">

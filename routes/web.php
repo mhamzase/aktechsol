@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\UserPermissionController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CareerController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DemoBookingController;
 use App\Http\Controllers\QuoteController;
@@ -63,6 +64,10 @@ Route::post('/get-a-quote', [QuoteController::class, 'store'])->name('quote.stor
 
 Route::get('/book-a-demo', [DemoBookingController::class, 'create'])->name('demo.create');
 Route::post('/book-a-demo', [DemoBookingController::class, 'store'])->middleware('throttle:10,1')->name('demo.store');
+
+Route::get('/careers', [CareerController::class, 'index'])->name('careers.index');
+Route::get('/careers/{slug}', [CareerController::class, 'show'])->name('careers.show');
+Route::post('/careers/{slug}/apply', [CareerController::class, 'apply'])->middleware('throttle:10,1')->name('careers.apply');
 
 Route::post('/chatbot/message', [ChatbotController::class, 'message'])->name('chatbot.message');
 
@@ -263,7 +268,12 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::get('demo-bookings/{demoBooking}', [\App\Http\Controllers\Admin\DemoBookingController::class, 'show'])->middleware('can:manage demo bookings')->name('demo-bookings.show');
     Route::put('demo-bookings/{demoBooking}/status', [\App\Http\Controllers\Admin\DemoBookingController::class, 'updateStatus'])->middleware('can:manage demo bookings')->name('demo-bookings.update-status');
     Route::delete('demo-bookings/{demoBooking}', [\App\Http\Controllers\Admin\DemoBookingController::class, 'destroy'])->middleware('can:manage demo bookings')->name('demo-bookings.destroy');
-    $soon('job-applications', 'Job Applications', 'Phase 6', 'job-applications.index', 'manage job applications');
+    // Job Applications (Phase 6).
+    Route::get('job-applications', [\App\Http\Controllers\Admin\JobApplicationController::class, 'index'])->middleware('can:manage job applications')->name('job-applications.index');
+    Route::get('job-applications/{jobApplication}', [\App\Http\Controllers\Admin\JobApplicationController::class, 'show'])->middleware('can:manage job applications')->name('job-applications.show');
+    Route::put('job-applications/{jobApplication}/status', [\App\Http\Controllers\Admin\JobApplicationController::class, 'updateStatus'])->middleware('can:manage job applications')->name('job-applications.update-status');
+    Route::delete('job-applications/{jobApplication}', [\App\Http\Controllers\Admin\JobApplicationController::class, 'destroy'])->middleware('can:manage job applications')->name('job-applications.destroy');
     $soon('packages', 'Packages', 'Phase 6', 'packages.index', 'manage packages');
-    $soon('jobs', 'Jobs', 'Phase 6', 'jobs.index', 'manage jobs');
+    // Jobs (Phase 6).
+    Route::resource('jobs', \App\Http\Controllers\Admin\JobController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'])->middleware('can:manage jobs');
 });

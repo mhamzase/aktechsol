@@ -19,7 +19,7 @@ class ProposalSentMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your Proposal from AK Tech SOL: ' . $this->proposal->title,
+            subject: 'Your Proposal from ' . $this->siteName() . ': ' . $this->proposal->title,
         );
     }
 
@@ -29,9 +29,19 @@ class ProposalSentMail extends Mailable implements ShouldQueue
             view: 'emails.proposal-sent',
             with: [
                 'proposal' => $this->proposal,
-                'subject' => 'Your Proposal from AK Tech SOL',
+                'subject' => 'Your Proposal from ' . $this->siteName(),
                 'preheader' => 'Review your personalized proposal',
             ],
         );
+    }
+
+    /** Brand name from Settings → General (falls back to the default). */
+    protected function siteName(): string
+    {
+        try {
+            return app(\App\Settings\SiteSettings::class)->site_name ?: 'AK Tech SOL';
+        } catch (\Throwable $e) {
+            return 'AK Tech SOL';
+        }
     }
 }

@@ -15,7 +15,7 @@
                     @for($i = 1; $i <= 5; $i++){{ $i <= $review->rating ? '★' : '☆' }}@endfor
                 </div>
                 <div style="font-size:14px; color:#475569; line-height:1.7;">{{ \Illuminate\Support\Str::limit($review->review, 300) }}</div>
-                <div style="font-size:12px; color:#94a3b8; margin-top:12px;">— {{ $review->reviewer_name }}</div>
+                <div style="font-size:12px; color:#94a3b8; margin-top:12px;">by {{ $review->reviewer_name }}</div>
             </td>
         </tr>
     </table>

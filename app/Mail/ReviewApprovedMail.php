@@ -26,7 +26,7 @@ class ReviewApprovedMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your review is now live — thank you!',
+            subject: 'Your review is now live. Thank you!',
         );
     }
 

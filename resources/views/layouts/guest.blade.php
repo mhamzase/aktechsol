@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', config('app.name')) - AK Tech SOL Admin</title>
+    <title>@yield('title', config('app.name')) - {{ $siteSettings->site_name ?: 'AK Tech SOL' }} Admin</title>
 
     {{-- Favicon --}}
     @if($faviconUrl)
@@ -53,14 +53,14 @@
             <div class="relative z-10 text-center max-w-md">
                 @if($logoUrl)
                     <div class="inline-block bg-white rounded-2xl p-3 mb-6 shadow-lg">
-                        <img src="{{ $logoUrl }}" alt="AK Tech SOL" class="h-16 object-contain">
+                        <img src="{{ $logoUrl }}" alt="{{ $siteSettings->site_name ?: 'AK Tech SOL' }}" class="h-16 object-contain">
                     </div>
                 @else
                     <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center">
                         <span class="text-3xl font-extrabold text-white">A</span>
                     </div>
                 @endif
-                <h1 class="text-3xl font-extrabold text-white mb-3">AK Tech SOL</h1>
+                <h1 class="text-3xl font-extrabold text-white mb-3">{{ $siteSettings->site_name ?: 'AK Tech SOL' }}</h1>
                 <p class="text-blue-100/90 text-lg leading-relaxed">Your complete digital solution partner.<br>Manage everything from one place.</p>
                 <div class="flex justify-center gap-6 mt-8 text-blue-100/70 text-sm">
                     <span class="flex items-center gap-1.5">
@@ -84,9 +84,9 @@
             <div class="w-full max-w-md">
                 <div class="lg:hidden text-center mb-8">
                     @if($logoUrl)
-                        <img src="{{ $logoUrl }}" alt="AK Tech SOL" class="h-12 mx-auto mb-2 object-contain">
+                        <img src="{{ $logoUrl }}" alt="{{ $siteSettings->site_name ?: 'AK Tech SOL' }}" class="h-12 mx-auto mb-2 object-contain">
                     @else
-                        <h1 class="text-2xl font-extrabold text-slate-900">AK Tech SOL</h1>
+                        <h1 class="text-2xl font-extrabold text-slate-900">{{ $siteSettings->site_name ?: 'AK Tech SOL' }}</h1>
                     @endif
                 </div>
 
@@ -95,7 +95,7 @@
 
                 @yield('content')
 
-                <p class="mt-8 text-center text-xs text-slate-400">&copy; {{ date('Y') }} AK Tech SOL. All rights reserved.</p>
+                <p class="mt-8 text-center text-xs text-slate-400">&copy; {{ date('Y') }} {{ $siteSettings->site_name ?: 'AK Tech SOL' }}. All rights reserved.</p>
             </div>
         </div>
     </div>

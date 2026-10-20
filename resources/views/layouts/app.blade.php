@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', $siteSettings->seo_title ?? ($siteSettings->site_name ?? 'AK Tech SOL'))</title>
-    <meta name="description" content="@yield('meta_description', $siteSettings->seo_description ?? 'AK Tech SOL - Professional Software & Freelancing Agency')">
+    <meta name="description" content="@yield('meta_description', $siteSettings->seo_description ?? (($siteSettings->site_name ?: 'AK Tech SOL') . ' - Professional Software & Freelancing Agency'))">
     @if ($siteSettings->seo_keywords)
         <meta name="keywords" content="{{ $siteSettings->seo_keywords }}">
     @endif
@@ -22,7 +22,7 @@
     @endif
     {{-- Open Graph --}}
     <meta property="og:title" content="@yield('title', $siteSettings->seo_title ?? ($siteSettings->site_name ?? 'AK Tech SOL'))">
-    <meta property="og:description" content="@yield('meta_description', $siteSettings->seo_description ?? 'AK Tech SOL - Professional Software & Freelancing Agency')">
+    <meta property="og:description" content="@yield('meta_description', $siteSettings->seo_description ?? (($siteSettings->site_name ?: 'AK Tech SOL') . ' - Professional Software & Freelancing Agency'))">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:site_name" content="{{ $siteSettings->site_name ?? 'AK Tech SOL' }}">

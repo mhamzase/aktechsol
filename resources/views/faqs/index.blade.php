@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'FAQs — Frequently Asked Questions | ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
+@section('title', 'FAQs: Frequently Asked Questions | ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
 @section('meta_description', 'Find answers to frequently asked questions about ' . ($siteSettings->site_name ?? 'AK Tech SOL') . ' services, process, pricing and support.')
 
 @push('seo')
@@ -75,7 +75,7 @@
             {{-- CTA --}}
             <div class="mt-10 bg-gradient-to-r from-[#1d4ed8] to-[#12307e] rounded-3xl p-8 text-center text-white">
                 <h3 class="text-xl font-extrabold">Still have questions?</h3>
-                <p class="text-blue-100/80 text-sm mt-2">We'd love to hear from you — we reply within 24 hours.</p>
+                <p class="text-blue-100/80 text-sm mt-2">We'd love to hear from you. We reply within 24 hours.</p>
                 <a href="{{ url('/contact') }}" class="mt-5 inline-block px-7 py-3 bg-white text-[#12307e] font-bold rounded-2xl hover:bg-blue-50 transition text-sm">Contact Us</a>
             </div>
         </div>

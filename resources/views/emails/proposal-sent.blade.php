@@ -47,7 +47,7 @@
     </table>
 
     <p style="margin:0; font-size:13px; color:#94a3b8; line-height:1.6;">
-        You can accept the proposal, request changes, or decline — directly from the link above.
+        You can accept the proposal, request changes, or decline, directly from the link above.
         No account needed.
     </p>
 @endsection

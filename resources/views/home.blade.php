@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', ($siteSettings->site_name ?? 'AK Tech SOL') . ' — Web Development, Mobile Apps & Digital Services Agency')
-@section('meta_description', 'AK Tech SOL is a full-service digital agency offering web development, mobile app development, UI/UX design, and cloud solutions. 50+ projects delivered with 5-star client ratings. Get a free quote today.')
+@section('title', ($siteSettings->site_name ?? 'AK Tech SOL') . ' | Web Development, Mobile Apps & Digital Services Agency')
+@section('meta_description', ($siteSettings->site_name ?? 'AK Tech SOL') . ' is a full-service digital agency offering web & app development, UI/UX and graphic design, video editing, eCommerce, digital marketing, and AI solutions. 50+ projects delivered with 5-star client ratings. Get a free quote today.')
 
 @push('seo')
-<meta property="og:title" content="{{ ($siteSettings->site_name ?? 'AK Tech SOL') . ' — Web Development, Mobile Apps & Digital Services Agency' }}">
-<meta property="og:description" content="AK Tech SOL is a full-service digital agency offering web development, mobile app development, UI/UX design, and cloud solutions. Trusted by clients worldwide.">
+<meta property="og:title" content="{{ ($siteSettings->site_name ?? 'AK Tech SOL') . ' | Web Development, Mobile Apps & Digital Services Agency' }}">
+<meta property="og:description" content="{{ $siteSettings->site_name ?: 'AK Tech SOL' }} is a full-service digital agency offering web & app development, design, video editing, eCommerce, marketing, and AI solutions. Trusted by clients worldwide.">
 <meta property="og:url" content="{{ url('/') }}">
 <meta property="og:type" content="website">
 <script type="application/ld+json">
@@ -43,7 +43,7 @@
                     We Build <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-300">Digital Products</span> That Matter
                 </h1>
                 <p class="mt-6 text-lg sm:text-xl text-blue-100/80 max-w-2xl leading-relaxed">
-                    AK Tech SOL is a full-service software agency helping startups and businesses <strong class="text-white">worldwide</strong> design, develop, and launch exceptional web and mobile experiences.
+                    {{ $siteSettings->site_name ?: 'AK Tech SOL' }} is a full-service digital agency helping startups and businesses <strong class="text-white">worldwide</strong> with everything digital: web &amp; mobile development, design, video editing, eCommerce, marketing, and AI solutions that launch and grow brands.
                 </p>
                 <div class="mt-8 flex flex-wrap gap-4">
                     <a href="{{ url('/services') }}" class="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-[#12307e] font-bold hover:bg-blue-50 transition shadow-xl shadow-blue-900/30">
@@ -88,7 +88,7 @@
             <div class="text-center mb-12">
                 <span class="text-sm font-bold text-[#1d4ed8] uppercase tracking-widest">What we do</span>
                 <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">Services Built for Growth</h2>
-                <p class="mt-4 text-slate-500 max-w-2xl mx-auto">From idea to launch — we handle every part of your digital journey.</p>
+                <p class="mt-4 text-slate-500 max-w-2xl mx-auto">From idea to launch, we handle every part of your digital journey.</p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse($services as $service)
@@ -156,7 +156,7 @@
                                 <p class="text-xs text-slate-400">Track everything live</p>
                             </div>
                         </div>
-                        @foreach([['Planning', 100], ['Design', 85], ['Development', 60], ['Testing', 30]] as [$label, $pct])
+                        @foreach([['Planning', 99], ['Design', 99], ['Development', 99], ['Testing', 99]] as [$label, $pct])
                             <div class="mb-4">
                                 <div class="flex justify-between text-sm mb-1.5">
                                     <span class="font-medium text-slate-700">{{ $label }}</span>

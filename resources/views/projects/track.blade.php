@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $project->title . ' — Project Tracking')
+@section('title', $project->title . ' | Project Tracking')
 
 @section('content')
 <div class="min-h-screen bg-slate-50 py-10 px-4">
@@ -10,7 +10,7 @@
         <div class="rounded-3xl p-8 text-white" style="background: linear-gradient(135deg, #1d4ed8 0%, #12307e 100%);">
             <p class="text-xs font-bold uppercase tracking-[0.2em] text-blue-200/70">Project Tracking</p>
             <h1 class="text-2xl md:text-3xl font-extrabold mt-2">{{ $project->title }}</h1>
-            <p class="text-blue-200/80 text-sm mt-1.5">Hi {{ $project->client_name }} — follow your project's progress live.</p>
+            <p class="text-blue-200/80 text-sm mt-1.5">Hi {{ $project->client_name }}, follow your project's progress live.</p>
 
             @php
                 $projColors = [
@@ -38,6 +38,25 @@
             <p class="text-xs text-blue-200/70 mt-4">Expected delivery: <strong class="text-white">{{ $project->deadline->format('M d, Y') }}</strong></p>
             @endif
         </div>
+
+        {{-- Project team --}}
+        @if($project->team->isNotEmpty())
+        <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-100">
+            <h2 class="text-lg font-extrabold text-slate-900 mb-4">Your Project Team</h2>
+            <div class="flex flex-wrap gap-x-8 gap-y-4">
+                @foreach($project->team as $member)
+                    <div class="flex items-center gap-3">
+                        @php $parts = preg_split('/\s+/', trim($member->name)); $initials = strtoupper(substr($parts[0], 0, 1) . (count($parts) > 1 ? substr(end($parts), 0, 1) : '')); @endphp
+                        <span class="w-11 h-11 rounded-full bg-gradient-to-br from-[#1d4ed8] to-[#12307e] text-white text-sm font-bold flex items-center justify-center shrink-0">{{ $initials }}</span>
+                        <div>
+                            <p class="text-sm font-bold text-slate-800">{{ $member->name }}</p>
+                            <p class="text-xs text-slate-400">{{ $member->getRoleNames()->first() ?? 'Team Member' }}</p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
 
         {{-- Pipeline --}}
         <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-100">
@@ -87,7 +106,7 @@
             </div>
             @empty
             <div class="text-center py-8">
-                <p class="text-slate-400 text-sm">No updates yet — check back soon!</p>
+                <p class="text-slate-400 text-sm">No updates yet. Check back soon!</p>
             </div>
             @endforelse
         </div>

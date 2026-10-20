@@ -13,7 +13,7 @@
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                     <tr>
                         <td style="font-size:14px; color:#64748b; padding:6px 0;">Invoice</td>
-                        <td align="right" style="font-size:14px; font-weight:700; color:#0f172a; padding:6px 0;">{{ $invoice->invoice_no }} — {{ $invoice->title }}</td>
+                        <td align="right" style="font-size:14px; font-weight:700; color:#0f172a; padding:6px 0;">{{ $invoice->invoice_no }}: {{ $invoice->title }}</td>
                     </tr>
                     <tr>
                         <td style="font-size:14px; color:#64748b; padding:6px 0;">Due date</td>

@@ -25,8 +25,8 @@
                 <p class="text-sm font-bold text-slate-800 dark:text-slate-100 mt-1">{{ $project->statusLabel() }}</p>
             </div>
             <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3.5">
-                <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-wider">Assigned To</p>
-                <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 mt-1">{{ $project->assignee?->name ?? 'Unassigned' }}</p>
+                <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-wider">Team</p>
+                <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 mt-1">{{ $project->team->count() }} member{{ $project->team->count() === 1 ? '' : 's' }}</p>
             </div>
             <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3.5">
                 <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-wider">Start Date</p>
@@ -36,6 +36,24 @@
                 <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-wider">Deadline</p>
                 <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 mt-1">{{ $project->deadline?->format('M d, Y') ?? '—' }}</p>
             </div>
+        </div>
+
+        {{-- Project team --}}
+        <div>
+            <p class="text-[0.7rem] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Project Team</p>
+            @forelse($project->team as $member)
+                <div class="flex items-center gap-3 py-2.5 {{ !$loop->last ? 'border-b border-slate-100 dark:border-slate-700/60' : '' }}">
+                    @php $parts = preg_split('/\s+/', trim($member->name)); $initials = strtoupper(substr($parts[0], 0, 1) . (count($parts) > 1 ? substr(end($parts), 0, 1) : '')); @endphp
+                    <span class="w-9 h-9 rounded-full bg-gradient-to-br from-[#1d4ed8] to-[#12307e] text-white text-xs font-bold flex items-center justify-center shrink-0">{{ $initials }}</span>
+                    <div class="min-w-0">
+                        <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">{{ $member->name }}</p>
+                        <p class="text-xs text-slate-400 truncate">{{ $member->email }}</p>
+                    </div>
+                    <span class="ml-auto badge badge-blue shrink-0">{{ $member->getRoleNames()->first() ?? 'Team Member' }}</span>
+                </div>
+            @empty
+                <p class="text-sm text-slate-400 py-1">No team members assigned yet. Edit the project to assign a team.</p>
+            @endforelse
         </div>
 
         {{-- Actions --}}

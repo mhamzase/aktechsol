@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
@@ -27,7 +28,7 @@ class ClientProject extends Model
 
     protected $fillable = [
         'proposal_id', 'title', 'client_name', 'client_email',
-        'assigned_to', 'status', 'progress', 'token',
+        'status', 'progress', 'token',
         'started_at', 'deadline',
     ];
 
@@ -50,10 +51,10 @@ class ClientProject extends Model
         return $this->belongsTo(Proposal::class);
     }
 
-    /** Team member responsible (AK Tech Sol side). */
-    public function assignee(): BelongsTo
+    /** Team members assigned to this project (many-to-many). */
+    public function team(): BelongsToMany
     {
-        return $this->belongsTo(User::class, 'assigned_to');
+        return $this->belongsToMany(User::class, 'client_project_team')->withTimestamps();
     }
 
     /** Timeline entries, newest first. */
