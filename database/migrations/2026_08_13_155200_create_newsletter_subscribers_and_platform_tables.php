@@ -75,7 +75,7 @@ return new class extends Migration {
             $table->text('scope');
             $table->string('timeline')->nullable();
             $table->decimal('amount', 12, 2)->default(0);
-            $table->string('currency', 3)->default('PKR'); // PKR | USD — the deal's currency, inherited by project + invoices
+            $table->string('currency', 3)->default('PKR'); // currency code (see App\Support\Money), inherited by project + invoices
             $table->json('milestones')->nullable();
             $table->date('valid_until')->nullable()->comment('Proposal expiry date');
             // draft | sent | accepted | rejected | changes_requested | expired
@@ -102,7 +102,7 @@ return new class extends Migration {
             // received | in_progress | review | revision | delivered
             $table->string('status')->default('received')->index();
             $table->unsignedTinyInteger('progress')->default(0)->comment('0-100 percent');
-            $table->string('currency', 3)->default('PKR'); // PKR | USD — copied from the proposal
+            $table->string('currency', 3)->default('PKR'); // currency code, copied from the proposal
             $table->string('token', 64)->unique()->comment('Secure tracking link token');
             $table->date('started_at')->nullable();
             $table->date('deadline')->nullable();
@@ -163,7 +163,7 @@ return new class extends Migration {
             $table->string('token', 64)->nullable()->unique(); // secure client link
             $table->string('title');
             $table->decimal('amount', 12, 2)->default(0);
-            $table->string('currency', 3)->default('PKR'); // PKR | USD — follows the project when linked
+            $table->string('currency', 3)->default('PKR'); // currency code, follows the project when linked
             $table->decimal('paid_amount', 12, 2)->default(0);
             $table->date('due_date')->nullable();
             // unpaid | partially_paid | paid | overdue | cancelled

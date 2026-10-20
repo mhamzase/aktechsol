@@ -240,7 +240,7 @@
                 <div class="grid md:grid-cols-12 gap-4 mb-5">
                     <div class="md:col-span-4">
                         <x-ui.select name="default_currency" label="Default Currency" :value="$s->default_currency ?? 'PKR'"
-                                     :options="['PKR' => 'PKR (Rs)', 'USD' => 'USD ($)']"
+                                     :options="\App\Support\Money::options(true)"
                                      hint="Pre-selected on new proposals, projects and invoices. Each deal keeps its own currency." />
                     </div>
                 </div>

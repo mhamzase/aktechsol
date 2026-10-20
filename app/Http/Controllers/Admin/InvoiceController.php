@@ -268,7 +268,7 @@ class InvoiceController extends Controller
             'client_project_id' => 'nullable|exists:client_projects,id',
             'title'             => 'required|string|max:255',
             'amount'            => 'required|numeric|min:0.01',
-            'currency'          => 'nullable|in:PKR,USD',
+            'currency'          => 'nullable|in:' . implode(',', \App\Support\Money::codes()),
             'due_date'          => 'nullable|date',
             'status'            => 'required|in:' . implode(',', Invoice::STATUSES),
             'notes'             => 'nullable|string|max:2000',

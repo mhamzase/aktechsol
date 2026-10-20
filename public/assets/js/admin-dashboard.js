@@ -51,16 +51,16 @@
             // month always matches its own values (no label/index mismatch).
             const monthLabels = readJson(el, 'labels', []);
             const quotesData = readJson(el, 'quotes', []).map(Number);
-            const revenueData = readJson(el, 'revenue', []).map(Number);
-            const revenueUsdData = readJson(el, 'revenue-usd', []).map(Number);
+            // One revenue series per currency that has revenue (from the
+            // server); each is scaled + formatted in its own currency.
+            const revenueSeries = readJson(el, 'revenue-series', []);
             return {
             chart: { type: 'area', height: 300, toolbar: { show: false }, fontFamily: FONT, zoom: { enabled: false } },
             series: [
                 { name: 'Quotes', data: quotesData },
-                { name: 'Revenue (PKR)', data: revenueData },
-                { name: 'Revenue (USD)', data: revenueUsdData },
+                ...revenueSeries.map((s) => ({ name: s.name, data: (s.data || []).map(Number) })),
             ],
-            colors: ['#1d4ed8', '#f59e0b', '#10b981'],
+            colors: ['#1d4ed8', ...revenueSeries.map((s) => s.color)],
             stroke: { curve: 'smooth', width: 3 },
             fill: {
                 type: 'gradient',
@@ -80,14 +80,15 @@
                     const i = dataPointIndex;
                     const label = monthLabels[i] || '';
                     const q = quotesData[i] ?? 0;
-                    const r = revenueData[i] ?? 0;
-                    const ru = revenueUsdData[i] ?? 0;
-                    return '<div class="apex-custom-tip">' +
+                    let tip = '<div class="apex-custom-tip">' +
                         '<div class="apex-custom-title">' + label + '</div>' +
-                        '<div class="apex-custom-row"><span class="dot" style="background:#1d4ed8"></span>Quotes<b>' + q + '</b></div>' +
-                        '<div class="apex-custom-row"><span class="dot" style="background:#f59e0b"></span>Revenue (PKR)<b>Rs ' + Number(r).toLocaleString('en-PK') + '</b></div>' +
-                        '<div class="apex-custom-row"><span class="dot" style="background:#10b981"></span>Revenue (USD)<b>$' + Number(ru).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</b></div>' +
-                        '</div>';
+                        '<div class="apex-custom-row"><span class="dot" style="background:#1d4ed8"></span>Quotes<b>' + q + '</b></div>';
+                    revenueSeries.forEach((s) => {
+                        const v = Number((s.data || [])[i] ?? 0);
+                        const dec = s.decimals ?? 2;
+                        tip += '<div class="apex-custom-row"><span class="dot" style="background:' + s.color + '"></span>' + s.name + '<b>' + (s.symbol || '') + v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) + '</b></div>';
+                    });
+                    return tip + '</div>';
                 },
             },
             legend: { position: 'top', horizontalAlign: 'right', fontFamily: FONT, labels: { colors: axisColor() } },
@@ -100,6 +101,7 @@
             },
             yaxis: [
                 {
+                    seriesName: 'Quotes',
                     title: { text: 'Quotes', style: { fontFamily: FONT, color: axisColor() } },
                     labels: {
                         style: { fontFamily: FONT, colors: axisColor() },
@@ -107,20 +109,22 @@
                     },
                     min: 0, forceNiceScale: true,
                 },
-                {
+                // First revenue currency gets the visible right axis; every
+                // other currency scales on its OWN hidden axis (never mixed).
+                ...revenueSeries.map((s, idx) => idx === 0 ? {
+                    seriesName: s.name,
                     opposite: true,
-                    title: { text: 'PKR', style: { fontFamily: FONT, color: axisColor() } },
+                    title: { text: s.code, style: { fontFamily: FONT, color: axisColor() } },
                     labels: {
                         style: { fontFamily: FONT, colors: axisColor() },
                         formatter: (v) => v >= 1000 ? Math.round(v / 1000) + 'k' : v,
                     },
-                },
-                {
-                    // USD scales on its OWN hidden axis (never mixed with PKR).
-                    seriesName: 'Revenue (USD)',
+                    min: 0, forceNiceScale: true,
+                } : {
+                    seriesName: s.name,
                     show: false,
                     min: 0, forceNiceScale: true,
-                },
+                }),
             ],
             states: {
                 hover: { filter: { type: 'lighten', value: 0.08 } },

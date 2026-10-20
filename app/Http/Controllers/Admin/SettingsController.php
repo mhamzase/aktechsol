@@ -74,7 +74,7 @@ class SettingsController extends Controller
                 'mail_from_name' => 'nullable|string|max:255',
             ],
             'payments' => [
-                'default_currency' => 'nullable|in:PKR,USD',
+                'default_currency' => 'nullable|in:' . implode(',', \App\Support\Money::codes()),
                 'payment_methods' => 'nullable|array',
                 'payment_methods.*.method' => 'nullable|string|max:100',
                 'payment_methods.*.account_holder' => 'nullable|string|max:255',

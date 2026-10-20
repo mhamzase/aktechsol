@@ -64,7 +64,7 @@ class DashboardController extends Controller
                 ->groupBy('month', 'invoices.currency')
                 ->get();
             $revenueByMonth = collect();
-            foreach (\App\Support\Money::CURRENCIES as $cur) {
+            foreach (\App\Support\Money::codes() as $cur) {
                 $byMonth = $revenueRaw->where('currency', $cur)->pluck('total', 'month');
                 $revenueByMonth[$cur] = $months->mapWithKeys(fn ($m) => [$m => (float) ($byMonth[$m] ?? 0)]);
             }
@@ -97,12 +97,12 @@ class DashboardController extends Controller
             $stats = array_fill_keys(
                 ['quotes_new', 'projects_active', 'chats_unanswered'], 0
             );
-            $stats['revenue_month'] = ['PKR' => 0.0, 'USD' => 0.0];
+            $stats['revenue_month'] = array_fill_keys(\App\Support\Money::codes(), 0.0);
             $quotesByMonth = collect();
-            $revenueByMonth = collect(['PKR' => collect(), 'USD' => collect()]);
+            $revenueByMonth = collect(array_fill_keys(\App\Support\Money::codes(), collect()));
             $projectPipeline = collect();
             $attention = ['quotes' => collect(), 'chats' => collect(), 'invoices' => collect(), 'demos' => collect(), 'jobs' => collect()];
-            $trends = ['quotes_week' => 0, 'revenue_last_month' => ['PKR' => 0.0, 'USD' => 0.0]];
+            $trends = ['quotes_week' => 0, 'revenue_last_month' => array_fill_keys(\App\Support\Money::codes(), 0.0)];
         }
 
         return view('admin.dashboard', compact(
@@ -122,9 +122,11 @@ class DashboardController extends Controller
             ->groupBy('invoices.currency')
             ->pluck('total', 'currency');
 
-        return [
-            'PKR' => (float) ($rows['PKR'] ?? 0),
-            'USD' => (float) ($rows['USD'] ?? 0),
-        ];
+        $totals = [];
+        foreach (\App\Support\Money::codes() as $cur) {
+            $totals[$cur] = (float) ($rows[$cur] ?? 0);
+        }
+
+        return $totals;
     }
 }

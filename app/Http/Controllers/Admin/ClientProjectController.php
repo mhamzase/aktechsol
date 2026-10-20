@@ -180,7 +180,7 @@ class ClientProjectController extends Controller
             'title'        => 'required|string|max:255',
             'client_name'  => 'required|string|max:255',
             'client_email' => 'required|email|max:255',
-            'currency'     => 'nullable|in:PKR,USD',
+            'currency'     => 'nullable|in:' . implode(',', \App\Support\Money::codes()),
             'team'         => 'nullable|array',
             'team.*'       => 'exists:users,id',
             'status'       => 'required|in:received,in_progress,review,revision,delivered',

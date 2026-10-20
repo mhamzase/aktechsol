@@ -31,7 +31,7 @@
         $revParts = [];
         $revTrendParts = [];
         $revDir = 'flat';
-        foreach (['PKR', 'USD'] as $cur) {
+        foreach (\App\Support\Money::codes() as $cur) {
             $now = (float) ($revNowByCur[$cur] ?? 0);
             $last = (float) ($revLastByCur[$cur] ?? 0);
             if ($now > 0) {
@@ -53,6 +53,25 @@
             }
         }
         $revValue = $revParts ? implode(' · ', $revParts) : \App\Support\Money::format(0, 'PKR');
+
+        // Chart series: one per currency that actually has revenue in the
+        // window (PKR always, as the baseline), each with its own scale.
+        $revPalette = ['#f59e0b', '#10b981', '#8b5cf6', '#06b6d4', '#ef4444', '#ec4899', '#84cc16', '#f97316', '#64748b'];
+        $revChartSeries = [];
+        foreach (\App\Support\Money::codes() as $cur) {
+            $data = ($revenueByMonth[$cur] ?? collect())->values()->all();
+            if ($cur !== 'PKR' && collect($data)->sum() <= 0) {
+                continue;
+            }
+            $revChartSeries[] = [
+                'code' => $cur,
+                'name' => 'Revenue (' . $cur . ')',
+                'data' => $data,
+                'color' => $revPalette[count($revChartSeries) % count($revPalette)],
+                'symbol' => \App\Support\Money::symbol($cur),
+                'decimals' => \App\Support\Money::decimals($cur),
+            ];
+        }
         $revTrend = ['dir' => $revDir,
                      'text' => $revTrendParts ? implode(' · ', $revTrendParts) . (str_contains(implode('', $revTrendParts), '%') ? ' vs last month' : '') : 'no revenue yet'];
 
@@ -108,8 +127,7 @@
             <div id="chart-quotes-revenue"
                  data-labels='@json($quotesByMonth->keys())'
                  data-quotes='@json($quotesByMonth->values())'
-                 data-revenue='@json(($revenueByMonth['PKR'] ?? collect())->values())'
-                 data-revenue-usd='@json(($revenueByMonth['USD'] ?? collect())->values())'></div>
+                 data-revenue-series='@json($revChartSeries)'></div>
         </div>
         <div class="admin-card p-5">
             <div class="flex items-start justify-between mb-3">

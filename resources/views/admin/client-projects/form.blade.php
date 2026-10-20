@@ -29,7 +29,7 @@
             </div>
             <div class="md:col-span-3">
                 <x-ui.select name="currency" label="Currency" :value="$project->currency ?? 'PKR'" required
-                             :options="['PKR' => 'PKR', 'USD' => 'USD']"
+                             :options="\App\Support\Money::options()"
                              hint="Invoices + revenue follow this." />
             </div>
             <div class="md:col-span-6">

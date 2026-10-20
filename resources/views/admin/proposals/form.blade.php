@@ -25,7 +25,7 @@
             </div>
             <div class="md:col-span-2">
                 <x-ui.select name="currency" label="Currency" :value="$proposal->currency ?? 'PKR'" required
-                             :options="['PKR' => 'PKR', 'USD' => 'USD']"
+                             :options="\App\Support\Money::options()"
                              hint="The whole project runs in this currency." />
             </div>
             <div class="md:col-span-6">
