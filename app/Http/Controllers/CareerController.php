@@ -19,12 +19,33 @@ use Illuminate\Support\Facades\Validator;
  */
 class CareerController extends Controller
 {
-    /** Careers listing — open jobs and internships. */
-    public function index()
+    /** Careers listing — open jobs and internships.
+     *  20 per page; the page loads more via AJAX (Load More button)
+     *  and the search box filters by title / description. */
+    public function index(Request $request)
     {
-        $jobs = Job::visible()->withCount('applications')->get();
+        $search = trim((string) $request->query('search', ''));
 
-        return view('careers.index', compact('jobs'));
+        $query = Job::visible()->withCount('applications');
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $jobs = $query->paginate(20);
+
+        if ($request->ajax() || $request->query('ajax')) {
+            return response()->json([
+                'html'      => view('careers._cards', ['jobs' => $jobs, 'search' => $search])->render(),
+                'total'     => $jobs->total(),
+                'has_more'  => $jobs->hasMorePages(),
+                'next_page' => $jobs->currentPage() + 1,
+            ]);
+        }
+
+        return view('careers.index', compact('jobs', 'search'));
     }
 
     /** Single listing with the apply form. Closed listings 404. */
