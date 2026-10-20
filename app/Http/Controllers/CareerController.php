@@ -8,6 +8,7 @@ use App\Models\JobApplication;
 use App\Support\AdminMail;
 use App\Support\NotifyAdmins;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * CareerController — public careers pages.
@@ -34,12 +35,15 @@ class CareerController extends Controller
         return view('careers.show', compact('job'));
     }
 
-    /** Store an application for an open listing. */
+    /** Store an application for an open listing. Always answers JSON —
+     *  this endpoint is used by the AJAX apply form only, so validation
+     *  errors are returned manually instead of relying on the request
+     *  headers (a redirect here would silently lose the application). */
     public function apply(Request $request, string $slug)
     {
         $job = Job::visible()->where('slug', $slug)->firstOrFail();
 
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name'          => 'required|string|max:255',
             'email'         => 'required|email|max:255',
             'phone'         => 'nullable|string|max:50',
@@ -47,6 +51,15 @@ class CareerController extends Controller
             'cover_note'    => 'nullable|string|max:5000',
             'resume'        => 'nullable|file|mimes:pdf|max:5120',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Please fix the highlighted fields.',
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        $validated = $validator->validated();
 
         $application = JobApplication::create([
             'job_id'        => $job->id,
@@ -57,8 +70,13 @@ class CareerController extends Controller
             'cover_note'    => $validated['cover_note'] ?? null,
         ]);
 
+        // A failed CV attach must never lose the application itself.
         if ($request->hasFile('resume')) {
-            $application->addMediaFromRequest('resume')->toMediaCollection('resume');
+            try {
+                $application->addMediaFromRequest('resume')->toMediaCollection('resume');
+            } catch (\Throwable $e) {
+                report($e);
+            }
         }
 
         NotifyAdmins::send(
@@ -69,10 +87,6 @@ class CareerController extends Controller
         );
         AdminMail::queue(new JobApplicationMail($application));
 
-        if ($request->ajax() || $request->expectsJson()) {
-            return response()->json(['message' => 'Application submitted successfully! Our team will review your work and get back to you.']);
-        }
-
-        return redirect()->route('careers.show', $job->slug)->with('success', 'Application submitted successfully!');
+        return response()->json(['message' => 'Application submitted successfully! Our team will review your work and get back to you.']);
     }
 }
