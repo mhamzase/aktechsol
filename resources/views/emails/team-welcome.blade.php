@@ -42,7 +42,7 @@
         you can reset it anytime from the login page using
         <strong style="color:#0f172a;">Forgot password</strong>.
         @else
-        Your password has been set by your administrator — please ask them for it.
+        Your password has been set by your administrator. Please ask them for it.
         If you ever forget it, you can reset it anytime from the login page using
         <strong style="color:#0f172a;">Forgot password</strong>.
         @endif

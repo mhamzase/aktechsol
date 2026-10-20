@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Our Portfolio — Recent Projects & Case Studies | ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
+@section('title', 'Our Portfolio: Recent Projects & Case Studies | ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
 @section('meta_description', 'Browse ' . ($siteSettings->site_name ?? 'AK Tech SOL') . ' portfolio: real projects, case studies and client work across web development, mobile apps, UI/UX design and more.')
 
 @section('content')
@@ -114,7 +114,7 @@
 @endpush
 
 @push('seo')
-<meta property="og:title" content="Our Portfolio — Recent Projects & Case Studies | {{ $siteSettings->site_name ?? 'AK Tech SOL' }}">
+<meta property="og:title" content="Our Portfolio: Recent Projects & Case Studies | {{ $siteSettings->site_name ?? 'AK Tech SOL' }}">
 <meta property="og:description" content="Browse {{ $siteSettings->site_name ?? 'AK Tech SOL' }} portfolio: real projects, case studies and client work across web development, mobile apps, UI/UX design and more.">
 <meta property="og:url" content="{{ url()->current() }}">
 <meta property="og:type" content="website">

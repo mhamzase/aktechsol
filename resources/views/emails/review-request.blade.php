@@ -4,7 +4,7 @@
     <h1 style="margin:0 0 16px; font-size:22px; font-weight:800; color:#0f172a;">Hi {{ $project->client_name }},</h1>
     <p style="margin:0 0 16px; font-size:15px; color:#475569; line-height:1.7;">
         Your project <strong style="color:#0f172a;">{{ $project->title }}</strong> has been delivered.
-        How was your experience working with us? Your feedback helps us improve — and helps other clients choose us with confidence.
+        How was your experience working with us? Your feedback helps us improve, and helps other clients choose us with confidence.
     </p>
 
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;">

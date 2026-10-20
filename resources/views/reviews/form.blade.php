@@ -47,7 +47,7 @@
                         @endfor
                     </div>
                     <input type="hidden" name="rating" id="rating-input" value="5">
-                    <p class="text-xs text-slate-400 mt-1" id="rating-label">Excellent — 5 stars</p>
+                    <p class="text-xs text-slate-400 mt-1" id="rating-label">Excellent: 5 stars</p>
                 </div>
 
                 <div>
@@ -98,7 +98,7 @@
             svg.classList.toggle('text-amber-400', active);
             svg.classList.toggle('text-slate-300', !active);
         });
-        ratingLabel.textContent = `${labels[n]} — ${n} star${n > 1 ? 's' : ''}`;
+        ratingLabel.textContent = `${labels[n]}: ${n} star${n > 1 ? 's' : ''}`;
     }
     stars.forEach(s => s.addEventListener('click', () => {
         ratingInput.value = s.dataset.star;

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $project->title . ' — Project Tracking')
+@section('title', $project->title . ' | Project Tracking')
 
 @section('content')
 <div class="min-h-screen bg-slate-50 py-10 px-4">
@@ -10,7 +10,7 @@
         <div class="rounded-3xl p-8 text-white" style="background: linear-gradient(135deg, #1d4ed8 0%, #12307e 100%);">
             <p class="text-xs font-bold uppercase tracking-[0.2em] text-blue-200/70">Project Tracking</p>
             <h1 class="text-2xl md:text-3xl font-extrabold mt-2">{{ $project->title }}</h1>
-            <p class="text-blue-200/80 text-sm mt-1.5">Hi {{ $project->client_name }} — follow your project's progress live.</p>
+            <p class="text-blue-200/80 text-sm mt-1.5">Hi {{ $project->client_name }}, follow your project's progress live.</p>
 
             @php
                 $projColors = [
@@ -87,7 +87,7 @@
             </div>
             @empty
             <div class="text-center py-8">
-                <p class="text-slate-400 text-sm">No updates yet — check back soon!</p>
+                <p class="text-slate-400 text-sm">No updates yet. Check back soon!</p>
             </div>
             @endforelse
         </div>

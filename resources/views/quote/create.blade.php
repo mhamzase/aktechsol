@@ -13,7 +13,7 @@
 @section('content')
     <x-frontend.page-banner
         title="Get a Free Quote"
-        subtitle="Tell us about your project — we'll respond within 24 hours."
+        subtitle="Tell us about your project. We'll respond within 24 hours."
     />
 
     <section class="py-12 sm:py-16 bg-slate-50/60">
@@ -83,10 +83,10 @@
                     </div>
                     <div class="sm:col-span-2">
                         <label for="requirements" class="block text-sm font-semibold text-slate-700 mb-1.5">Project Requirements <span class="text-red-500">*</span></label>
-                        <textarea name="requirements" id="requirements" rows="6" required placeholder="Describe your project in detail — goals, features, timeline, anything that helps us understand..."
+                        <textarea name="requirements" id="requirements" rows="6" required placeholder="Describe your project in detail: goals, features, timeline, anything that helps us understand..."
                                   class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#1d4ed8]/20 focus:outline-none transition"></textarea>
                         <p class="err text-xs text-red-600 mt-1.5 hidden" data-err="requirements"></p>
-                        <p class="text-xs text-slate-400 mt-1.5">Minimum 20 characters — the more detail, the better the quote.</p>
+                        <p class="text-xs text-slate-400 mt-1.5">Minimum 20 characters. The more detail, the better the quote.</p>
                     </div>
                 </div>
                 <div class="mt-7">

@@ -3,7 +3,7 @@
 @section('content')
     <h1 style="margin:0 0 16px; font-size:22px; font-weight:800; color:#0f172a;">Your Review Is Live 🎉</h1>
     <p style="margin:0 0 16px; font-size:15px; color:#475569; line-height:1.7;">
-        Hi {{ $review->reviewer_name }}, great news — your review for
+        Hi {{ $review->reviewer_name }}, great news! Your review for
         <strong style="color:#0f172a;">{{ $review->project->title ?? 'your project' }}</strong>
         has been approved and is now published on our website. Thank you for sharing your experience!
     </p>
@@ -15,7 +15,7 @@
                     @for($i = 1; $i <= 5; $i++){{ $i <= $review->rating ? '★' : '☆' }}@endfor
                 </div>
                 <div style="font-size:14px; color:#475569; line-height:1.7;">{{ \Illuminate\Support\Str::limit($review->review ?? '', 300) }}</div>
-                <div style="font-size:12px; color:#94a3b8; margin-top:12px;">— {{ $review->reviewer_name }}</div>
+                <div style="font-size:12px; color:#94a3b8; margin-top:12px;">by {{ $review->reviewer_name }}</div>
             </td>
         </tr>
     </table>

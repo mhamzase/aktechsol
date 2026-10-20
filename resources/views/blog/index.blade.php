@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Blog — Insights, Tutorials & Updates | ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
+@section('title', 'Blog: Insights, Tutorials & Updates | ' . ($siteSettings->site_name ?? 'AK Tech SOL'))
 @section('meta_description', 'Read the latest insights, tutorials and updates from ' . ($siteSettings->site_name ?? 'AK Tech SOL') . ' on web development, mobile apps, design and digital growth.')
 
 @push('seo')
-<meta property="og:title" content="Blog — Insights, Tutorials & Updates | {{ $siteSettings->site_name ?? 'AK Tech SOL' }}">
+<meta property="og:title" content="Blog: Insights, Tutorials & Updates | {{ $siteSettings->site_name ?? 'AK Tech SOL' }}">
 <meta property="og:description" content="Latest insights, tutorials and updates on web development, mobile apps, design and digital growth.">
 <meta property="og:url" content="{{ url()->current() }}">
 <meta property="og:type" content="website">

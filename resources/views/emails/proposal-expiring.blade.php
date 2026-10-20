@@ -3,13 +3,13 @@
 @section('content')
     <h1 style="margin:0 0 16px; font-size:22px; font-weight:800; color:#0f172a;">Your Proposal Expires Soon</h1>
     <p style="margin:0 0 16px; font-size:15px; color:#475569; line-height:1.7;">
-        Hi {{ $proposal->client_name }}, just a quick reminder — your proposal
+        Hi {{ $proposal->client_name }}, just a quick reminder, your proposal
         <strong style="color:#0f172a;">{{ $proposal->title }}</strong> is valid until
         <strong style="color:#dc2626;">{{ $proposal->valid_until?->format('M d, Y') }}</strong> (3 days from now).
     </p>
 
     <p style="margin:0 0 16px; font-size:15px; color:#475569; line-height:1.7;">
-        After this date the proposal — including its pricing and timeline — will no longer be available.
+        After this date the proposal, including its pricing and timeline, will no longer be available.
         You can review it and accept it from the secure link below before it expires.
     </p>
 

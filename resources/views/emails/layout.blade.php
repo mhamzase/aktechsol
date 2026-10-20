@@ -33,7 +33,7 @@
                     <tr>
                         <td style="padding:24px 32px; background:#f8fafc; border-top:1px solid #e2e8f0; text-align:center;">
                             <p style="margin:0; font-size:12px; color:#94a3b8;">© {{ date('Y') }} {{ $siteSettings->site_name ?: 'AK Tech SOL' }}. All rights reserved.</p>
-                            <p style="margin:8px 0 0; font-size:12px; color:#94a3b8;">This is an automated email — please do not reply directly.</p>
+                            <p style="margin:8px 0 0; font-size:12px; color:#94a3b8;">This is an automated email. Please do not reply directly.</p>
                         </td>
                     </tr>
                 </table>

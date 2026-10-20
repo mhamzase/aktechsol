@@ -10,7 +10,7 @@
         <div class="rounded-3xl p-6 md:p-8 text-white" style="background: linear-gradient(135deg, #1d4ed8 0%, #12307e 100%);">
             <p class="text-xs font-bold uppercase tracking-[0.2em] text-blue-200/70">Invoice {{ $invoice->invoice_no }}</p>
             <h1 class="text-2xl md:text-3xl font-extrabold mt-2">{{ $invoice->title }}</h1>
-            <p class="text-blue-200/80 text-sm mt-1.5">Hi {{ $invoice->clientName() }} — here's your invoice.</p>
+            <p class="text-blue-200/80 text-sm mt-1.5">Hi {{ $invoice->clientName() }}, here's your invoice.</p>
             @php
                 $invColors = [
                     'unpaid' => 'bg-red-500/25 text-red-100 border border-red-300/40',
@@ -145,7 +145,7 @@
                     <label class="block text-sm font-bold text-slate-700 mb-1.5">Screenshot <span class="text-red-500">*</span></label>
                     <input type="file" name="screenshot" accept="image/jpeg,image/png,image/webp" required
                            class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 file:font-bold file:text-xs hover:file:bg-blue-100">
-                    <p class="text-xs text-slate-400 mt-1">JPG, PNG or WebP — max 5MB.</p>
+                    <p class="text-xs text-slate-400 mt-1">JPG, PNG or WebP, max 5MB.</p>
                 </div>
                 <div class="md:col-span-12">
                     <button type="submit" class="w-full md:w-auto px-8 py-3.5 text-white font-bold rounded-2xl transition hover:opacity-90"
