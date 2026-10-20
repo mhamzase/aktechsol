@@ -275,5 +275,5 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::delete('job-applications/{jobApplication}', [\App\Http\Controllers\Admin\JobApplicationController::class, 'destroy'])->middleware('can:manage job applications')->name('job-applications.destroy');
     $soon('packages', 'Packages', 'Phase 6', 'packages.index', 'manage packages');
     // Jobs (Phase 6).
-    Route::resource('jobs', \App\Http\Controllers\Admin\JobController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->middleware('can:manage jobs');
+    Route::resource('jobs', \App\Http\Controllers\Admin\JobController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'])->middleware('can:manage jobs');
 });

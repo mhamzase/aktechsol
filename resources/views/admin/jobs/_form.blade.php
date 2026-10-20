@@ -20,8 +20,8 @@
                 <input type="hidden" name="is_open" value="0">
                 <x-ui.toggle name="is_open" label="Open for Applications" :checked="old('is_open', $job->is_open ?? true)" hint="Closed jobs hide from the careers page." />
             </div>
-            <div class="sm:col-span-2"><x-ui.textarea name="description" label="Description" :value="$job->description" rows="6" required placeholder="What the role is about, responsibilities, what we offer…" /></div>
-            <div class="sm:col-span-2"><x-ui.textarea name="requirements" label="Requirements" :value="$job->requirements" rows="5" placeholder="Skills and experience the candidate must have…" hint="Shown as its own section on the job page." /></div>
+            <div class="sm:col-span-2"><x-ui.rich-text name="description" label="Description" :value="$job->description" required placeholder="What the role is about, responsibilities, what we offer…" /></div>
+            <div class="sm:col-span-2"><x-ui.rich-text name="requirements" label="Requirements" :value="$job->requirements" placeholder="Skills and experience the candidate must have…" hint="Shown as its own section on the job page." /></div>
         </div>
     </div>
 

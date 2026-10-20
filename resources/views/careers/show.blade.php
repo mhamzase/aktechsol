@@ -26,11 +26,11 @@
             {{-- Description --}}
             <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-100 shadow-sm">
                 <h2 class="text-lg font-extrabold text-slate-900 mb-4">About this role</h2>
-                <div class="text-slate-600 leading-relaxed whitespace-pre-wrap">{{ $job->description }}</div>
+                <div class="prose prose-slate max-w-none leading-relaxed">{!! $job->description !!}</div>
 
                 @if($job->requirements)
                     <h2 class="text-lg font-extrabold text-slate-900 mt-8 mb-4">Requirements</h2>
-                    <div class="text-slate-600 leading-relaxed whitespace-pre-wrap">{{ $job->requirements }}</div>
+                    <div class="prose prose-slate max-w-none leading-relaxed">{!! $job->requirements !!}</div>
                 @endif
             </div>
 

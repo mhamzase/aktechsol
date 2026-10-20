@@ -11,6 +11,8 @@
         <td data-label="Status"><span class="badge {{ $job->is_open ? 'badge-green' : 'badge-red' }}">{{ $job->is_open ? 'Open' : 'Closed' }}</span></td>
         <td data-label="Actions" class="no-label whitespace-nowrap">
             <x-admin.row-actions
+                :viewUrl="route('admin.jobs.show', $job)"
+                viewTitle="View Job"
                 :editUrl="route('admin.jobs.edit', $job)"
                 editTitle="Edit Job"
                 :deleteUrl="route('admin.jobs.destroy', $job)"
