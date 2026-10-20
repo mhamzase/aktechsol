@@ -18,28 +18,94 @@
 
     <section class="py-12 sm:py-16 bg-slate-50/60">
         <div class="max-w-5xl mx-auto px-4 sm:px-6">
-            @forelse($jobs as $job)
-                <a href="{{ route('careers.show', $job->slug) }}" class="group flex flex-col sm:flex-row sm:items-center gap-4 bg-white rounded-3xl border border-slate-100 shadow-sm p-6 sm:p-7 mb-4 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-100/50 transition-all">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex flex-wrap items-center gap-2 mb-2">
-                            <span class="text-[0.7rem] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full {{ $job->type === 'internship' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700' }}">{{ $job->type === 'internship' ? 'Internship' : 'Full-time Job' }}</span>
-                            <span class="text-[0.7rem] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 capitalize">{{ $job->location_type }}</span>
-                            <span class="text-xs text-slate-400">{{ $job->created_at->format('M d, Y') }}</span>
-                        </div>
-                        <h2 class="text-xl font-extrabold text-slate-900 group-hover:text-[#1d4ed8] transition">{{ $job->title }}</h2>
-                        <p class="text-sm text-slate-500 mt-1.5 leading-relaxed">{{ \Illuminate\Support\Str::limit(strip_tags($job->description), 150) }}</p>
-                    </div>
-                    <span class="shrink-0 inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[#1d4ed8] to-[#2f6fed] text-white text-sm font-bold group-hover:shadow-lg group-hover:shadow-blue-600/25 transition">
-                        View & Apply
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                    </span>
-                </a>
-            @empty
-                <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-10 text-center">
-                    <p class="text-lg font-bold text-slate-800">No open positions right now</p>
-                    <p class="text-sm text-slate-500 mt-2">We're not hiring at the moment, but new roles open up regularly — check back soon, or <a href="{{ route('contact') }}" class="text-[#1d4ed8] font-bold hover:underline">say hello anyway</a>.</p>
+            {{-- Search + count --}}
+            <form id="careers-search-form" action="{{ route('careers.index') }}" method="GET" class="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+                <div class="relative flex-1">
+                    <svg class="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 10.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"/></svg>
+                    <input type="text" id="careers-search" name="search" value="{{ $search }}" placeholder="Search positions — e.g. video editor, designer…"
+                           class="w-full rounded-2xl border border-slate-200 bg-white pl-12 pr-11 py-3.5 text-sm shadow-sm focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#1d4ed8]/20 focus:outline-none transition">
+                    @if($search)
+                        <a href="{{ route('careers.index') }}" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600" title="Clear search">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </a>
+                    @endif
                 </div>
-            @endforelse
+                <button type="submit" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#1d4ed8] to-[#2f6fed] text-white text-sm font-bold hover:shadow-lg hover:shadow-blue-600/25 transition shrink-0">Search</button>
+                <p id="careers-count" class="text-sm text-slate-500 shrink-0 sm:ml-1">{{ $jobs->total() }} open position{{ $jobs->total() === 1 ? '' : 's' }}</p>
+            </form>
+
+            {{-- List (first page server-rendered, more appended via AJAX) --}}
+            <div id="careers-list">
+                @include('careers._cards', ['jobs' => $jobs, 'search' => $search])
+            </div>
+
+            {{-- Load more --}}
+            <div id="load-more-wrap" class="text-center mt-8 {{ $jobs->hasMorePages() ? '' : 'hidden' }}">
+                <button type="button" id="load-more-btn" data-next-page="{{ $jobs->currentPage() + 1 }}"
+                        class="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-white border-2 border-[#1d4ed8] text-[#1d4ed8] font-bold text-sm hover:bg-[#1d4ed8] hover:text-white transition disabled:opacity-60">
+                    Load More Positions
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+            </div>
         </div>
     </section>
 @endsection
+
+@push('scripts')
+<script>
+    (function() {
+        const listEl = document.getElementById('careers-list');
+        const countEl = document.getElementById('careers-count');
+        const wrapEl = document.getElementById('load-more-wrap');
+        const moreBtn = document.getElementById('load-more-btn');
+        const form = document.getElementById('careers-search-form');
+        const input = document.getElementById('careers-search');
+        if (!listEl || !moreBtn) return;
+
+        let loading = false;
+
+        async function fetchPage(page, append) {
+            if (loading) return;
+            loading = true;
+            const original = moreBtn.innerHTML;
+            if (append) { moreBtn.disabled = true; moreBtn.textContent = 'Loading...'; }
+            try {
+                const params = new URLSearchParams({ ajax: '1', page: String(page), search: input.value.trim() });
+                const res = await fetch(`{{ route('careers.index') }}?${params}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error('request failed');
+                if (append) {
+                    listEl.insertAdjacentHTML('beforeend', data.html);
+                } else {
+                    listEl.innerHTML = data.html;
+                }
+                countEl.textContent = `${data.total} open position${data.total === 1 ? '' : 's'}`;
+                wrapEl.classList.toggle('hidden', !data.has_more);
+                moreBtn.dataset.nextPage = String(data.next_page);
+                // Keep the URL shareable without a reload.
+                const url = new URL(location.href);
+                const q = input.value.trim();
+                q ? url.searchParams.set('search', q) : url.searchParams.delete('search');
+                history.replaceState(null, '', url);
+            } catch (e) {
+                window.notify.error('Could not load positions. Please try again.');
+            } finally {
+                loading = false;
+                if (append) { moreBtn.disabled = false; moreBtn.innerHTML = original; }
+            }
+        }
+
+        moreBtn.addEventListener('click', () => fetchPage(parseInt(moreBtn.dataset.nextPage || '2', 10), true));
+
+        // Search: submit or a short pause while typing reloads page 1.
+        let debounce;
+        form.addEventListener('submit', (e) => { e.preventDefault(); fetchPage(1, false); });
+        input.addEventListener('input', () => {
+            clearTimeout(debounce);
+            debounce = setTimeout(() => fetchPage(1, false), 500);
+        });
+    })();
+</script>
+@endpush
