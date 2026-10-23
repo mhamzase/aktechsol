@@ -90,6 +90,25 @@ return new class extends Migration {
         });
 
         /* ------------------------------------------------------------------
+         | 3b. Proposal responses — the per-round feedback history. One row
+         |     per client response (accepted / changes_requested / rejected
+         |     + their note) and one per revised version the admin sends,
+         |     so no round of feedback is ever overwritten or lost.
+         | ------------------------------------------------------------------ */
+        if (! Schema::hasTable('proposal_responses')) {
+            Schema::create('proposal_responses', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('proposal_id')->constrained()->cascadeOnDelete();
+                // client = a response from the client; revised = admin sent a revised version
+                $table->string('type')->default('client');
+                // accepted | changes_requested | rejected (client rows only)
+                $table->string('action')->nullable();
+                $table->text('note')->nullable();
+                $table->timestamps();
+            });
+        }
+
+        /* ------------------------------------------------------------------
          | 4. Client projects — created when a proposal is accepted.
          |    Tracked publicly via the secure token link.
          | ------------------------------------------------------------------ */
@@ -338,6 +357,7 @@ return new class extends Migration {
         Schema::dropIfExists('project_revenue_shares');
         Schema::dropIfExists('client_project_team');
         Schema::dropIfExists('client_projects');
+        Schema::dropIfExists('proposal_responses');
         Schema::dropIfExists('proposals');
         Schema::dropIfExists('quote_requests');
         Schema::dropIfExists('newsletter_subscribers');

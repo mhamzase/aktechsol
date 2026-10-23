@@ -102,6 +102,8 @@ class ProposalController extends Controller
 
     public function show(Proposal $proposal)
     {
+        $proposal->load('responses');
+
         if (request()->ajax() || request()->expectsJson()) {
             return view('admin.proposals.show', compact('proposal'));
         }
@@ -109,10 +111,15 @@ class ProposalController extends Controller
         return redirect()->route('admin.proposals.index', ['view' => $proposal->id]);
     }
 
-    public function edit(Proposal $proposal)
+    public function edit(Proposal $proposal, Request $request)
     {
         $quotes = QuoteRequest::where('status', 'quoted')->latest()->get(['id', 'name', 'email', 'subject']);
-        return view('admin.proposals.form', compact('proposal', 'quotes'));
+
+        // Opened via "Revise & Resend" on a changes-requested proposal:
+        // the form shows the client's note and saving sends the revision.
+        $revise = $request->boolean('revise') && $proposal->status === 'changes_requested';
+
+        return view('admin.proposals.form', compact('proposal', 'quotes', 'revise'));
     }
 
     public function update(Request $request, Proposal $proposal)
@@ -136,8 +143,31 @@ class ProposalController extends Controller
         $proposal->update($validated);
         LogActivity::record('proposal_updated', $proposal, "Updated proposal: {$proposal->title}");
 
+        // Revise & Resend: the admin answered a changes request. Send the
+        // updated proposal back to the client: status returns to Sent,
+        // the round is preserved in the feedback history (the note moves
+        // there), and the client gets the "updated proposal" email.
+        $revised = false;
+        if ($request->boolean('revise_resend') && $proposal->status === 'changes_requested') {
+            $proposal->update([
+                'status' => 'sent', 'sent_at' => now(),
+                'responded_at' => null, 'client_note' => null,
+            ]);
+            $proposal->responses()->create(['type' => 'revised']);
+            LogActivity::record('proposal_revised', $proposal, "Revised proposal sent to client: {$proposal->title}");
+
+            if ($proposal->client_email) {
+                try {
+                    Mail::to($proposal->client_email)->queue(new \App\Mail\ProposalUpdatedMail($proposal));
+                } catch (\Throwable $e) {
+                    report($e);
+                }
+            }
+            $revised = true;
+        }
+
         if ($request->expectsJson() || $request->ajax()) {
-            return response()->json(['message' => 'Proposal updated.']);
+            return response()->json(['message' => $revised ? 'Proposal updated and sent to the client.' : 'Proposal updated.']);
         }
 
         return redirect()->route('admin.proposals.index')->with('success', 'Proposal updated.');

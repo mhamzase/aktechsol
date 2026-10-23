@@ -69,6 +69,46 @@
         </div>
         @endif
 
+        @if($proposal->responses->isNotEmpty())
+        <div>
+            <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Feedback History</p>
+            <div class="space-y-2.5">
+                @foreach($proposal->responses->sortByDesc('created_at') as $entry)
+                    @php
+                        if ($entry->type === 'revised') {
+                            $entryLabel = 'Revised & sent';
+                            $entryBox = 'bg-blue-50/60 dark:bg-blue-500/10 border-blue-100';
+                            $entryBadge = 'bg-blue-100 text-blue-700';
+                        } else {
+                            $entryLabel = [
+                                'accepted' => 'Client accepted',
+                                'changes_requested' => 'Client requested changes',
+                                'rejected' => 'Client declined',
+                            ][$entry->action] ?? 'Client responded';
+                            $entryBox = $entry->action === 'accepted'
+                                ? 'bg-green-50/60 dark:bg-green-500/10 border-green-100'
+                                : ($entry->action === 'rejected' ? 'bg-red-50/60 dark:bg-red-500/10 border-red-100' : 'bg-amber-50/60 dark:bg-amber-500/10 border-amber-100');
+                            $entryBadge = $entry->action === 'accepted'
+                                ? 'bg-green-100 text-green-700'
+                                : ($entry->action === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700');
+                        }
+                    @endphp
+                    <div class="border rounded-xl p-4 text-sm {{ $entryBox }}">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full {{ $entryBadge }}">{{ $entryLabel }}</span>
+                            <span class="text-xs text-slate-400">{{ $entry->created_at->format('M d, Y h:i A') }}</span>
+                        </div>
+                        @if($entry->type === 'revised')
+                            <p class="mt-1.5 text-slate-600 dark:text-slate-300">Updated proposal sent to the client.</p>
+                        @elseif($entry->note)
+                            <p class="mt-1.5 text-slate-700 dark:text-slate-200">{{ $entry->note }}</p>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
         <div class="flex flex-wrap gap-3 pt-2">
             @if($proposal->status === 'draft')
             <form data-ajax-form data-reload-table="proposals-table" method="POST" action="{{ route('admin.proposals.send', $proposal) }}" class="w-full"
@@ -85,6 +125,13 @@
             </form>
             @endif
         <div class="flex flex-wrap gap-2.5 pt-1">
+            @if($proposal->status === 'changes_requested')
+            <button type="button" onclick="window.openDrawer('{{ route('admin.proposals.edit', $proposal) }}?revise=1', 'Revise & Resend')"
+                    class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold text-white bg-amber-500 rounded-xl hover:bg-amber-600 transition shadow-sm shadow-amber-500/20">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                Revise & Resend
+            </button>
+            @endif
             @if($proposal->status !== 'accepted')
             <button type="button" data-resend-proposal data-url="{{ route('admin.proposals.resend', $proposal) }}"
                     class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition shadow-sm shadow-blue-600/20">

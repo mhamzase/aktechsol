@@ -520,6 +520,21 @@
                 valid = false;
             }
         });
+        // Rich-text (Quill) fields: the value lives in a hidden input, which
+        // the [required] pass above deliberately skips, so validate them
+        // here by their TEXT content (an empty editor still submits
+        // markup like "<p><br></p>", which must count as empty).
+        form.querySelectorAll('[data-rich-required]').forEach((input) => {
+            const text = (input.value || '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+            const rich = input.closest('.ui-rich');
+            if (!text) {
+                showFieldError(form, input, 'This field is required.');
+                if (rich) rich.classList.add('ui-rich-error');
+                valid = false;
+            } else if (rich) {
+                rich.classList.remove('ui-rich-error');
+            }
+        });
         if (!valid) {
             // Cooldown: keep the button disabled briefly so rapid double-clicks
             // can't spawn duplicate submissions/toasts.
@@ -538,7 +553,7 @@
             // A redirected or non-JSON 200 (e.g. session expired -> login page)
             // is NOT a success — the record was never saved. Never fake it.
             if (res.ok && (!data || res.redirected)) {
-                window.notify?.error('Session expired or unexpected response — nothing was saved. Please refresh the page and try again.');
+                window.notify?.error('Unexpected response — nothing was saved. Please refresh the page and try again.');
                 console.error('[AJAX form] Non-JSON response from', form.action);
                 return;
             }

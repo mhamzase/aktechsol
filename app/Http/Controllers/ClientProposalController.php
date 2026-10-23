@@ -55,6 +55,13 @@ class ClientProposalController extends Controller
             'responded_at' => now(),
         ]);
 
+        // Preserve this round in the feedback history (never overwritten).
+        $proposal->responses()->create([
+            'type'   => 'client',
+            'action' => $validated['action'],
+            'note'   => $validated['client_note'] ?? null,
+        ]);
+
         // Auto-create a client project when the proposal is accepted.
         if ($validated['action'] === 'accepted' && ! $proposal->project) {
             $project = \App\Models\ClientProject::create([

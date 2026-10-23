@@ -33,7 +33,19 @@
                 <span class="text-slate-400 text-sm">Unassigned</span>
             @endif
         </td>
-        <td data-label="Status"><span class="badge {{ $statusBadges[$project->status] ?? 'badge-gray' }}">{{ $project->statusLabel() }}</span>@if($project->revenueShares->isNotEmpty())@if($project->revenueShares->every(fn ($s) => $s->isPaid()))<span class="badge badge-green ml-1">Revenue Shared</span>@else<span class="badge badge-amber ml-1">Revenue Pending</span>@endif@endif</td>
+        <td data-label="Status">
+            @php
+                $sharesCount = $project->revenueShares->count();
+                $allSharesPaid = $sharesCount > 0 && $project->revenueShares->where('status', 'paid')->count() === $sharesCount;
+            @endphp
+            <span class="badge {{ $statusBadges[$project->status] ?? 'badge-gray' }}">{{ $project->statusLabel() }}</span>
+            @if($sharesCount > 0 && $allSharesPaid)
+                <span class="badge badge-green ml-1">Revenue Shared</span>
+            @endif
+            @if($sharesCount > 0 && ! $allSharesPaid)
+                <span class="badge badge-amber ml-1">Revenue Pending</span>
+            @endif
+        </td>
         <td data-label="Progress" class="whitespace-nowrap">
             <div class="flex items-center gap-2 min-w-[110px]">
                 <div class="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
