@@ -6,6 +6,19 @@
         @csrf
         @if($proposal->exists) @method('PUT') @endif
 
+        @if($revise ?? false)
+            {{-- Revise & Resend mode: show what the client asked for, and
+                 mark the submit so saving sends the revision back. --}}
+            <input type="hidden" name="revise_resend" value="1">
+            <div class="rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-500/10 dark:border-amber-500/30 p-4">
+                <p class="text-sm font-bold text-amber-800 dark:text-amber-300">Client requested changes</p>
+                @if($proposal->client_note)
+                    <p class="text-sm text-amber-700 dark:text-amber-200/80 mt-1">"{{ $proposal->client_note }}"</p>
+                @endif
+                <p class="text-xs text-amber-600 dark:text-amber-300/70 mt-1.5">Saving will send the updated proposal back to the client and mark it as Sent.</p>
+            </div>
+        @endif
+
         <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
             <div class="md:col-span-12">
                 <x-ui.input name="title" label="Proposal Title" :value="$proposal->title" required placeholder="Website Development Proposal" />
@@ -55,6 +68,6 @@
             <button type="button" data-add-milestone class="btn btn-secondary mt-2 text-sm">+ Add Milestone</button>
         </div>
 
-        <x-admin.drawer-footer :save-label="$proposal->exists ? 'Update Proposal' : 'Create Proposal'" />
+        <x-admin.drawer-footer :save-label="($revise ?? false) ? 'Save & Send to Client' : ($proposal->exists ? 'Update Proposal' : 'Create Proposal')" />
     </form>
 </div>

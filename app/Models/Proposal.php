@@ -56,6 +56,12 @@ class Proposal extends Model
     }
 
     /** The (first) project created from this proposal. */
+    /** Feedback history: every client response + revised send, oldest first. */
+    public function responses(): HasMany
+    {
+        return $this->hasMany(ProposalResponse::class);
+    }
+
     public function project()
     {
         return $this->hasOne(ClientProject::class);
