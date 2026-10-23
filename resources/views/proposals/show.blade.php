@@ -200,6 +200,14 @@
                             body: formData,
                             headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
                         });
+                        // Contract: only a JSON reply can be a success. Anything
+                        // else (a redirect to an HTML page, an error page) means
+                        // nothing was saved, so say so honestly.
+                        const isJson = (res.headers.get('content-type') || '').includes('application/json');
+                        if (!isJson) {
+                            window.notify.error('Something went wrong and your response was not saved. Please refresh the page and try again.');
+                            return;
+                        }
                         let data = {};
                         try { data = await res.json(); } catch (e) {}
                         if (res.ok) {
@@ -221,9 +229,11 @@
 
                 document.getElementById('respond-confirm-btn').addEventListener('click', () => {
                     if (!pendingAction) return;
-                    const btn = form.querySelector(`[data-respond="${pendingAction}"]`);
+                    // Capture BEFORE closing: closeConfirm() resets pendingAction.
+                    const action = pendingAction;
+                    const btn = form.querySelector(`[data-respond="${action}"]`);
                     closeConfirm();
-                    submitResponse(pendingAction, btn);
+                    submitResponse(action, btn);
                 });
 
                 buttons.forEach(btn => {
