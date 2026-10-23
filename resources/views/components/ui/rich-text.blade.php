@@ -22,7 +22,7 @@
     @endif
     <div class="ui-rich" data-placeholder="{{ $placeholder }}">
         <div data-quill-editor></div>
-        <input type="hidden" name="{{ $name }}" data-quill-input value="{{ old($name, $value) }}">
+        <input type="hidden" name="{{ $name }}" data-quill-input @if ($required) data-rich-required="1" @endif value="{{ old($name, $value) }}">
     </div>
     @if ($error)
         <p class="ui-error">{{ $error }}</p>
