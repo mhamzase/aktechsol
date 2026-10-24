@@ -125,7 +125,7 @@
         </div>
         @endcanany
 
-        @canany(['manage services', 'manage packages', 'manage portfolio', 'manage testimonials', 'manage blog', 'manage faqs', 'manage jobs', 'manage pages'])
+        @canany(['manage services', 'manage portfolio', 'manage testimonials', 'manage blog', 'manage faqs', 'manage jobs', 'manage pages'])
         <div>
             <p class="nav-group-label px-3 mb-2">Content</p>
             <div class="space-y-1">
@@ -133,12 +133,6 @@
                 <a href="{{ route('admin.services.index') }}" class="nav-link {{ $isActive(['admin.services.*', 'admin.service-categories.*']) }}">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                     Services
-                </a>
-                @endcan
-                @can('manage packages')
-                <a href="{{ route('admin.packages.index') }}" class="nav-link {{ $isActive('admin.packages.*') }}">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                    Packages
                 </a>
                 @endcan
                 @can('manage portfolio')
