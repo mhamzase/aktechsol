@@ -15,7 +15,9 @@
     'use strict';
 
     var PALETTE = ['#f59e0b', '#10b981', '#8b5cf6', '#06b6d4', '#ef4444', '#ec4899', '#84cc16', '#f97316', '#64748b'];
+    var ADD_LABELS = { revenue: 'Add Revenue', expense: 'Add Expense', withdrawal: 'Add Withdrawal' };
     var panels = {};
+    var activeType = 'revenue';
 
     function pad(n) { return String(n).padStart(2, '0'); }
     function iso(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
@@ -86,7 +88,18 @@
 
             renderChart(panel, data);
             panel.dirty = false;
-        }).catch(function () { /* keep the previous numbers on a failed refresh */ });
+        }).catch(function () {
+            // Honest failure state (never an endless "Loading..."):
+            // cards show a retry the admin can click.
+            panel.dirty = true;
+            panel.el.querySelectorAll('[data-fin-card]').forEach(function (shell) {
+                shell.querySelector('[data-card-main]').textContent = '—';
+                shell.querySelector('[data-card-sub]').innerHTML =
+                    'Could not load. <button type="button" data-fin-retry class="font-semibold underline">Retry</button>';
+            });
+            var label = panel.el.querySelector('[data-fin-range-label]');
+            if (label) label.textContent = 'Stats failed to load';
+        });
     }
 
     function renderChart(panel, data) {
@@ -161,16 +174,28 @@
     }
 
     function activate(type) {
+        activeType = type;
         document.querySelectorAll('[data-fin-tab]').forEach(function (btn) {
-            btn.classList.toggle('fin-active', btn.getAttribute('data-fin-tab') === type);
+            btn.classList.toggle('active', btn.getAttribute('data-fin-tab') === type);
         });
         document.querySelectorAll('[data-fin-panel]').forEach(function (p) {
             p.classList.toggle('hidden', p.getAttribute('data-fin-panel') !== type);
         });
+        // The hero Add button follows the active tab.
+        var addLabel = document.querySelector('[data-fin-add-label]');
+        if (addLabel) addLabel.textContent = ADD_LABELS[type] || 'Add';
         try { history.replaceState(null, '', '#' + type); } catch (e) { /* no-op */ }
         var panel = panels[type];
         if (panel && panel.dirty) refresh(panel);
     }
+
+    /** Hero Add button: open the create drawer for the active tab. */
+    window.finOpenCreate = function () {
+        var btn = document.getElementById('fin-add-btn');
+        if (!btn || !window.openDrawer) return;
+        var url = btn.getAttribute('data-url-' + activeType);
+        if (url) window.openDrawer(url, ADD_LABELS[activeType] || 'Add Entry', true);
+    };
 
     function refreshActive() {
         Object.keys(panels).forEach(function (key) { panels[key].dirty = true; });
@@ -178,8 +203,14 @@
         if (active) refresh(panels[active.getAttribute('data-fin-panel')]);
     }
 
-    // Delegated clicks: tab buttons + preset buttons.
+    // Delegated clicks: tab buttons + preset buttons + card retry.
     document.addEventListener('click', function (e) {
+        var retry = e.target.closest('[data-fin-retry]');
+        if (retry) {
+            var retryPanel = retry.closest('[data-fin-panel]');
+            if (retryPanel) refresh(panels[retryPanel.getAttribute('data-fin-panel')]);
+            return;
+        }
         var tab = e.target.closest('[data-fin-tab]');
         if (tab) {
             activate(tab.getAttribute('data-fin-tab'));
