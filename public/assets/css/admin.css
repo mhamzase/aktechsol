@@ -724,3 +724,17 @@ input[type="range"][data-progress-slider]::-moz-range-thumb {
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     cursor: grab;
 }
+
+/* Finance page: tab + date-preset buttons (JS toggles .fin-active). */
+.fin-tab-btn { color: #64748b; border-color: transparent; }
+.fin-tab-btn:hover { color: #1d4ed8; }
+.fin-tab-btn.fin-active { color: #1d4ed8; border-color: #1d4ed8; }
+html.dark .fin-tab-btn { color: #94a3b8; }
+html.dark .fin-tab-btn:hover { color: #60a5fa; }
+html.dark .fin-tab-btn.fin-active { color: #60a5fa; border-color: #60a5fa; }
+.fin-preset-btn { padding: 0.45rem 0.9rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 600; background: #f1f5f9; color: #475569; transition: background 0.15s ease, color 0.15s ease; }
+.fin-preset-btn:hover { background: #e2e8f0; }
+.fin-preset-btn.fin-active { background: #1d4ed8; color: #fff; }
+html.dark .fin-preset-btn { background: rgba(255, 255, 255, 0.08); color: #cbd5e1; }
+html.dark .fin-preset-btn:hover { background: rgba(255, 255, 255, 0.14); }
+html.dark .fin-preset-btn.fin-active { background: #2563eb; color: #fff; }

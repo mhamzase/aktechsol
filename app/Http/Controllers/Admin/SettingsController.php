@@ -75,6 +75,8 @@ class SettingsController extends Controller
             ],
             'payments' => [
                 'default_currency' => 'nullable|in:' . implode(',', \App\Support\Money::codes()),
+                'exchange_rates' => 'nullable|array',
+                'exchange_rates.*' => 'nullable|numeric|min:0',
                 'payment_methods' => 'nullable|array',
                 'payment_methods.*.method' => 'nullable|string|max:100',
                 'payment_methods.*.account_holder' => 'nullable|string|max:255',
@@ -161,6 +163,22 @@ class SettingsController extends Controller
                 $data['payment_methods'],
                 fn ($m) => ! empty($m['method'] ?? $m['name'] ?? null)
             ));
+        }
+
+        // Exchange rates: keep only known currency codes with a positive
+        // rate (PKR is always 1 and never stored).
+        if ($tab === 'payments' && isset($data['exchange_rates'])) {
+            $rates = [];
+            foreach (\App\Support\Money::codes() as $code) {
+                if ($code === 'PKR') {
+                    continue;
+                }
+                $rate = $data['exchange_rates'][$code] ?? null;
+                if ($rate !== null && $rate !== '' && (float) $rate > 0) {
+                    $rates[$code] = (float) $rate;
+                }
+            }
+            $data['exchange_rates'] = $rates;
         }
 
         $settings->fill($data);

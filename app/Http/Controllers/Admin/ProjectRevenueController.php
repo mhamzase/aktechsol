@@ -158,6 +158,13 @@ class ProjectRevenueController extends Controller
         $share->addMediaFromRequest('proof')->toMediaCollection('payment_proof');
         $share->update(['status' => 'paid', 'paid_at' => now()]);
 
+        // A PAID company share is money the company has actually
+        // received: it lands in the Finance ledger as revenue
+        // (idempotent, with the day's PKR rate snapshotted).
+        if ($share->isCompany()) {
+            \App\Models\FinanceEntry::recordProjectRevenue($clientProject, $share);
+        }
+
         LogActivity::record('revenue_share_paid', $clientProject, "Paid {$share->member_name} " . \App\Support\Money::format($share->amount, $clientProject->currency) . " for {$clientProject->title}");
 
         return response()->json(['message' => "{$share->member_name}'s share marked as paid."]);

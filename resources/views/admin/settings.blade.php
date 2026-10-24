@@ -244,6 +244,23 @@
                                      hint="Pre-selected on new proposals, projects and invoices. Each deal keeps its own currency." />
                     </div>
                 </div>
+                <div class="mb-5">
+                    <p class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1">Exchange Rates (to PKR)</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">Used by the Finance section to show one overall PKR total. When money is received, the rate of that day is saved with the entry, so old records never change when you update a rate here. Leave blank for currencies you do not use.</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        @foreach (\App\Support\Money::codes() as $code)
+                            @if ($code !== 'PKR')
+                                <div class="ui-field">
+                                    <label class="ui-label">1 {{ $code }} = ? PKR</label>
+                                    <div class="ui-input-wrap">
+                                        <input type="number" step="any" min="0" name="exchange_rates[{{ $code }}]" class="ui-control"
+                                               value="{{ ($s->exchange_rates ?? [])[$code] ?? '' }}" placeholder="e.g. 278.50">
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
                 <div id="payment-methods" class="space-y-4">
                     @forelse (($s->payment_methods ?? []) as $idx => $pm)
                         <div class="pm-card" data-pm-index="{{ $idx }}">

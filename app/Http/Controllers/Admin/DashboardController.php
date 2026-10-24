@@ -83,6 +83,29 @@ class DashboardController extends Controller
                 'jobs'     => JobApplication::where('status', 'new')->latest()->take(5)->get(),
             ];
 
+            // Company Finance ledger totals (all time): per currency
+            // plus the converted overall PKR from entry snapshots.
+            $finance = ['types' => [], 'net' => [], 'net_pkr' => 0.0];
+            foreach (['revenue', 'expense', 'withdrawal'] as $finType) {
+                $perCurrency = \App\Models\FinanceEntry::where('type', $finType)
+                    ->selectRaw('currency, SUM(amount) as total')
+                    ->groupBy('currency')->pluck('total', 'currency')
+                    ->map(fn ($v) => (float) $v)->all();
+                $finance['types'][$finType] = [
+                    'per_currency' => $perCurrency,
+                    'pkr' => (float) \App\Models\FinanceEntry::where('type', $finType)->sum('amount_pkr'),
+                ];
+            }
+            foreach (\App\Support\Money::codes() as $code) {
+                $net = ($finance['types']['revenue']['per_currency'][$code] ?? 0)
+                    - ($finance['types']['expense']['per_currency'][$code] ?? 0)
+                    - ($finance['types']['withdrawal']['per_currency'][$code] ?? 0);
+                if (abs($net) > 0.001) {
+                    $finance['net'][$code] = $net;
+                }
+            }
+            $finance['net_pkr'] = \App\Models\FinanceEntry::netBalancePkr();
+
             // Trends for the stat cards.
             $revenueLastMonth = $this->revenueByCurrency(
                 InvoicePayment::where('invoice_payments.status', 'verified')
@@ -103,10 +126,14 @@ class DashboardController extends Controller
             $projectPipeline = collect();
             $attention = ['quotes' => collect(), 'chats' => collect(), 'invoices' => collect(), 'demos' => collect(), 'jobs' => collect()];
             $trends = ['quotes_week' => 0, 'revenue_last_month' => array_fill_keys(\App\Support\Money::codes(), 0.0)];
+            $finance = [
+                'types' => array_fill_keys(['revenue', 'expense', 'withdrawal'], ['per_currency' => [], 'pkr' => 0.0]),
+                'net' => [], 'net_pkr' => 0.0,
+            ];
         }
 
         return view('admin.dashboard', compact(
-            'stats', 'quotesByMonth', 'revenueByMonth', 'projectPipeline', 'attention', 'trends'
+            'stats', 'quotesByMonth', 'revenueByMonth', 'projectPipeline', 'attention', 'trends', 'finance'
         ));
     }
 

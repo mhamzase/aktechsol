@@ -160,6 +160,35 @@ return new class extends Migration {
         });
 
         /* ------------------------------------------------------------------
+         | 4b. Finance entries — the company ledger behind the Finance
+         |     section: revenue (manual + auto from PAID company shares),
+         |     expenses and withdrawals. Every entry snapshots the PKR
+         |     rate of its own day (rate_to_pkr + amount_pkr) so overall
+         |     PKR totals never change when Settings rates are updated.
+         | ------------------------------------------------------------------ */
+        if (! Schema::hasTable('finance_entries')) {
+            Schema::create('finance_entries', function (Blueprint $table) {
+                $table->id();
+                // revenue | expense | withdrawal
+                $table->string('type')->index();
+                // manual | project (project = auto from a paid company share)
+                $table->string('source')->default('manual');
+                $table->foreignId('revenue_share_id')->nullable()->unique()
+                    ->constrained('project_revenue_shares')->cascadeOnDelete();
+                $table->string('title');
+                $table->string('category')->nullable();
+                $table->decimal('amount', 14, 2);
+                $table->string('currency', 3)->default('PKR');
+                // PKR snapshot (Option B): rate of the entry's day + value.
+                $table->decimal('rate_to_pkr', 14, 4)->nullable();
+                $table->decimal('amount_pkr', 16, 2)->nullable();
+                $table->date('entry_date')->index();
+                $table->text('note')->nullable();
+                $table->timestamps();
+            });
+        }
+
+        /* ------------------------------------------------------------------
          | 5. Project updates — timeline entries for the tracking link.
          | ------------------------------------------------------------------ */
         Schema::create('project_updates', function (Blueprint $table) {
@@ -354,6 +383,7 @@ return new class extends Migration {
         Schema::dropIfExists('invoice_payments');
         Schema::dropIfExists('invoices');
         Schema::dropIfExists('project_updates');
+        Schema::dropIfExists('finance_entries');
         Schema::dropIfExists('project_revenue_shares');
         Schema::dropIfExists('client_project_team');
         Schema::dropIfExists('client_projects');

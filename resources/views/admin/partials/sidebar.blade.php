@@ -87,6 +87,18 @@
         </div>
         @endcanany
 
+        @can('manage finance')
+        <div>
+            <p class="nav-group-label px-3 mb-2">Finance</p>
+            <div class="space-y-1">
+                <a href="{{ route('admin.finance.index') }}" class="nav-link {{ $isActive('admin.finance.*') }}">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                    Finance
+                </a>
+            </div>
+        </div>
+        @endcan
+
         @canany(['manage chatbot', 'manage demo bookings', 'manage contact messages', 'manage job applications', 'manage newsletter'])
         <div>
             <p class="nav-group-label px-3 mb-2">Engagement</p>

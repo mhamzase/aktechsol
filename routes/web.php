@@ -245,6 +245,16 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::delete('client-projects/{clientProject}/updates/{updateId}', [\App\Http\Controllers\Admin\ClientProjectController::class, 'deleteUpdate'])->middleware('can:manage proposals')->name('client-projects.updates.destroy');
     // Invoices (Phase 4).
     Route::resource('invoices', \App\Http\Controllers\Admin\InvoiceController::class)->middleware('can:manage invoices');
+
+    // Finance: company ledger (revenue / expenses / withdrawals).
+    Route::get('finance', [\App\Http\Controllers\Admin\FinanceController::class, 'index'])->middleware('can:manage finance')->name('finance.index');
+    Route::get('finance/summary', [\App\Http\Controllers\Admin\FinanceController::class, 'summary'])->middleware('can:manage finance')->name('finance.summary');
+    Route::get('finance/{type}', [\App\Http\Controllers\Admin\FinanceController::class, 'listing'])->middleware('can:manage finance')->name('finance.listing');
+    Route::get('finance/{type}/create', [\App\Http\Controllers\Admin\FinanceController::class, 'create'])->middleware('can:manage finance')->name('finance.create');
+    Route::post('finance/{type}', [\App\Http\Controllers\Admin\FinanceController::class, 'store'])->middleware('can:manage finance')->name('finance.store');
+    Route::get('finance/{type}/{entry}/edit', [\App\Http\Controllers\Admin\FinanceController::class, 'edit'])->middleware('can:manage finance')->name('finance.edit');
+    Route::put('finance/{type}/{entry}', [\App\Http\Controllers\Admin\FinanceController::class, 'update'])->middleware('can:manage finance')->name('finance.update');
+    Route::delete('finance/{type}/{entry}', [\App\Http\Controllers\Admin\FinanceController::class, 'destroy'])->middleware('can:manage finance')->name('finance.destroy');
     Route::post('invoices/{invoice}/payments/{payment}/verify', [\App\Http\Controllers\Admin\InvoiceController::class, 'verifyPayment'])->middleware('can:manage invoices')->name('invoices.payments.verify');
     Route::post('invoices/{invoice}/payments/{payment}/reject', [\App\Http\Controllers\Admin\InvoiceController::class, 'rejectPayment'])->middleware('can:manage invoices')->name('invoices.payments.reject');
     Route::post('invoices/{invoice}/payments/manual', [\App\Http\Controllers\Admin\InvoiceController::class, 'addManualPayment'])->middleware('can:manage invoices')->name('invoices.payments.manual');

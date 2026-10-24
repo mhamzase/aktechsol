@@ -28,6 +28,7 @@ class RoleSeeder extends Seeder
         // Work flow
         'manage projects',
         'manage invoices',
+        'manage finance',
         'manage reviews',
         // Engagement
         'manage chatbot',
@@ -42,7 +43,6 @@ class RoleSeeder extends Seeder
         'manage blog',
         'manage faqs',
         'manage jobs',
-        'manage packages',
         'manage pages',
         'manage media',
     ];
