@@ -5,7 +5,6 @@ use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\BlogCategoryController;
 use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\ChangePasswordController;
-use App\Http\Controllers\Admin\ComingSoonController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FaqController;
@@ -230,16 +229,6 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::get('media/{media}', [MediaController::class, 'show'])->name('media.show');
     Route::delete('media/{media}', [MediaController::class, 'destroy'])->name('media.destroy');
 
-    /*
-    |----------------------------------------------------------------------
-    | Phase placeholders — every sidebar link must resolve. Each phase
-    | replaces its placeholder with the real module controller.
-    |----------------------------------------------------------------------
-    */
-    $soon = function (string $uri, string $title, string $phase, string $name, string $can) {
-        Route::get($uri, fn () => app(ComingSoonController::class)->show($title, $phase))
-            ->middleware("can:{$can}")->name($name);
-    };
     Route::resource('proposals', \App\Http\Controllers\Admin\ProposalController::class)->middleware('can:manage proposals');
     Route::post('proposals/{proposal}/send', [\App\Http\Controllers\Admin\ProposalController::class, 'send'])->middleware('can:manage proposals')->name('proposals.send');
     Route::get('proposals/{proposal}/pdf', [\App\Http\Controllers\Admin\ProposalController::class, 'pdf'])->middleware('can:manage proposals')->name('proposals.pdf');
@@ -279,7 +268,6 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::get('job-applications/{jobApplication}', [\App\Http\Controllers\Admin\JobApplicationController::class, 'show'])->middleware('can:manage job applications')->name('job-applications.show');
     Route::put('job-applications/{jobApplication}/status', [\App\Http\Controllers\Admin\JobApplicationController::class, 'updateStatus'])->middleware('can:manage job applications')->name('job-applications.update-status');
     Route::delete('job-applications/{jobApplication}', [\App\Http\Controllers\Admin\JobApplicationController::class, 'destroy'])->middleware('can:manage job applications')->name('job-applications.destroy');
-    $soon('packages', 'Packages', 'Phase 6', 'packages.index', 'manage packages');
     // Jobs (Phase 6).
     Route::resource('jobs', \App\Http\Controllers\Admin\JobController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'])->middleware('can:manage jobs');
 });

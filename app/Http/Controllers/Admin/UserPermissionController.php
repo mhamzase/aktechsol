@@ -24,7 +24,7 @@ class UserPermissionController extends Controller
         'Sales'      => ['manage quotes', 'manage proposals'],
         'Work'       => ['manage projects', 'manage invoices', 'manage reviews'],
         'Engagement' => ['manage chatbot', 'manage demo bookings', 'manage contact messages', 'manage newsletter', 'manage job applications'],
-        'Content'    => ['manage services', 'manage portfolio', 'manage testimonials', 'manage blog', 'manage faqs', 'manage jobs', 'manage packages', 'manage pages', 'manage media'],
+        'Content'    => ['manage services', 'manage portfolio', 'manage testimonials', 'manage blog', 'manage faqs', 'manage jobs', 'manage pages', 'manage media'],
     ];
 
     /** Which sidebar tab each permission unlocks (shown as a chip in the drawer). */
@@ -49,7 +49,6 @@ class UserPermissionController extends Controller
         'manage blog'            => 'Blog',
         'manage faqs'            => 'FAQs',
         'manage jobs'            => 'Jobs',
-        'manage packages'        => 'Packages',
         'manage pages'           => 'Pages',
         'manage media'           => 'Media Library',
     ];
