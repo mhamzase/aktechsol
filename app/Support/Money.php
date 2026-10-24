@@ -76,4 +76,34 @@ class Money
 
         return $options;
     }
+
+    /**
+     * Current PKR rate for a currency, from Settings → Payments →
+     * Exchange Rates. PKR is always 1. Returns null when no rate is
+     * set, so converted totals can honestly leave that currency out.
+     */
+    public static function pkrRate(?string $currency): ?float
+    {
+        $code = self::code($currency);
+        if ($code === 'PKR') {
+            return 1.0;
+        }
+
+        try {
+            $rates = app(\App\Settings\SiteSettings::class)->exchange_rates ?? [];
+            $rate = (float) ($rates[$code] ?? 0);
+
+            return $rate > 0 ? $rate : null;
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    /** Convert an amount to PKR at the CURRENT Settings rate (null when unset). */
+    public static function toPkr(float|int|null $amount, ?string $currency): ?float
+    {
+        $rate = self::pkrRate($currency);
+
+        return $rate === null ? null : round((float) ($amount ?? 0) * $rate, 2);
+    }
 }

@@ -78,6 +78,11 @@ class SiteSettings extends Settings
     // Default currency for new proposals/projects/invoices (PKR | USD)
     public ?string $default_currency = 'PKR';
 
+    // Exchange rates to PKR per currency code, e.g. ['USD' => 278.50].
+    // Used ONLY to snapshot a PKR value onto finance entries (Option B:
+    // each entry keeps the rate of its own day; PKR itself is always 1).
+    public array $exchange_rates = [];
+
     // Announcement popup
     public bool $popup_enabled      = false;
     public ?string $popup_title    = null;
