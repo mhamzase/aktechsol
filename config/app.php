@@ -24,7 +24,7 @@ return [
     | dev -> master release merge.
     */
 
-    'version' => env('APP_VERSION', '1.0.8'),
+    'version' => env('APP_VERSION', '1.0.9'),
 
     /*
     |--------------------------------------------------------------------------
