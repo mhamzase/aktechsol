@@ -8,6 +8,13 @@
 
         <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
             <div class="md:col-span-12">
+                <x-ui.search-select name="proposal_id" label="Proposal" required
+                                    :options="$proposalOptions"
+                                    :value="$project->proposal_id"
+                                    placeholder="Search accepted proposals…"
+                                    hint="Every project links to one accepted proposal (one-to-one). Only proposals not yet linked to another project are listed." />
+            </div>
+            <div class="md:col-span-12">
                 <x-ui.input name="title" label="Project Title" :value="$project->title" required placeholder="Website Development" />
             </div>
             <div class="md:col-span-6">

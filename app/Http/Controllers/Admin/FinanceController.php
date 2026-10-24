@@ -125,7 +125,11 @@ class FinanceController extends Controller
             $cards['a'] = ['label' => 'From Projects', 'main' => Money::format($project['pkr'], 'PKR'), 'sub' => $this->partsLine($project['per_currency']) ?: 'No paid company shares in range'];
             $cards['b'] = ['label' => 'Manual Revenue', 'main' => Money::format($manual['pkr'], 'PKR'), 'sub' => $this->partsLine($manual['per_currency']) ?: 'No manual entries in range'];
             // Pending = company shares set but not yet paid (current state).
-            $pending = ProjectRevenueShare::whereNull('user_id')->where('status', 'pending')
+            // Columns MUST stay qualified: client_projects also has a
+            // `status` column, so a bare where('status') is ambiguous
+            // in the join and MySQL rejects the whole query (500).
+            $pending = ProjectRevenueShare::whereNull('project_revenue_shares.user_id')
+                ->where('project_revenue_shares.status', 'pending')
                 ->join('client_projects', 'client_projects.id', '=', 'project_revenue_shares.client_project_id')
                 ->selectRaw('client_projects.currency as currency, SUM(project_revenue_shares.amount) as total')
                 ->groupBy('client_projects.currency')->pluck('total', 'currency')

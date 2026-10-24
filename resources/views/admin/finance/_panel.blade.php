@@ -21,15 +21,6 @@
 @endphp
 
 <div data-fin-panel="{{ $type }}" class="{{ $type === 'revenue' ? '' : 'hidden' }}">
-    {{-- Add button --}}
-    <div class="flex justify-end mb-4">
-        <button type="button" class="btn-primary inline-flex items-center gap-2"
-                onclick="window.openDrawer('{{ route('admin.finance.create', $type) }}', '{{ $cfg['add'] }}', true)">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            {{ $cfg['add'] }}
-        </button>
-    </div>
-
     {{-- Date range filter: presets + the shared custom range picker.
          Stats and the chart follow this range; the listing below stays
          the full overall record. --}}
@@ -53,10 +44,10 @@
     {{-- Stat cards (filled by JS from the summary endpoint) --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
         @foreach ($cfg['cards'] as $key => $label)
-            <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm" data-fin-card="{{ $key }}">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-700 shadow-sm" data-fin-card="{{ $key }}">
                 <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-card-label>{{ $label }}</p>
-                <p class="text-2xl font-extrabold text-slate-800 mt-1" data-card-main>…</p>
-                <p class="text-xs text-slate-500 mt-1" data-card-sub>Loading…</p>
+                <p class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1" data-card-main>…</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1" data-card-sub>Loading…</p>
             </div>
         @endforeach
     </div>
