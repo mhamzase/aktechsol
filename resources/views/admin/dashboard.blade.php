@@ -258,5 +258,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('assets/js/admin-dashboard.js') }}"></script>
+<script src="{{ asset('assets/js/admin-dashboard.js') }}?v={{ config('app.version') }}"></script>
 @endpush

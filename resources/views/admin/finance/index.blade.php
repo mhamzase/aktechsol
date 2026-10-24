@@ -34,5 +34,5 @@
 
 @push('scripts')
 <script>window.FIN_SUMMARY_URL = '{{ route('admin.finance.summary') }}';</script>
-<script src="{{ asset('assets/js/admin-finance.js') }}"></script>
+<script src="{{ asset('assets/js/admin-finance.js') }}?v={{ config('app.version') }}"></script>
 @endpush
