@@ -268,7 +268,7 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::post('reviews/{review}/approve', [\App\Http\Controllers\Admin\ReviewController::class, 'approve'])->middleware('can:manage reviews')->name('reviews.approve');
     Route::post('reviews/{review}/reject', [\App\Http\Controllers\Admin\ReviewController::class, 'reject'])->middleware('can:manage reviews')->name('reviews.reject');
     Route::post('reviews/send-request', [\App\Http\Controllers\Admin\ReviewController::class, 'sendRequest'])->middleware('can:manage reviews')->name('reviews.send-request');
-    $soon('chatbot', 'Chatbot', 'Phase 5', 'chatbot.index', 'manage chatbot');
+    // Chatbot (Phase 5) routes live with the other engagement modules above.
     // Demo Bookings (Phase 6).
     Route::get('demo-bookings', [\App\Http\Controllers\Admin\DemoBookingController::class, 'index'])->middleware('can:manage demo bookings')->name('demo-bookings.index');
     Route::get('demo-bookings/{demoBooking}', [\App\Http\Controllers\Admin\DemoBookingController::class, 'show'])->middleware('can:manage demo bookings')->name('demo-bookings.show');
