@@ -57,7 +57,8 @@ class ClientProjectController extends Controller
         $project = new ClientProject();
         $project->currency = \App\Support\Money::code(app(\App\Settings\SiteSettings::class)->default_currency);
         $users = User::orderBy('name')->get(['id', 'name']);
-        return view('admin.client-projects.form', compact('project', 'users'));
+        $proposalOptions = $this->proposalOptions(null);
+        return view('admin.client-projects.form', compact('project', 'users', 'proposalOptions'));
     }
 
     public function store(Request $request)
@@ -75,7 +76,7 @@ class ClientProjectController extends Controller
 
     public function show(ClientProject $clientProject)
     {
-        $clientProject->load(['team', 'proposal', 'updates.author', 'revenueShares']);
+        $clientProject->load(['team', 'proposal.quoteRequest.service', 'updates.author', 'revenueShares']);
         $project = $clientProject;
 
         if (request()->ajax() || request()->expectsJson()) {
@@ -90,13 +91,14 @@ class ClientProjectController extends Controller
     {
         $project = $clientProject;
         $users = User::orderBy('name')->get(['id', 'name']);
-        return view('admin.client-projects.form', compact('project', 'users'));
+        $proposalOptions = $this->proposalOptions($project);
+        return view('admin.client-projects.form', compact('project', 'users', 'proposalOptions'));
     }
 
     public function update(Request $request, ClientProject $clientProject)
     {
         $wasDelivered = $clientProject->status === 'delivered';
-        $data = $this->validateData($request);
+        $data = $this->validateData($request, $clientProject);
         $teamIds = $data['team'] ?? [];
         unset($data['team']);
 
@@ -174,9 +176,10 @@ class ClientProjectController extends Controller
         return response()->json(['message' => 'Update deleted.']);
     }
 
-    protected function validateData(Request $request): array
+    protected function validateData(Request $request, ?ClientProject $project = null): array
     {
         $data = $request->validate([
+            'proposal_id'  => 'required|exists:proposals,id',
             'title'        => 'required|string|max:255',
             'client_name'  => 'required|string|max:255',
             'client_email' => 'required|email|max:255',
@@ -189,8 +192,58 @@ class ClientProjectController extends Controller
             'deadline'     => 'nullable|date|after_or_equal:started_at',
         ]);
 
+        $this->guardProposalLink((int) $data['proposal_id'], $project);
+
         $data['currency'] = \App\Support\Money::code($data['currency'] ?? null);
 
         return $data;
+    }
+
+    /**
+     * Select options for the proposal picker: ACCEPTED proposals that
+     * are not linked to any project yet, plus (on edit) the project's
+     * own current proposal. Labels carry title, client and amount so
+     * the right deal is easy to find in the search list.
+     */
+    protected function proposalOptions(?ClientProject $project): array
+    {
+        $proposals = \App\Models\Proposal::where('status', 'accepted')
+            ->where(function ($q) use ($project) {
+                $q->whereDoesntHave('project');
+                if ($project?->proposal_id) {
+                    $q->orWhere('id', $project->proposal_id);
+                }
+            })
+            ->latest()
+            ->get();
+
+        return $proposals->mapWithKeys(fn ($p) => [
+            $p->id => $p->title . ' — ' . $p->client_name . ' (' . \App\Support\Money::format($p->amount, $p->currency) . ')',
+        ])->all();
+    }
+
+    /**
+     * One-to-one guard: a project can only link to an ACCEPTED
+     * proposal, and that proposal cannot belong to another project.
+     */
+    protected function guardProposalLink(int $proposalId, ?ClientProject $project): void
+    {
+        $proposal = \App\Models\Proposal::find($proposalId);
+
+        if (! $proposal || $proposal->status !== 'accepted') {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'proposal_id' => 'Only an accepted proposal can be linked to a project.',
+            ]);
+        }
+
+        $taken = ClientProject::where('proposal_id', $proposalId)
+            ->when($project, fn ($q) => $q->whereKeyNot($project->id))
+            ->exists();
+
+        if ($taken) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'proposal_id' => 'This proposal is already linked to another project.',
+            ]);
+        }
     }
 }

@@ -56,6 +56,51 @@
             @endforelse
         </div>
 
+        {{-- Linked proposal (one-to-one), with its quote when it has one --}}
+        <div>
+            <p class="text-[0.7rem] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Proposal</p>
+            @if ($project->proposal)
+                <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="min-w-0">
+                            <p class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ $project->proposal->title }}</p>
+                            <p class="text-xs text-slate-400 mt-0.5">{{ $project->proposal->client_name }} · {{ $project->proposal->client_email }}</p>
+                        </div>
+                        <span class="ml-auto badge {{ $project->proposal->status === 'accepted' ? 'badge-green' : 'badge-amber' }} shrink-0">{{ ucfirst(str_replace('_', ' ', $project->proposal->status)) }}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mt-3">
+                        <div>
+                            <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-wider">Proposal Amount</p>
+                            <p class="text-sm font-bold text-slate-800 dark:text-slate-100 mt-1">{{ \App\Support\Money::format($project->proposal->amount, $project->proposal->currency) }}</p>
+                        </div>
+                        <div>
+                            <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-wider">Valid Until</p>
+                            <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 mt-1">{{ $project->proposal->valid_until?->format('M d, Y') ?? '—' }}</p>
+                        </div>
+                    </div>
+                    <button type="button" class="text-xs font-semibold text-blue-600 hover:underline mt-3"
+                            onclick="window.openDrawer('{{ route('admin.proposals.show', $project->proposal) }}', 'Proposal Details', true)">View Proposal</button>
+
+                    @if ($project->proposal->quoteRequest)
+                        <div class="border-t border-slate-200 dark:border-slate-700 mt-3 pt-3">
+                            <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-wider">From Quote Request</p>
+                            <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 mt-1">{{ $project->proposal->quoteRequest->subject ?: 'Quote request' }}</p>
+                            <p class="text-xs text-slate-400 mt-0.5">
+                                {{ $project->proposal->quoteRequest->name }} · {{ $project->proposal->quoteRequest->email }}
+                                @if ($project->proposal->quoteRequest->service)
+                                    · {{ $project->proposal->quoteRequest->service->name }}
+                                @endif
+                            </p>
+                            <button type="button" class="text-xs font-semibold text-blue-600 hover:underline mt-2"
+                                    onclick="window.openDrawer('{{ route('admin.quotes.show', $project->proposal->quoteRequest) }}', 'Quote Details', true)">View Quote</button>
+                        </div>
+                    @endif
+                </div>
+            @else
+                <p class="text-sm text-slate-400 py-1">No proposal linked yet. Edit the project to link one.</p>
+            @endif
+        </div>
+
         {{-- Revenue distribution (delivered projects with shares saved) --}}
         @if($project->revenueShares->isNotEmpty())
             <div>
