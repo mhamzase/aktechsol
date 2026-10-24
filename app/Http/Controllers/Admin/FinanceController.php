@@ -154,6 +154,16 @@ class FinanceController extends Controller
         }
 
         // Chart: bucket the range (days when short, months when long).
+        // "All time" passes no range: span the chart across the actual
+        // data instead of falling back to just the current month.
+        if (! $from && ! $to) {
+            $min = FinanceEntry::where('type', $type)->min('entry_date');
+            $max = FinanceEntry::where('type', $type)->max('entry_date');
+            if ($min && $max) {
+                $from = Carbon::parse($min)->startOfDay();
+                $to = Carbon::parse($max)->endOfDay();
+            }
+        }
         [$labels, $bucketOf] = $this->buckets($from, $to);
         $rows = $inRange(FinanceEntry::where('type', $type))
             ->select('entry_date', 'currency', 'amount')->get();
